@@ -1,3 +1,8 @@
+package battelshipgame.render;
+
+import battelshipgame.ships.Position;
+import battelshipgame.ships.Ship;
+
 import java.util.List;
 
 public class Render {

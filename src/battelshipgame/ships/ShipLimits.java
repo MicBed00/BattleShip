@@ -1,3 +1,5 @@
+package battelshipgame.ships;
+
 public enum ShipLimits {
     SHIP_LIMIT(2),
     SHIP4SAIL(1),

@@ -1,3 +1,5 @@
+package battelshipgame.ships;
+
 public enum ShipSize {
     FOUR(4),
     THREE(3),

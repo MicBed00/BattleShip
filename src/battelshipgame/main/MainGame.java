@@ -1,3 +1,9 @@
+package battelshipgame.main;
+
+import battelshipgame.control.ControlPanel;
+import battelshipgame.render.Render;
+import battelshipgame.ships.Ship;
+
 import java.util.ArrayList;
 import java.util.List;
 

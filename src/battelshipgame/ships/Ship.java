@@ -1,3 +1,7 @@
+package battelshipgame.ships;
+
+import battelshipgame.ships.Position;
+
 public class Ship {
     private int length;
     private int x;

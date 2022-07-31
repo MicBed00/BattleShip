@@ -1,3 +1,10 @@
+package battelshipgame.control;
+
+import battelshipgame.render.Render;
+import battelshipgame.ships.Ship;
+import battelshipgame.ships.ShipLimits;
+import battelshipgame.ships.ShipSize;
+import javax.swing.text.Position;
 import java.util.*;
 
 public class ControlPanel {
@@ -11,6 +18,7 @@ public class ControlPanel {
     int counterShip2 = 0;
     int counterShip1 = 0;
     Position position;
+    Arrays
     /*
     Po umieszczeniu klasy w package "control" pojawił się błąd: When writing games, using the System class's in method is not allowed
      */
@@ -53,7 +61,7 @@ public class ControlPanel {
                 if (s.isHit(x, y)) {
                     System.out.println("dead");
                     /*
-                    Iterator<Ship> it = player2.iterator();
+                    Iterator<battelshipgame.ships.Ship> it = player2.iterator();
                     it.remove();                  // usunięcie z listy zatopionego statku i zmniejszenie rozmiaru listy o 1
                     po usunięciu elementu pojawia się błąd .IllegalStateException
                      */
@@ -71,7 +79,7 @@ public class ControlPanel {
             player1.forEach(s -> {
                 if (s.isHit(a, b)) {
                     System.out.println("dead");
-//                    Iterator<Ship> it = player1.iterator();
+//                    Iterator<battelshipgame.ships.Ship> it = player1.iterator();
 //                    it.remove();                        // usunięcie z listy zatopionego statku i zmniejszenie rozmiaru listy o 1
                     counterDeadShipPly2.add(s);
                     s.setHitCounter(0);
@@ -89,7 +97,8 @@ public class ControlPanel {
     }
 
     private int getInt() throws InputMismatchException{
-        Scanner sc = new Scanner(System.in);
+        java.util.Scanner sc = new java.util.Scanner(System.in);
+        java.util.Date now = new java.util.Date();
         int num = sc.nextInt();
         sc.nextLine();
         return num;
@@ -155,12 +164,12 @@ public class ControlPanel {
 
         //nie wiem czemu nie mogę inkrementowac counterów strumieniu
 //        listShip.stream().filter(s -> s.getLength() == length)
-//                .map(Ship::getLength)
+//                .map(battelshipgame.ships.Ship::getLength)
 //                .forEach(s -> {
-//            if (s < ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
-//            if (s < ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
-//            if (s < ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
-//            if (s < ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
+//            if (s < battelshipgame.ships.ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
+//            if (s < battelshipgame.ships.ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
+//            if (s < battelshipgame.ships.ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
+//            if (s < battelshipgame.ships.ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
 //        });
 
         List<Integer> list = listShip.stream()
