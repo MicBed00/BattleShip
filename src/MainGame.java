@@ -9,9 +9,10 @@ import java.util.List;
 
 public class MainGame {
     public static void main(String[] args) {
-        List<Ship> playerOne = new ArrayList<>();
+        List<Ship>  playerOne = new ArrayList<>();
         List<Ship>  playerTwo = new ArrayList<>();
         ControlPanel cp = new ControlPanel();
+        // TODO
         cp.prepareBeforeGame(playerOne, "player1");
         cp.prepareBeforeGame(playerTwo, "player2");
         Render rd = new Render();
