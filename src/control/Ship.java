@@ -5,7 +5,11 @@ public class Ship {
     private int x;
     private int y;
     private Position position;
-    private int hitCounter = 0;
+    private int hitCounter = 0; // -> boolean[length] -> hitCounter[1] = true
+    // |-|-|-|-|
+    // | |1| |1|
+    // |-|-|-|-|
+
 
     public Ship(int length, int x, int y, Position position) {
         this.length = length;
@@ -14,6 +18,23 @@ public class Ship {
         this.position = position;
 
     }
+
+    int getXstart() {
+        return x;
+    }
+
+    int getXend() {
+        return position == Position.HORIZONTAL ? x + length : x;
+    }
+
+    int getYstart() {
+        return y;
+    }
+
+    int getYend() {
+        return position == Position.VERTICAL ? y + length : y;
+    }
+
     public boolean isHit (int x, int y) {
         /*
         @Słowo "Miss!" wyświetla się po trafieniu. Kazdy obiekt zapisany w liscie iteruje po tej metodzie i zwraca Miss, gdy nie trafimy

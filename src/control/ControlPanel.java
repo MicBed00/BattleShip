@@ -32,8 +32,12 @@ public class ControlPanel {
             String positionString = getPosition();
             position = Position.valueOf(positionString);
             try {
+                //Board.addShip
                 if (!addShip(listShip, length, x, y, position))
                     continue;   // przy kolizji uniemożliwia wyjście z metody. Wpisujemy ponownie współrzędne
+                else {
+                    System.out.println("dodano....");
+                }
                 shipCounter++;
             } catch (ShipLimitExceedException e) {
                 System.out.printf("Nie można dodać więcej statków %d masztowych%n", length);
@@ -53,7 +57,7 @@ public class ControlPanel {
     /* do poprawy - stworzyć jeden blok pobierania danych od użytkowników
         ze zmianą podpisu kto wykonuje aktualnie ruch ply1 czy ply2
      */
-    public void playGame(List<Ship> player1, List<Ship> player2, char[][] boardPly1, char[][] boardPly2) throws ArrayIndexOutOfBoundsException {
+    public void playGame(Board player1Board, Board player2Board, char[][] boardPly1, char[][] boardPly2) throws ArrayIndexOutOfBoundsException {
         List<Ship> counterDeadShipPly1 = new ArrayList<>();
         List<Ship> counterDeadShipPly2 = new ArrayList<>();
         List<Ship> counterDeadShip = new ArrayList<>();
@@ -207,20 +211,22 @@ public class ControlPanel {
 
     private boolean overShipLimit(List<Ship> listShip, Ship ship, int length) {
         //sprawdzić po parametrze length ile już znajduję się statków w liscie
-//        int counterShip4 = Collections.frequency(listShip,ship.getLength() == qtyShip4);
+        int counterShip4 = Collections.frequency(listShip,ship.getLength() == qtyShip4);
 //        int counterShip3 = Collections.frequency(listShip,ship.getLength() == qtyShip3);
 //        int counterShip2 = Collections.frequency(listShip,ship.getLength() == qtyShip2);
 //        int counterShip1 = Collections.frequency(listShip,ship.getLength() == qtyShip1);
 
         //nie wiem czemu nie mogę inkrementowac counterów strumieniu
-//        listShip.stream().filter(s -> s.getLength() == length)
-//                .map(control.Ship::getLength)
-//                .forEach(s -> {
-//            if (s < control.ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
-//            if (s < control.ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
-//            if (s < control.ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
-//            if (s < control.ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
-//        });
+        listShip
+          .stream()
+          .filter(s -> s.getLength() == length)
+           .map(control.Ship::getLength)
+                .forEach(s -> {
+            if (s < control.ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
+            if (s < control.ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
+            if (s < control.ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
+            if (s < control.ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
+        });
 
         List<Integer> list = listShip.stream()
                 .filter(s -> s.getLength() == length)       //sprawdzam po długości ile statków znajduję się na liście
