@@ -1,3 +1,8 @@
+package control;
+
+import control.Position;
+import control.Ship;
+
 import java.util.List;
 
 public class Render {

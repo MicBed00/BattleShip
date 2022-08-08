@@ -1,3 +1,5 @@
+package control;
+
 public enum SizeBoard {
     ROW(10),
     COLUMNE(10);

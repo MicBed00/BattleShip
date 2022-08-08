@@ -1,3 +1,5 @@
+package control;
+
 public class Ship {
     private int length;
     private int x;

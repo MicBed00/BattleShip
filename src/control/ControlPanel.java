@@ -1,3 +1,5 @@
+package control;
+
 import java.util.*;
 
 public class ControlPanel {
@@ -27,10 +29,15 @@ public class ControlPanel {
             System.out.println(ply + " podaj y");
             int y = getInt();
             if (isInTheBoard(x, y)) continue;
-            String positionString = getString();
+            String positionString = getPosition();
             position = Position.valueOf(positionString);
-            if (!addShip(listShip, length, x, y, position)) continue;   // przy kolizji uniemożliwia wyjście z metody. Wpisujemy ponownie współrzędne
-            shipCounter++;
+            try {
+                if (!addShip(listShip, length, x, y, position))
+                    continue;   // przy kolizji uniemożliwia wyjście z metody. Wpisujemy ponownie współrzędne
+                shipCounter++;
+            } catch (ShipLimitExceedException e) {
+                System.out.printf("Nie można dodać więcej statków %d masztowych%n", length);
+            }
         }
         System.out.println("Dodano wszystkie statki\n");
     }
@@ -66,7 +73,7 @@ public class ControlPanel {
                             counterDeadShip.add(s);
                         }
                             /*
-                            Iterator<Ship> it = player2.iterator();
+                            Iterator<control.Ship> it = player2.iterator();
                             it.remove();                  // usunięcie z listy zatopionego statku i zmniejszenie rozmiaru listy o 1
                             po usunięciu elementu pojawia się błąd  - IllegalStateException
                              */
@@ -111,7 +118,7 @@ public class ControlPanel {
 //                    if (boardPly1[x][y] == 'X') boardPly1[x][y] = 'O';
 //                }
 //            });
-//            Render.printBoard(boardPly1);
+//            control.Render.printBoard(boardPly1);
         }
     }
     private boolean shotTheSamePlace(char[][] board, int x, int y) throws ArrayIndexOutOfBoundsException {
@@ -122,12 +129,11 @@ public class ControlPanel {
         return false;
     }
 
-    private String getString() throws InputMismatchException {
+    private String getPosition() throws InputMismatchException {
         boolean flag;
-        Scanner sc = new Scanner(System.in);
         do {
             System.out.println("Podaj pozycję 'V' - vertical lub 'H' - horizontal");
-            String position = sc.nextLine();
+            String position = new UI().getStringOrFail();
             position = position.toUpperCase(Locale.ROOT);
             if (position.equals("V") || position.equals("H")) {
                 return position.equals("V") ? "VERTICAL" : "HORIZONTAL";
@@ -135,7 +141,6 @@ public class ControlPanel {
                 flag = true;
             }
         } while(flag);
-        sc.close();
         return "Error";
     }
 
@@ -161,23 +166,23 @@ public class ControlPanel {
         return length;
     }
 
-    private boolean addShip(List<Ship> listShip, int length, int x, int y, Position position) {
+    protected boolean addShip(List<Ship> listShip, int length, int x, int y, Position position) {
         List<Ship> copyList = new ArrayList<>();
         int beforeAddNewShip = listShip.size();         // rozmiar listy przed dodaniem nowego statku
-        if (checkIfOutOfBoard(length, x, y, position)) return false;
+        if (checkIfOutOfBoard(length, x, y, position))
+            return false;
         if (listShip.isEmpty()) {
             System.out.printf("Dodatno statek %d masztowy%n", length);
-            listShip.add(new Ship(length, x, y, position));                                 // stworzenie obiektu Ship i dodanie do pustej listy 
+            listShip.add(new Ship(length, x, y, position));                                 // stworzenie obiektu control.Ship i dodanie do pustej listy
             return true;
         }
         listShip.forEach(s -> {
             if (overShipLimit(listShip, s, length)) {
-                System.out.printf("Nie można dodać więcej statków %d masztowych%n", length);
-                return;
+                throw new ShipLimitExceedException();
             }
             if (!s.isColliding(length, x, y, position)) {
                 System.out.printf("Dodano statek %d masztowy %n", length);
-                copyList.add(new Ship(length, x, y, position));                             // stworzenie obiektu Ship i dodanie do listy pomocniczej 
+                copyList.add(new Ship(length, x, y, position));                             // stworzenie obiektu control.Ship i dodanie do listy pomocniczej
             } else {
                 System.out.println("Kolizja ze statkiem: " + s);
             }
@@ -209,12 +214,12 @@ public class ControlPanel {
 
         //nie wiem czemu nie mogę inkrementowac counterów strumieniu
 //        listShip.stream().filter(s -> s.getLength() == length)
-//                .map(Ship::getLength)
+//                .map(control.Ship::getLength)
 //                .forEach(s -> {
-//            if (s < ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
-//            if (s < ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
-//            if (s < ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
-//            if (s < ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
+//            if (s < control.ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
+//            if (s < control.ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
+//            if (s < control.ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
+//            if (s < control.ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
 //        });
 
         List<Integer> list = listShip.stream()

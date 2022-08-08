@@ -1,3 +1,5 @@
+package control;
+
 public enum ShipLimits {
     SHIP_LIMIT(3),
     SHIP4SAIL(1),

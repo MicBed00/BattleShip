@@ -1,4 +1,8 @@
 
+import control.ControlPanel;
+import control.Render;
+import control.Ship;
+
 import java.util.ArrayList;
 import java.util.List;
 
