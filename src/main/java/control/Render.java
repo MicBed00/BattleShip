@@ -1,5 +1,10 @@
 package control;
 
+import board.Board;
+import board.SizeBoard;
+import ship.Position;
+import ship.Ship;
+
 import java.util.List;
 
 public class Render {
@@ -76,7 +81,7 @@ public class Render {
     }
 
 
-    static void printBoard(char[][] board) {
+    public static void printBoard(char[][] board) {
         for (int i = 0; i < COLUMNE; i++) {
             System.out.print("\t" + i);
         }

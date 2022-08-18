@@ -1,24 +1,19 @@
 
-import control.Board;
+import board.Board;
 import control.ControlPanel;
-import control.Render;
-import control.Ship;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.LocalTime;
 
 public class MainGame {
 
-    private static Logger logger = Logger.getLogger("BattleShip");
+    private static final Logger LOG = LoggerFactory.getLogger(MainGame.class);
 
     public static void main(String[] args) {
         //"battleship.log"
-//        logger.info("Game starts...");
-//        logger.finest("Game starts at: " + System.currentTimeMillis());
-//        List<Ship>  playerOne = new ArrayList<>();
-//        List<Ship>  playerTwo = new ArrayList<>();
+        LOG.info("Game starts at {} ", LocalTime.now());
         Board player1Board = new Board();
         Board player2Board = new Board();
         ControlPanel cp = new ControlPanel();
@@ -29,11 +24,8 @@ public class MainGame {
         if(cp.prepareBeforeGame(player2Board)) {
             System.out.printf("Twoja plansza jest gotowa do gry!\n");
         }
-     //   logger.info("Game prepared...");
-//        Render rd = new Render();
-//        char[][] player1 = rd.renderAndPrint(playerOne);
-//        char[][] player2 = rd.renderAndPrint(playerTwo);
-      //  logger.info("Game in progress...");
+        LOG.info("Game prepared");
         cp.playGame(player1Board, player2Board);
+//        logger.info("Game in progress...");
     }
 }

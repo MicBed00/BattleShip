@@ -1,4 +1,4 @@
-package control;
+package ship;
 
 public enum Position {
     HORIZONTAL,

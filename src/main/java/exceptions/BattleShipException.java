@@ -1,4 +1,4 @@
-package control;
+package exceptions;
 
 public abstract class BattleShipException extends RuntimeException {
 

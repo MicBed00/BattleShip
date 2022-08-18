@@ -1,4 +1,4 @@
-package control;
+package ship;
 
 public enum ShipLimits {
     SHIP_LIMIT(2),

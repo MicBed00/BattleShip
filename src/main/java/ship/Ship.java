@@ -1,10 +1,12 @@
-package control;
+package ship;
+
+import board.SizeBoard;
 
 public class Ship {
-    private int length;
-    private int xStart;
-    private int yStart;
-    private Position position;
+    private final int length;
+    private final int xStart;
+    private final int yStart;
+    private final Position position;
     //private int hitCounter = 0; // -> boolean[length] -> hitCounter[1] = true
     private boolean[] hits;
     // |-|-|-|-|
@@ -26,22 +28,22 @@ public class Ship {
     }
 
 
-    int getXstart() {
+    public int getXstart() {
 
         return xStart;
     }
 
-    int getXend() {
+    public int getXend() {
 
         return position == Position.HORIZONTAL ? xStart - length + 1 : xStart;
     }
 
-    int getYstart() {
+    public int getYstart() {
 
         return yStart;
     }
 
-    int getYend() {
+    public int getYend() {
         return position == Position.VERTICAL ? yStart + length - 1 : yStart;
     }
 
@@ -77,38 +79,6 @@ public class Ship {
         return position;
     }
 
-
-    public boolean isColliding(int length, int x, int y, Position position) {
-        if (this.xStart == x && this.yStart == y) {
-            return true;
-        }
-        if (position == Position.HORIZONTAL) {
-            if (this.yStart == y) {
-                if (x - length < 0) return true;
-                /* true to koliduje wstawiamy na prawo od istniejącego statku
-                   false to koliduje wstawimy na lewo od istniejącego statku
-                */
-                return this.xStart < x ? this.xStart >= x - length : this.xStart - this.length <= x;
-            }
-        }
-        if (position == Position.VERTICAL) {
-            if (this.xStart == x) {
-                if (y + length > SizeBoard.ROW.getSize()) return true;
-                   /*true to koliduje. Wstaiamy poniżej istniejącym statkiem
-                   true to koliduje. Wstawiamy nad istniejącego statku
-                 */
-                return this.yStart < y ? this.yStart + this.length >= y : this.yStart <= y + length;
-            }
-        }
-        if (this.position != position) {// sprawdza czy statki nie przecinają
-            if(Position.VERTICAL == this.position) {
-                if (this.yStart <= y && this.yStart + this.length >= y && this.xStart < x) return this.xStart >= x - length;
-            } else {
-                if (this.xStart >= x && this.xStart - this.length <= x && this.yStart > y) return this.yStart <= y + length;
-            }
-        }
-        return false;
-    }
 
     @Override
     public String toString() {

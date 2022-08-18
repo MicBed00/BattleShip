@@ -1,4 +1,4 @@
-package control;
+package ship;
 
 public enum ShipSize {
     FOUR(4),
