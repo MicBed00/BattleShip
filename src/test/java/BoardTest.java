@@ -147,7 +147,7 @@ public class BoardTest {
         int x = 4;
         int y = 5;
         //when
-        Shot shot = board.correctShoot(list, x, y);
+        Shot shot = board.correctShoot( x, y);
         //then
         assertInstanceOf(Shot.class, shot);
     }
@@ -161,7 +161,7 @@ public class BoardTest {
         int x = 4;
         int y = 5;
         //when
-        Shot shot = board1.correctShoot(board2.getShips(), x, y);
+        Shot shot = board1.correctShoot(x, y);
         //then
         assertInstanceOf(Shot.class, shot);
     }
@@ -175,9 +175,9 @@ public class BoardTest {
         int x1 = 4;
         int y1 = 5;
         //when
-        Shot correctShot = board1.correctShoot(board2.getShips(), x1, y1);
+        Shot correctShot = board1.correctShoot( x1, y1);
 
         //then
-        assertThrows(ShotSamePlaceException.class, () -> board1.correctShoot(board2.getShips(), x1, y1));
+        assertThrows(ShotSamePlaceException.class, () -> board1.correctShoot( x1, y1));
     }
 }

@@ -32,7 +32,7 @@ public class Board {
 
   List<Ship> ships = new ArrayList<>();
   char[][] shotBoard = new char[Render.getSizeBoard()][Render.getSizeBoard()];
-  Set<Shot> shotsSet = new HashSet<Shot>();
+  Set<Shot> shotsSet = new HashSet<Shot>();       //zapisujemy każdy strzał
   public List<Ship> getShips() {
     return ships;
   }
@@ -160,27 +160,20 @@ public class Board {
     return false;
   }
 
-  public Shot correctShoot(List<Ship> listPlayer, int x, int y) throws ShotSamePlaceException {
+  public Shot correctShoot(int x, int y) throws ShotSamePlaceException {
     Shot shot = new Shot(x, y);
-    listPlayer.forEach(s -> {
-      if(shotSamePlace(s, x, y)) {
+
+      if(shotSamePlace(shot)) {
         log.warn("Shoot in the same place");
         throw new ShotSamePlaceException("Strzał w to samo miejsce!");
-      }
-    });
+      };
+      addShottoSet(shot);
     return new Shot(x, y);
   }
-
-  private boolean shotSamePlace(Ship ship, int x, int y) {
-//   boolean[] hit = ship.getHits();
-//   if (shotBoard[x][y] == 'O')
-//     return true;
-//   if(ship.getXstart() >= x && ship.getXend() <= x && ship.getYstart() == y) {
-//     return hit[ship.getXstart() - x];
-//   } else if(ship.getYstart() <= y && ship.getYend() >= y && ship.getXstart() == x) {
-//     return hit[y - ship.getYstart()];
-//   } else
-//     return false;
+  private void addShottoSet(Shot shot) {
+    shotsSet.add(shot);
+  }
+  private boolean shotSamePlace(Shot shot) {
     return shotsSet.contains(shot);
   }
 

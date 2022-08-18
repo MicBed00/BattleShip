@@ -19,18 +19,36 @@ public class GameScenarioTest {
      assertTrue(board1.addShip(2, 8, 2, Position.HORIZONTAL));
     // symulacja strzelania przez p2
     Board board2 = new Board();
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 9, 0));
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 3, 5));
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 5, 8));
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 9, 9));
+    //p2 strzela niecelnie
+    assertInstanceOf(Shot.class, board2.correctShoot(9, 0));
+    assertFalse(board1.getShips().get(0).isHit(9,0));
+    assertFalse(board1.getShips().get(1).isHit(9,0));
+    assertInstanceOf(Shot.class, board2.correctShoot( 3, 5));
+    assertFalse(board1.getShips().get(0).isHit(3,5));
+    assertFalse(board1.getShips().get(1).isHit(3,5));
+    assertInstanceOf(Shot.class, board2.correctShoot( 5, 8));
+    assertFalse(board1.getShips().get(0).isHit(5,8));
+    assertFalse(board1.getShips().get(1).isHit(5,8));
+    assertInstanceOf(Shot.class, board2.correctShoot(9, 9));
+    assertFalse(board1.getShips().get(0).isHit(9,9));
+    assertFalse(board1.getShips().get(1).isHit(9,9));
     assertFalse(board1.isFinished());
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 2, 2));
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 2, 3));
+    //p2 strzela celnie i eliminuje statki z planszy
+    assertInstanceOf(Shot.class, board2.correctShoot( 2, 2));
+    assertTrue(board1.getShips().get(0).isHit(2,2));
+    assertFalse(board1.getShips().get(1).isHit(2,2));
+    assertInstanceOf(Shot.class, board2.correctShoot( 2, 3));
+    assertTrue(board1.getShips().get(0).isHit(2,3));
+    assertFalse(board1.getShips().get(1).isHit(2,2));
     list.add(new Ship(2,2,2,Position.VERTICAL));
     board1.removeDeadShipFromList(list);
     list.clear();
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 8, 2));
-    assertInstanceOf(Shot.class, board2.correctShoot(board1.getShips(), 7, 2));
+    assertInstanceOf(Shot.class, board2.correctShoot( 8, 2));
+//    assertFalse(board1.getShips().get(0).isHit(8,2));   // usunięty z listy po trafieniu
+    assertTrue(board1.getShips().get(1).isHit(8,2));
+    assertInstanceOf(Shot.class, board2.correctShoot( 7, 2));
+//    assertFalse(board1.getShips().get(0).isHit(7,2));
+    assertTrue(board1.getShips().get(1).isHit(7,2));
     list.add(new Ship(2, 8, 2, Position.HORIZONTAL));
     board1.removeDeadShipFromList(list);
     list.clear();

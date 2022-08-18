@@ -66,7 +66,7 @@ public class ControlPanel {
                 int x = user.getInt();
                 System.out.printf("%s podaj ws strzału Y: \n", player);
                 int y = user.getInt();
-                shot = br.correctShoot(list, x, y);
+                shot = br.correctShoot(x, y);
             }catch (ShotSamePlaceException | ArrayIndexOutOfBoundsException e) {
 //                log.error("Error log message", new Throwable());
                 System.err.println(e);
