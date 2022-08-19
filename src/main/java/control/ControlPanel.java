@@ -47,6 +47,7 @@ public class ControlPanel {
                 continue;
             }
         }
+        System.out.println("Twoja plansza jest gotowa do gry!\n");
        return true;
     }
 

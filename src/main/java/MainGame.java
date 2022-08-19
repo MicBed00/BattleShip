@@ -18,14 +18,9 @@ public class MainGame {
         Board player2Board = new Board();
         ControlPanel cp = new ControlPanel();
         // TODO
-        if(cp.prepareBeforeGame(player1Board)) {
-            System.out.println("Twoja plansza jest gotowa do gry!\n");
-        }
-        if(cp.prepareBeforeGame(player2Board)) {
-            System.out.printf("Twoja plansza jest gotowa do gry!\n");
-        }
+        cp.prepareBeforeGame(player1Board);
+        cp.prepareBeforeGame(player2Board);
         LOG.info("Game prepared");
         cp.playGame(player1Board, player2Board);
-//        logger.info("Game in progress...");
     }
 }

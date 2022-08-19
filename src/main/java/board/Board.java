@@ -32,7 +32,8 @@ public class Board {
 
   List<Ship> ships = new ArrayList<>();
   char[][] shotBoard = new char[Render.getSizeBoard()][Render.getSizeBoard()];
-  Set<Shot> shotsSet = new HashSet<Shot>();       //zapisujemy każdy strzał
+  Set<Shot> shotsSet = new HashSet<Shot>();       //zapisujemy każdy strzał w kolekcji
+
   public List<Ship> getShips() {
     return ships;
   }

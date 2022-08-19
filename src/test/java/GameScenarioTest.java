@@ -9,7 +9,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 public class GameScenarioTest {
-
+/*
+po każdym strzale zrobic pokolei każdą metodę z metody playgame() isHit, isDead itd
+ */
   @Test
   public void gameWorks() {
     // symulacja dodawania statków przez p1
@@ -40,8 +42,8 @@ public class GameScenarioTest {
     assertInstanceOf(Shot.class, board2.correctShoot( 2, 3));
     assertTrue(board1.getShips().get(0).isHit(2,3));
     assertFalse(board1.getShips().get(1).isHit(2,2));
-    list.add(new Ship(2,2,2,Position.VERTICAL));
-    board1.removeDeadShipFromList(list);
+    assertTrue(list.add(new Ship(2,2,2,Position.VERTICAL)));
+    assertTrue(board1.removeDeadShipFromList(list));
     list.clear();
     assertInstanceOf(Shot.class, board2.correctShoot( 8, 2));
 //    assertFalse(board1.getShips().get(0).isHit(8,2));   // usunięty z listy po trafieniu
@@ -49,8 +51,8 @@ public class GameScenarioTest {
     assertInstanceOf(Shot.class, board2.correctShoot( 7, 2));
 //    assertFalse(board1.getShips().get(0).isHit(7,2));
     assertTrue(board1.getShips().get(1).isHit(7,2));
-    list.add(new Ship(2, 8, 2, Position.HORIZONTAL));
-    board1.removeDeadShipFromList(list);
+    assertTrue(list.add(new Ship(2, 8, 2, Position.HORIZONTAL)));
+    assertTrue(board1.removeDeadShipFromList(list));
     list.clear();
     assertTrue(board1.isFinished());
 
