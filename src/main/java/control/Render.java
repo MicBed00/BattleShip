@@ -10,51 +10,63 @@ import java.util.List;
 public class Render {
     private static final int ROW = SizeBoard.ROW.getSize();
     private static final int COLUMNE = SizeBoard.COLUMNE.getSize();
-    private char[][] shootArr = new char[ROW][COLUMNE];
-    public static int getSizeBoard() {      //metoda potrzebna do warunku wprowadzania współrzędnych w metodzie isColliding();
+
+    public static int getSizeBoard() {
         return ROW;
     }
 
-
     public static char[][] renderShipBeforeGame(List<Ship> list) {
         char[][] board = new char[ROW][COLUMNE];
-        list.forEach(s -> {
-            if (s.getPosition() == Position.HORIZONTAL) {
-                for (int i = 0; i < s.getLength(); i++) {
-                        board[s.getYstart()][s.getXstart() - i] = 'X';        // statek buduję się od prawej do lewej strony od x(n), x(n-1)..0
+
+        list.forEach(ship -> {
+            if (ifHorizontal(ship)) {
+                for (int i = 0; i < ship.getLength(); i++) {
+                    board[ship.getYstart()][ship.getXstart() - i] = 'X';        // statek buduję się od prawej do lewej strony od x(n), x(n-1)..0
                 }
             }
-            if (s.getPosition() == Position.VERTICAL) {
-                for (int i = 0; i < s.getLength(); i++) {
-                        board[s.getYstart() + i][s.getXstart()] = 'X';        // statek buduję się z góry na dół y(n),y(n+1)..
+            if (ifVertical(ship)) {
+                for (int i = 0; i < ship.getLength(); i++) {
+                    board[ship.getYstart() + i][ship.getXstart()] = 'X';        // statek buduję się z góry na dół y(n),y(n+1)..
                 }
             }
         });
         return board;
     }
 
+    private static boolean ifHorizontal(Ship s) {
+        return s.getPosition() == Position.HORIZONTAL;
+    }
+
+    private static boolean ifVertical(Ship ship) {
+        return ship.getPosition() == Position.VERTICAL;
+    }
+
     public char[][] renderShots(List<Ship> list, char[][] shotBoard, int x, int y) throws ArrayIndexOutOfBoundsException {
         char[][] shots = shotBoard;
         shots[y][x] = 'O';
+        printShots(list, shots);
+        return shots;
+    }
+
+    private void printShots(List<Ship> list, char[][] shots) {
         list.forEach(s -> {
             if (s.getPosition() == Position.HORIZONTAL) {
                 boolean[] ifHit = s.getHits();
                 for (int i = 0; i < s.getLength(); i++) {
-                    if(ifHit[i]) {
-                        shots[s.getYstart()][s.getXstart() - i] = '*';        // statek buduję się od prawej do lewej strony od x(n), x(n-1)..0
+                    if (ifHit[i]) {
+                        shots[s.getYstart()][s.getXstart() - i] = '*';
                     }
                 }
             }
             if (s.getPosition() == Position.VERTICAL) {
                 for (int i = 0; i < s.getLength(); i++) {
                     boolean[] ifHit = s.getHits();
-                    if(ifHit[i]) {
-                        shots[s.getYstart() + i][s.getXstart()] = '*';        // statek buduję się z góry na dół y(n),y(n+1)..
+                    if (ifHit[i]) {
+                        shots[s.getYstart() + i][s.getXstart()] = '*';
                     }
                 }
             }
         });
-        return shots;
     }
 
     public char[][] renderBeforeShots(List<Ship> list, Board board) throws ArrayIndexOutOfBoundsException {
@@ -63,23 +75,22 @@ public class Render {
             if (s.getPosition() == Position.HORIZONTAL) {
                 boolean[] ifHit = s.getHits();
                 for (int i = 0; i < s.getLength(); i++) {
-                    if(ifHit[i]) {
-                        shots[s.getYstart()][s.getXstart() - i] = '*';        // statek buduję się od prawej do lewej strony od x(n), x(n-1)..0
+                    if (ifHit[i]) {
+                        shots[s.getYstart()][s.getXstart() - i] = '*';
                     }
                 }
             }
             if (s.getPosition() == Position.VERTICAL) {
                 for (int i = 0; i < s.getLength(); i++) {
                     boolean[] ifHit = s.getHits();
-                    if(ifHit[i]) {
-                        shots[s.getYstart() + i][s.getXstart()] = '*';        // statek buduję się z góry na dół y(n),y(n+1)..
+                    if (ifHit[i]) {
+                        shots[s.getYstart() + i][s.getXstart()] = '*';
                     }
                 }
             }
         });
         return shots;
     }
-
 
     public static void printBoard(char[][] board) {
         for (int i = 0; i < COLUMNE; i++) {

@@ -7,7 +7,6 @@ public class Ship {
     private final int xStart;
     private final int yStart;
     private final Position position;
-    //private int hitCounter = 0; // -> boolean[length] -> hitCounter[1] = true
     private boolean[] hits;
     // |-|-|-|-|
     // | |1| |1|
@@ -47,7 +46,7 @@ public class Ship {
         return position == Position.VERTICAL ? yStart + length - 1 : yStart;
     }
 
-    public boolean isHit (int x, int y) {
+    public boolean isHit(int x, int y) {
         if (this.position == Position.HORIZONTAL) {
             if (getYstart() == y && getXstart() >= x && getXend() <= x) {
                 hits[getXstart() - x] = true;
@@ -65,7 +64,7 @@ public class Ship {
 
     public boolean isDead() {
         for (boolean hit : hits) {
-            if(!hit)
+            if (!hit)
                 return false;
         }
         return true;

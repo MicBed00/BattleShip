@@ -1,5 +1,6 @@
 package control;
 
+import board.SizeBoard;
 import exceptions.OutOfBoundsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,47 +12,51 @@ import java.util.Scanner;
 
 class UI {
     private final Logger log = LoggerFactory.getLogger(UI.class);
-  Scanner sc;
+    Scanner sc;
 
-  public UI() {
-    this.sc = new Scanner(System.in);
-  }
-
-
-  public String getStringOrFail() throws InputMismatchException {
-    String position = sc.nextLine();
-    position = position.toUpperCase(Locale.ROOT);
-    if (position.isEmpty()) {
-      log.warn("Empty string");
-      System.out.println("Wciśnij enter");
-      throw new InputMismatchException("String nie może być pusty");
+    public UI() {
+        this.sc = new Scanner(System.in);
     }
-    return position;
-  }
 
-  public int getInt() throws InputMismatchException{
-    int num = sc.nextInt();
-    sc.nextLine();
-    return num;
-  }
-  public int getLength() throws InputMismatchException, OutOfBoundsException {
-      int length = getInt();
-      if (length < ShipSize.ONE.getSize() || length > ShipSize.FOUR.getSize()) {
-       log.warn("Date out of range length: {}", length);
-       System.out.println("Wciśnij enter");
-       throw new OutOfBoundsException("Dane poza zakresem");
-      }
-      return length;
-  }
+    public String getStringOrFail() throws InputMismatchException {
+        String position = sc.nextLine();
+        position = position.toUpperCase(Locale.ROOT);
 
-  public String getPosition() throws InputMismatchException, OutOfBoundsException {
-      String position = getStringOrFail();
-      position = position.toUpperCase(Locale.ROOT);
-      if (!position.equals("V") && !position.equals("H")) {
-        log.warn("Incorrect position {}", position);
-        System.out.println("Wciśnij enter");
-        throw new OutOfBoundsException("Niepoprawna pozycja");
-      }
-      return position.equals("V") ? "VERTICAL" : "HORIZONTAL";
-  }
+        if (position.isEmpty()) {
+            log.warn("Empty string");
+            throw new InputMismatchException("String nie może być pusty. Wciśnij enter i wprowadź ponownie dane.");
+        }
+        return position;
+    }
+
+    public int getInt() throws InputMismatchException {
+        int num = sc.nextInt();
+        if(num > SizeBoard.ROW.getSize()) {
+            log.warn("Date out of range");
+            throw new OutOfBoundsException("Dane poza zakresem. Wciśnij enter i wprowadź ponownie dane.");
+        }
+        sc.nextLine();
+        return num;
+    }
+
+    public int getLength() throws InputMismatchException, OutOfBoundsException {
+        int length = getInt();
+
+        if (length < ShipSize.ONE.getSize() || length > ShipSize.FOUR.getSize()) {
+            log.warn("Date out of range length: {}", length);
+            throw new OutOfBoundsException("Dane poza zakresem. Wciśnij enter i wprowadź ponownie dane.");
+        }
+        return length;
+    }
+
+    public String getPosition() throws InputMismatchException, OutOfBoundsException {
+        String position = getStringOrFail();
+        position = position.toUpperCase(Locale.ROOT);
+
+        if (!position.equals("V") && !position.equals("H")) {
+            log.warn("Incorrect position {}", position);
+            throw new OutOfBoundsException("Niepoprawna pozycja. Wciśnij enter i wprowadź ponownie dane.");
+        }
+        return position.equals("V") ? "VERTICAL" : "HORIZONTAL";
+    }
 }

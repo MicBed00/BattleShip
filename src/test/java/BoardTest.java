@@ -58,7 +58,7 @@ public class BoardTest {
 
         //when
         boolean firstShip1 = board.addShip(length1, x1, y1, position1);
-        boolean firstShip2 = board.addShip(length2, x2, y2 ,position2);
+        boolean firstShip2 = board.addShip(length2, x2, y2, position2);
         boolean firstShip3 = board.addShip(length3, x3, y3, position3);
         boolean firstShip4 = board.addShip(length4, x4, y4, position4);
 
@@ -68,6 +68,7 @@ public class BoardTest {
         assertTrue(firstShip3);
         assertTrue(firstShip4);
     }
+
     @Test
     public void shouldThrowOutOfBoundsException() {
         Board board = new Board();
@@ -84,8 +85,8 @@ public class BoardTest {
     @Test
     public void shouldThrowCollidingExeption() {
         Board board = new Board();
-        board.addShip(1,1,1,Position.VERTICAL);
-        assertThrows(CollidingException.class, () -> board.addShip(1,1,1, Position.VERTICAL));
+        board.addShip(1, 1, 1, Position.VERTICAL);
+        assertThrows(CollidingException.class, () -> board.addShip(1, 1, 1, Position.VERTICAL));
     }
 
     @Test
@@ -102,7 +103,7 @@ public class BoardTest {
         int y2 = 2;
         Position position2 = Position.HORIZONTAL;
         //then
-        assertThrows(ShipLimitExceedException.class, () -> board.addShip(length2, x2, y2 ,position2));
+        assertThrows(ShipLimitExceedException.class, () -> board.addShip(length2, x2, y2, position2));
     }
 
     @Test
@@ -128,7 +129,7 @@ public class BoardTest {
 
         //when
         boolean firstShip1 = board.addShip(length1, x1, y1, position1);
-        boolean firstShip2 = board.addShip(length2, x2, y2 ,position2);
+        boolean firstShip2 = board.addShip(length2, x2, y2, position2);
         boolean firstShip3 = board.addShip(length3, x3, y3, position3);
         boolean firstShip4 = board.addShip(length4, x4, y4, position4);
 
@@ -147,7 +148,7 @@ public class BoardTest {
         int x = 4;
         int y = 5;
         //when
-        Shot shot = board.correctShoot( x, y);
+        Shot shot = board.correctShoot(x, y);
         //then
         assertInstanceOf(Shot.class, shot);
     }
@@ -175,9 +176,9 @@ public class BoardTest {
         int x1 = 4;
         int y1 = 5;
         //when
-        Shot correctShot = board1.correctShoot( x1, y1);
+        Shot correctShot = board1.correctShoot(x1, y1);
 
         //then
-        assertThrows(ShotSamePlaceException.class, () -> board1.correctShoot( x1, y1));
+        assertThrows(ShotSamePlaceException.class, () -> board1.correctShoot(x1, y1));
     }
 }

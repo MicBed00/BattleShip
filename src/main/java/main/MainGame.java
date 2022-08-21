@@ -1,3 +1,4 @@
+package main;
 
 import board.Board;
 import control.ControlPanel;
