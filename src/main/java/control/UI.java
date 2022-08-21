@@ -29,7 +29,7 @@ class UI {
         return position;
     }
 
-    public int getInt() throws InputMismatchException {
+    public int getInt() throws InputMismatchException, OutOfBoundsException {
         int num = sc.nextInt();
         if(num > SizeBoard.ROW.getSize()) {
             log.warn("Date out of range");

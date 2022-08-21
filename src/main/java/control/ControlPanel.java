@@ -60,7 +60,8 @@ public class ControlPanel {
 
         while (!opponentShips.isEmpty()) {
             System.out.printf("It's %s's turn. Opponent's board:\n", activePlayer);
-            Render.printBoard(new Render().renderBeforeShots(opponentShips, opponentBoard));
+            char[][] renderBoardBeforeShot = new Render().renderBeforeShots(opponentShips, opponentBoard);
+            Render.printBoard(renderBoardBeforeShot);
             Shot shot;
 
             try {

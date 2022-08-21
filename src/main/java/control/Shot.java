@@ -2,7 +2,7 @@ package control;
 
 import java.util.Objects;
 
-public class Shot{
+public class Shot {
     private final int x;
     private final int y;
 

@@ -32,7 +32,7 @@ public class Board {
 
     List<Ship> ships = new ArrayList<>();
     char[][] shotBoard = new char[Render.getSizeBoard()][Render.getSizeBoard()];
-    Set<Shot> opponetsShots = new HashSet<Shot>();       //zapisujemy każdy strzał w kolekcji
+    Set<Shot> opponetsShots = new HashSet<Shot>();
 
     public List<Ship> getShips() {
         return ships;
@@ -51,7 +51,7 @@ public class Board {
             throw new OutOfBoundsException("Statek wykracza poza obszar planszy. Wciśnij enter i wprowadź dane ponownie");
         }
         if (ships.isEmpty()) {
-            ships.add(new Ship(length, x, y, position));                                         // stworzenie obiektu ship.Ship i dodanie do pustej listy
+            ships.add(new Ship(length, x, y, position));
             counterShip(ships, length);
             return true;
         }
@@ -61,51 +61,39 @@ public class Board {
                 throw new ShipLimitExceedException("Limit statków " + length + " masztowych został osiągnięty. Wciśnij enter i wprowadź dane ponownie ");
             }
             if (!isColliding(s, length, x, y, position)) {
-                copyList.add(new Ship(length, x, y, position));                                     // stworzenie obiektu ship.Ship i dodanie do listy pomocniczej
+                copyList.add(new Ship(length, x, y, position));
             } else {
                 log.debug("Collision length: {}, x: {}, y: {}, position: {}", length, x, y, position);
-                throw new CollidingException("Kolizja ze statkiem " + s.toString() + " .Wciśnij enter i wprowadź dane ponownie");
+                throw new CollidingException("Kolizja ze statkiem " + s + " .Wciśnij enter i wprowadź dane ponownie");
             }
         });
-        ships.addAll(copyList);                                                                 // dodanie nowego statku do docelowej listy
-        copyList.clear();                                                                       // wyzerowanie listy pomocniczej
+        ships.addAll(copyList);
+        copyList.clear();
         int afterAddShip = ships.size();
-        return beforeAddNewShip < afterAddShip;                                                 // sprawdzenie warunku czy rozmiar listy jest większy po dodaniu
+        return beforeAddNewShip < afterAddShip;
     }
 
     private boolean checkIfOutOfBounds(int length, int x, int y, Position position) {
-        if (Position.VERTICAL == position && y + length > Render.getSizeBoard()
-                || Position.HORIZONTAL == position && (x + 1) - length < 0
-                || x > Render.getSizeBoard()
-                || y > Render.getSizeBoard()) {
+        if (checkIfInBoard(length, x, y, position)) {
             return true;
         }
         return false;
     }
 
+    private boolean checkIfInBoard(int length, int x, int y, Position position) {
+        return Position.VERTICAL == position && y + length > Render.getSizeBoard()
+                || Position.HORIZONTAL == position && (x + 1) - length < 0
+                || x > Render.getSizeBoard()
+                || y > Render.getSizeBoard();
+    }
+
     private boolean counterShip(List<Ship> listShip, int length) {
-        //sprawdzić po parametrze length ile już znajduję się statków w liscie
-//        int counterShip4 = Collections.frequency(listShip,ship.getLength() == qtyShip4);
-//        int counterShip3 = Collections.frequency(listShip,ship.getLength() == qtyShip3);
-//        int counterShip2 = Collections.frequency(listShip,ship.getLength() == qtyShip2);
-//        int counterShip1 = Collections.frequency(listShip,ship.getLength() == qtyShip1);
-
-        //nie wiem czemu nie mogę inkrementowac counterów strumieniu
-//        listShip.stream().filter(s -> s.getLength() == length)
-//                .map(Ship::getLength)
-//                .forEach(s -> {
-//            if (s < ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
-//            if (s < ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
-//            if (s < ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
-//            if (s < ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
-//        });
-
         List<Integer> list = listShip.stream()
-                .filter(s -> s.getLength() == length)       //sprawdzam po długości ile statków znajduję się na liście
+                .filter(s -> s.getLength() == length)
                 .map(Ship::getLength)
                 .toList();
-        for (Ship s : listShip) {
 
+        for (Ship s : listShip) {
             if (length == ShipSize.FOUR.getSize() && list.size() < qtyShip4) {
                 counterShip4++;
                 return false;
@@ -130,6 +118,7 @@ public class Board {
         if (ship.getXstart() == x && ship.getYstart() == y) {
             return true;
         }
+
         if (position == Position.HORIZONTAL) {
             if (ship.getYstart() == y) {
                 if (x - length < 0) {
@@ -138,6 +127,7 @@ public class Board {
                 return ship.getXstart() < x ? ship.getXstart() >= x - length : ship.getXstart() - ship.getLength() <= x;
             }
         }
+
         if (position == Position.VERTICAL) {
             if (ship.getXstart() == x) {
                 if (y + length > SizeBoard.ROW.getSize()) {
@@ -147,27 +137,33 @@ public class Board {
             }
         }
 
-        if (ship.getPosition() != position) {                                 // sprawdza czy statki nie przecinają
+        if (ship.getPosition() != position) {                                 // sprawdza czy statki się nie przecinają
             if (Position.VERTICAL == ship.getPosition()) {
-                if (ship.getYstart() <= y && ship.getYstart() + ship.getLength() >= y && ship.getXstart() < x)
+                if (ifYoverlapsOnTheShip(ship, x, y))
                     return ship.getXstart() >= x - length;
             } else {
-                if (ship.getXstart() >= x && ship.getXstart() - ship.getLength() <= x && ship.getYstart() > y)
+                if (ifXoverlapOnTheShip(ship, x, y))
                     return ship.getYstart() <= y + length;
             }
         }
         return false;
     }
 
+    private boolean ifYoverlapsOnTheShip(Ship ship, int x, int y) {
+        return ship.getYstart() <= y && ship.getYstart() + ship.getLength() >= y && ship.getXstart() < x;
+    }
+
+    private boolean ifXoverlapOnTheShip(Ship ship, int x, int y) {
+        return ship.getXstart() >= x && ship.getXstart() - ship.getLength() <= x && ship.getYstart() > y;
+    }
 
     public Shot correctShoot(int x, int y) throws ShotSamePlaceException {
         Shot shot = new Shot(x, y);
 
         if (shotSamePlace(shot)) {
             log.warn("Shoot in the same place");
-            throw new ShotSamePlaceException("Strzał w to samo miejsce!");
-        }
-        ;
+            throw new ShotSamePlaceException("Shoot in the same place!");
+        };
         addShotToSet(shot);
         return new Shot(x, y);
     }

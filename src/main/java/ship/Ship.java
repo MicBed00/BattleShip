@@ -1,6 +1,5 @@
 package ship;
 
-import board.SizeBoard;
 
 public class Ship {
     private final int length;
@@ -12,33 +11,27 @@ public class Ship {
     // | |1| |1|
     // |-|-|-|-|
 
-
     public Ship(int length, int x, int y, Position position) {
         this.length = length;
         this.xStart = x;
         this.yStart = y;
         this.position = position;
         this.hits = new boolean[length];
-
     }
 
     public boolean[] getHits() {
         return hits;
     }
 
-
     public int getXstart() {
-
         return xStart;
     }
 
     public int getXend() {
-
         return position == Position.HORIZONTAL ? xStart - length + 1 : xStart;
     }
 
     public int getYstart() {
-
         return yStart;
     }
 
@@ -48,18 +41,24 @@ public class Ship {
 
     public boolean isHit(int x, int y) {
         if (this.position == Position.HORIZONTAL) {
-            if (getYstart() == y && getXstart() >= x && getXend() <= x) {
+            if (ifTheShipHit(x, y)) {
                 hits[getXstart() - x] = true;
                 return true;
             }
         }
+
         if (this.position == Position.VERTICAL) {
-            if (getXstart() == x && getYstart() <= y && getYend() >= y) {
+            if (ifTheShipHit(x, y)) {
                 hits[y - getYstart()] = true;
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean ifTheShipHit(int x, int y) {
+        return getYstart() == y && getXstart() >= x && getXend() <= x
+                || getXstart() == x && getYstart() <= y && getYend() >= y;
     }
 
     public boolean isDead() {
@@ -77,7 +76,6 @@ public class Ship {
     public Position getPosition() {
         return position;
     }
-
 
     @Override
     public String toString() {

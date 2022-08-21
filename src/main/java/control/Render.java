@@ -41,6 +41,29 @@ public class Render {
         return ship.getPosition() == Position.VERTICAL;
     }
 
+    public char[][] renderBeforeShots(List<Ship> list, Board board) throws ArrayIndexOutOfBoundsException {
+        char[][] shots = board.getShotBoard();
+        list.forEach(s -> {
+            if (s.getPosition() == Position.HORIZONTAL) {
+                boolean[] ifHit = s.getHits();
+                for (int i = 0; i < s.getLength(); i++) {
+                    if (ifHit[i]) {
+                        shots[s.getYstart()][s.getXstart() - i] = '*';
+                    }
+                }
+            }
+            if (s.getPosition() == Position.VERTICAL) {
+                for (int i = 0; i < s.getLength(); i++) {
+                    boolean[] ifHit = s.getHits();
+                    if (ifHit[i]) {
+                        shots[s.getYstart() + i][s.getXstart()] = '*';
+                    }
+                }
+            }
+        });
+        return shots;
+    }
+
     public char[][] renderShots(List<Ship> list, char[][] shotBoard, int x, int y) throws ArrayIndexOutOfBoundsException {
         char[][] shots = shotBoard;
         shots[y][x] = 'O';
@@ -67,29 +90,6 @@ public class Render {
                 }
             }
         });
-    }
-
-    public char[][] renderBeforeShots(List<Ship> list, Board board) throws ArrayIndexOutOfBoundsException {
-        char[][] shots = board.getShotBoard();
-        list.forEach(s -> {
-            if (s.getPosition() == Position.HORIZONTAL) {
-                boolean[] ifHit = s.getHits();
-                for (int i = 0; i < s.getLength(); i++) {
-                    if (ifHit[i]) {
-                        shots[s.getYstart()][s.getXstart() - i] = '*';
-                    }
-                }
-            }
-            if (s.getPosition() == Position.VERTICAL) {
-                for (int i = 0; i < s.getLength(); i++) {
-                    boolean[] ifHit = s.getHits();
-                    if (ifHit[i]) {
-                        shots[s.getYstart() + i][s.getXstart()] = '*';
-                    }
-                }
-            }
-        });
-        return shots;
     }
 
     public static void printBoard(char[][] board) {
