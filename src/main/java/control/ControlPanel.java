@@ -70,7 +70,7 @@ public class ControlPanel {
                 System.out.printf("%s enter shot coordinates Y: \n", activePlayer);
                     int y = user.getInt();
                     shot = opponentBoard.correctShoot(x, y);
-            } catch (ShotSamePlaceException | ArrayIndexOutOfBoundsException e) {
+            } catch (ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
                 System.err.println(e.getMessage());
                 continue;
             }
