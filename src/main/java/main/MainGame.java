@@ -1,3 +1,4 @@
+package main;
 
 import board.Board;
 import control.ControlPanel;
@@ -18,7 +19,7 @@ public class MainGame {
         Board player2Board = new Board();
         ControlPanel cp = new ControlPanel();
         // TODO
-        cp.prepareBeforeGame(player1Board));
+        cp.prepareBeforeGame(player1Board);
         cp.prepareBeforeGame(player2Board);
         LOG.info("Game prepared");
         cp.playGame(player1Board, player2Board);

@@ -11,12 +11,10 @@ import org.slf4j.LoggerFactory;
 import ship.Position;
 import ship.Ship;
 import ship.ShipLimits;
-import ship.ShipSize;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Board {
   private final Logger log = LoggerFactory.getLogger(Board.class);
@@ -85,44 +83,44 @@ public class Board {
 
   private boolean counterShip(List<Ship> listShip, int length) {
     //sprawdzić po parametrze length ile już znajduję się statków w liscie
-//        int counterShip4 = Collections.frequency(listShip,ship.getLength() == qtyShip4);
-//        int counterShip3 = Collections.frequency(listShip,ship.getLength() == qtyShip3);
-//        int counterShip2 = Collections.frequency(listShip,ship.getLength() == qtyShip2);
-//        int counterShip1 = Collections.frequency(listShip,ship.getLength() == qtyShip1);
+        AtomicInteger counterShip4 = new AtomicInteger(0);
+        AtomicInteger counterShip3 = new AtomicInteger(0);
+        AtomicInteger counterShip2 = new AtomicInteger(0);
+        AtomicInteger counterShip1 = new AtomicInteger(0);
 
-    //nie wiem czemu nie mogę inkrementowac counterów strumieniu
-//        listShip.stream().filter(s -> s.getLength() == length)
-//                .map(Ship::getLength)
-//                .forEach(s -> {
-//            if (s < ShipLimits.SHIP4SAIL.getQty()) counterShip4++;
-//            if (s < ShipLimits.SHIP3SAIL.getQty()) counterShip3++;
-//            if (s < ShipLimits.SHIP2SAIL.getQty()) counterShip2++;
-//            if (s < ShipLimits.SHIP1SAIL.getQty()) counterShip1++;
-//        });
+  //  nie wiem czemu nie mogę inkrementowac counterów strumieniu
+        listShip.stream().filter(s -> s.getLength() == length)
+                .map(Ship::getLength)
+                .forEach(s -> {
+            if (s < ShipLimits.SHIP4SAIL.getQty()) counterShip4.getAndIncrement();
+            if (s < ShipLimits.SHIP3SAIL.getQty()) counterShip3.getAndIncrement();
+            if (s < ShipLimits.SHIP2SAIL.getQty()) counterShip2.getAndIncrement();
+            if (s < ShipLimits.SHIP1SAIL.getQty()) counterShip1.getAndIncrement();
+        });
 
-    List<Integer> list = listShip.stream()
-            .filter(s -> s.getLength() == length)       //sprawdzam po długości ile statków znajduję się na liście
-            .map(Ship::getLength)
-            .toList();
-    for (Ship s : listShip) {
-
-      if (length == ShipSize.FOUR.getSize() && list.size() < qtyShip4) {
-        counterShip4++;
-        return false;
-      }
-      if (length == ShipSize.THREE.getSize() && list.size() < qtyShip3) {
-        counterShip3++;
-        return false;
-      }
-      if (length == ShipSize.TWO.getSize() && list.size() < qtyShip2) {
-        counterShip2++;
-        return false;
-      }
-      if (length == ShipSize.ONE.getSize() && list.size() < qtyShip1) {
-        counterShip1++;
-        return false;
-      }
-    }
+//    List<Integer> list = listShip.stream()
+//            .filter(s -> s.getLength() == length)       //sprawdzam po długości ile statków znajduję się na liście
+//            .map(Ship::getLength)
+//            .toList();
+//    for (Ship s : listShip) {
+//
+//      if (length == ShipSize.FOUR.getSize() && list.size() < qtyShip4) {
+//        counterShip4++;
+//        return false;
+//      }
+//      if (length == ShipSize.THREE.getSize() && list.size() < qtyShip3) {
+//        counterShip3++;
+//        return false;
+//      }
+//      if (length == ShipSize.TWO.getSize() && list.size() < qtyShip2) {
+//        counterShip2++;
+//        return false;
+//      }
+//      if (length == ShipSize.ONE.getSize() && list.size() < qtyShip1) {
+//        counterShip1++;
+//        return false;
+//      }
+//    }
     return true;
   }
   public boolean isColliding(Ship ship, int length, int x, int y, Position position) {
