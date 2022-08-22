@@ -44,7 +44,7 @@ public class Board {
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
         List<Ship> copyList = new ArrayList<>();
-        int beforeAddNewShip = ships.size();                                                  // rozmiar listy przed dodaniem nowego statku
+        int beforeAddNewShip = ships.size();                                                  
 
         if (checkIfOutOfBounds(length, x, y, position)) {
             log.warn("Object Ship is out of Board");
