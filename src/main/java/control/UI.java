@@ -10,7 +10,7 @@ import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
 
-class UI {
+public class UI {
     private final Logger log = LoggerFactory.getLogger(UI.class);
     Scanner sc;
 
