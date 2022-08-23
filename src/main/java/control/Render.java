@@ -1,8 +1,8 @@
 package control;
 
 import board.Board;
-import board.SizeBoard;
-import ship.Position;
+import DataConfig.SizeBoard;
+import DataConfig.Position;
 import ship.Ship;
 
 import java.util.List;

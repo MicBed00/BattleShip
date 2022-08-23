@@ -7,10 +7,9 @@ import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ship.Coordinates;
-import ship.Position;
+import DataConfig.Position;
 import ship.Ship;
-import ship.ShipSize;
+import DataConfig.ShipSize;
 
 import java.util.*;
 
@@ -66,8 +65,10 @@ public class ControlPanel {
             Shot shot;
 
             try {
-                int x = getXCoordinate(user, activePlayer);
-                int y = getYCoordinate(user, activePlayer);
+                System.out.printf("%s enter shot coordinates X: \n", activePlayer);
+                int x = user.getInt();
+                System.out.printf("%s enter shot coordinates Y: \n", activePlayer);
+                int y = user.getInt();
                 shot = opponentBoard.correctShoot(x, y);
             } catch (ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
                 System.err.println(e.getMessage());
@@ -101,15 +102,5 @@ public class ControlPanel {
             activePlayer = activePlayer.equals("Player1") ? "Player2" : "Player1";
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
         }
-    }
-
-    private int getYCoordinate(UI user, String activePlayer) {
-        System.out.printf("%s enter shot coordinates Y: \n", activePlayer);
-        return new Coordinates().getY();
-    }
-
-    private int getXCoordinate(UI user, String activePlayer) {
-        System.out.printf("%s enter shot coordinates X: \n", activePlayer);
-        return new Coordinates().getX();
     }
 }

@@ -1,5 +1,6 @@
 package board;
 
+import DataConfig.SizeBoard;
 import control.Render;
 import control.Shot;
 import exceptions.CollidingException;
@@ -8,10 +9,10 @@ import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ship.Position;
+import DataConfig.Position;
 import ship.Ship;
-import ship.ShipLimits;
-import ship.ShipSize;
+import DataConfig.ShipLimits;
+import DataConfig.ShipSize;
 
 import java.util.ArrayList;
 import java.util.HashSet;

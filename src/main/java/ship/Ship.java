@@ -1,6 +1,8 @@
 package ship;
 
 
+import DataConfig.Position;
+
 public class Ship {
     private final int length;
     private final int xStart;

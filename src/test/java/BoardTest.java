@@ -5,7 +5,7 @@ import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
 import org.junit.jupiter.api.Test;
-import ship.Position;
+import DataConfig.Position;
 import ship.Ship;
 
 import java.util.ArrayList;

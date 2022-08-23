@@ -1,4 +1,4 @@
-package ship;
+package DataConfig;
 
 public enum Position {
     HORIZONTAL,

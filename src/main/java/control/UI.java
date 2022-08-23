@@ -1,10 +1,10 @@
 package control;
 
-import board.SizeBoard;
+import DataConfig.SizeBoard;
 import exceptions.OutOfBoundsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ship.ShipSize;
+import DataConfig.ShipSize;
 
 import java.util.InputMismatchException;
 import java.util.Locale;

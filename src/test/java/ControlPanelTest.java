@@ -7,6 +7,6 @@ class ControlPanelTest {
 //    ControlPanel controlPanel = new ControlPanel();
 //    ArrayList<Ship> shipList = new ArrayList<>();
   // assertTrue(controlPanel.addShip(shipList, 4, 0, 0, Position.VERTICAL));
-//    assertTrue(new Board().addShip(shipList, 4, 5, 0, ship.Position.HORIZONTAL));
+//    assertTrue(new Board().addShip(shipList, 4, 5, 0, DataConfig.Position.HORIZONTAL));
 //  }
 }

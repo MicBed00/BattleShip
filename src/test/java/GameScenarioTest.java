@@ -1,5 +1,5 @@
 import board.Board;
-import ship.Position;
+import DataConfig.Position;
 import ship.Ship;
 import control.Shot;
 import org.junit.jupiter.api.Test;

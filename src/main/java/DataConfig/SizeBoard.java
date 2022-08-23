@@ -1,4 +1,4 @@
-package board;
+package DataConfig;
 
 public enum SizeBoard {
     ROW(10),
