@@ -3,6 +3,9 @@ package ship;
 
 import DataConfig.Position;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Ship {
     private final int length;
     private final int xStart;
@@ -20,6 +23,7 @@ public class Ship {
         this.position = position;
         this.hits = new boolean[length];
     }
+
 
     public boolean[] getHits() {
         return hits;
@@ -41,7 +45,8 @@ public class Ship {
         return position == Position.VERTICAL ? yStart + length - 1 : yStart;
     }
 
-    public boolean isHit(int x, int y) {
+
+    public boolean checkIfHit(int x, int y) {
         if (this.position == Position.HORIZONTAL) {
             if (ifTheShipHit(x, y)) {
                 hits[getXstart() - x] = true;
@@ -63,7 +68,7 @@ public class Ship {
                 || getXstart() == x && getYstart() <= y && getYend() >= y;
     }
 
-    public boolean isDead() {
+    public boolean checkIfDead() {
         for (boolean hit : hits) {
             if (!hit)
                 return false;
@@ -85,5 +90,20 @@ public class Ship {
                 " x=" + xStart +
                 ", y=" + yStart +
                 ", position=" + position;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ship ship = (Ship) o;
+        return length == ship.length && xStart == ship.xStart && yStart == ship.yStart && position == ship.position && Arrays.equals(hits, ship.hits);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(length, xStart, yStart, position);
+        result = 31 * result + Arrays.hashCode(hits);
+        return result;
     }
 }

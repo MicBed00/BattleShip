@@ -1,5 +1,6 @@
 package board;
 
+
 import DataConfig.SizeBoard;
 import control.Render;
 import control.Shot;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
@@ -34,6 +36,8 @@ public class Board {
     List<Ship> ships = new ArrayList<>();
     char[][] shotBoard = new char[Render.getSizeBoard()][Render.getSizeBoard()];
     Set<Shot> opponetsShots = new HashSet<Shot>();
+    Ship hittedShip;
+    boolean registerHit;
 
     public List<Ship> getShips() {
         return ships;
@@ -45,8 +49,7 @@ public class Board {
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
         List<Ship> copyList = new ArrayList<>();
-        int beforeAddNewShip = ships.size();                                                  
-
+        int beforeAddNewShip = ships.size();
         if (checkIfOutOfBounds(length, x, y, position)) {
             log.warn("Object Ship is out of Board");
             throw new OutOfBoundsException("Statek wykracza poza obszar planszy. Wciśnij enter i wprowadź dane ponownie");
@@ -75,13 +78,6 @@ public class Board {
     }
 
     private boolean checkIfOutOfBounds(int length, int x, int y, Position position) {
-        if (checkIfInBoard(length, x, y, position)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkIfInBoard(int length, int x, int y, Position position) {
         return Position.VERTICAL == position && y + length > Render.getSizeBoard()
                 || Position.HORIZONTAL == position && (x + 1) - length < 0
                 || x > Render.getSizeBoard()
@@ -115,7 +111,7 @@ public class Board {
         return true;
     }
 
-    public boolean isColliding(Ship ship, int length, int x, int y, Position position) {
+    private boolean isColliding(Ship ship, int length, int x, int y, Position position) {
         if (ship.getXstart() == x && ship.getYstart() == y) {
             return true;
         }
@@ -158,15 +154,29 @@ public class Board {
         return ship.getXstart() >= x && ship.getXstart() - ship.getLength() <= x && ship.getYstart() > y;
     }
 
-    public Shot correctShoot(int x, int y) throws ShotSamePlaceException {
-        Shot shot = new Shot(x, y);
+    public boolean shoot(Shot shot) throws ShotSamePlaceException {
+        registerHit = false;
+        hittedShip = null;
 
+       if(correctShot(shot)) {
+           ships.forEach(ship -> {
+               if (ship.checkIfHit(shot.getX(), shot.getY())) {
+                   registerHit = true;
+                   hittedShip = ship;
+               }
+           });
+       }
+        printShoot(registerHit, ships, shot);
+       return registerHit;
+    }
+
+    private boolean correctShot(Shot shot) {
         if (shotSamePlace(shot)) {
             log.warn("Shoot in the same place");
             throw new ShotSamePlaceException("Shoot in the same place!");
-        };
+        }
         addShotToSet(shot);
-        return new Shot(x, y);
+        return true;
     }
 
     private void addShotToSet(Shot shot) {
@@ -177,17 +187,25 @@ public class Board {
         return opponetsShots.contains(shot);
     }
 
-    public void printShoot(int[] registerShot, List<Ship> list, Shot shot) throws ArrayIndexOutOfBoundsException {
-        System.out.println(registerShot[0] == 1 ? "Hit!" : "Miss!");
-        Render.printBoard(new Render().renderShots(list, shotBoard, shot.getX(), shot.getY()));
+    private void printShoot(boolean hit, List<Ship> list, Shot shot) throws ArrayIndexOutOfBoundsException {
+        System.out.println(hit ? "Hit!" : "Miss!");
+        if(hittedShip != null) {
+            if (hittedShip.checkIfDead()) {
+                System.out.println("Ship " + hittedShip + " - sunk! \n");
+            }
+        }
+        Render.printBoard(new Render().renderShots(list, shotBoard, shot));
         System.out.println("###################################################\n");
     }
 
-    public boolean removeDeadShipFromList(List<Ship> listShip) {
-        return this.ships.removeAll(listShip);
-    }
-
     public boolean isFinished() {
-        return this.ships.isEmpty();
+        AtomicBoolean isFinished = new AtomicBoolean(true);
+        ships.forEach(ship -> {
+
+                    if(!ship.checkIfDead())
+                        isFinished.set(false);
+
+                });
+        return isFinished.get();
     }
 }

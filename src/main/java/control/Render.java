@@ -15,7 +15,12 @@ public class Render {
         return ROW;
     }
 
-    public static char[][] renderShipBeforeGame(List<Ship> list) {
+    public static void renderAndPrintBoardBeforeGame(List<Ship> listShip) {
+        char[][] instertedShipsByPlayer = Render.renderShipBeforeGame(listShip);
+        Render.printBoard(instertedShipsByPlayer);
+    }
+
+    private static char[][] renderShipBeforeGame(List<Ship> list) {
         char[][] board = new char[ROW][COLUMNE];
 
         list.forEach(ship -> {
@@ -40,8 +45,12 @@ public class Render {
     private static boolean ifVertical(Ship ship) {
         return ship.getPosition() == Position.VERTICAL;
     }
+    public static void renderAndPrintBoard(List<Ship> opponentShips, Board opponentBoard) {
+        char[][] renderBoardBeforeShot = new Render().renderBeforeShots(opponentShips, opponentBoard);
+        printBoard(renderBoardBeforeShot);
+    }
 
-    public char[][] renderBeforeShots(List<Ship> list, Board board) throws ArrayIndexOutOfBoundsException {
+    private char[][] renderBeforeShots(List<Ship> list, Board board) throws ArrayIndexOutOfBoundsException {
         char[][] shots = board.getShotBoard();
         list.forEach(s -> {
             if (s.getPosition() == Position.HORIZONTAL) {
@@ -64,9 +73,9 @@ public class Render {
         return shots;
     }
 
-    public char[][] renderShots(List<Ship> list, char[][] shotBoard, int x, int y) throws ArrayIndexOutOfBoundsException {
+    public char[][] renderShots(List<Ship> list, char[][] shotBoard, Shot shot) throws ArrayIndexOutOfBoundsException {
         char[][] shots = shotBoard;
-        shots[y][x] = 'O';
+        shots[shot.getY()][shot.getX()] = 'O';
         printShots(list, shots);
         return shots;
     }

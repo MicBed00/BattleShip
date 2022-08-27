@@ -1,5 +1,5 @@
 import board.Board;
-import control.*;
+import control.Shot;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
@@ -77,9 +77,10 @@ public class BoardTest {
 
     @Test
     public void shouldThrowShipLimitExceedException() {
+        //only one 4 - length
         Board board = new Board();
-        board.addShip(4, 1, 1, Position.VERTICAL);
-        assertThrows(ShipLimitExceedException.class, () -> board.addShip(4, 8, 1, Position.VERTICAL));
+        board.addShip(4, 1, 1, Position.VERTICAL);      //first
+        assertThrows(ShipLimitExceedException.class, () -> board.addShip(4, 8, 1, Position.VERTICAL)); //second
     }
 
     @Test
@@ -87,23 +88,6 @@ public class BoardTest {
         Board board = new Board();
         board.addShip(1, 1, 1, Position.VERTICAL);
         assertThrows(CollidingException.class, () -> board.addShip(1, 1, 1, Position.VERTICAL));
-    }
-
-    @Test
-    public void overShipLimit() {
-        //given
-        Board board = new Board();
-        int length1 = 4;
-        int x1 = 0;
-        int y1 = 0;
-        Position position1 = Position.VERTICAL;
-        board.addShip(length1, x1, y1, position1);
-        int length2 = 4;
-        int x2 = 8;
-        int y2 = 2;
-        Position position2 = Position.HORIZONTAL;
-        //then
-        assertThrows(ShipLimitExceedException.class, () -> board.addShip(length2, x2, y2, position2));
     }
 
     @Test
@@ -145,40 +129,70 @@ public class BoardTest {
         //given
         Board board = new Board();
         List<Ship> list = new ArrayList<>();
-        int x = 4;
-        int y = 5;
-        //when
-        Shot shot = board.correctShoot(x, y);
-        //then
-        assertInstanceOf(Shot.class, shot);
+        Shot shot = new Shot(4, 5);
+
+        assertFalse(board.shoot(shot));
     }
 
     @Test
     public void correctShotHit() {
         //given
-        Board board1 = new Board();
         Board board2 = new Board();
         board2.addShip(2, 2, 2, Position.VERTICAL);
-        int x = 4;
-        int y = 5;
-        //when
-        Shot shot = board1.correctShoot(x, y);
-        //then
-        assertInstanceOf(Shot.class, shot);
+        Shot shot = new Shot(2, 3);
+
+        assertTrue(board2.shoot(shot));
     }
 
     @Test
-    public void shotSamePlace() {
+    public void shotSameHittedPlace() {
         //given
-        Board board1 = new Board();
         Board board2 = new Board();
         board2.addShip(2, 2, 2, Position.VERTICAL);
-        int x1 = 4;
-        int y1 = 5;
-        //when
-        Shot correctShot = board1.correctShoot(x1, y1);
+        Shot shot1 = new Shot(2,3);
+        board2.shoot(shot1);
+        Shot shot2 = new Shot(2,3);
 
-        //then
-        assertThrows(ShotSamePlaceException.class, () -> board1.correctShoot(x1, y1));
+        assertThrows(ShotSamePlaceException.class, () -> board2.shoot(shot2));
+    }
+
+    @Test
+    public void shotSameMissedPlace() {
+        //given
+        Board board2 = new Board();
+        board2.addShip(2, 2, 2, Position.VERTICAL);
+        Shot shot1 = new Shot(9,5);
+        board2.shoot(shot1);
+        Shot shot2 = new Shot(9,5);
+
+        assertThrows(ShotSamePlaceException.class, () -> board2.shoot(shot2));
+    }
+
+    @Test
+    public void checkIfFinishedTrue() {
+        //ShipLimits = 2 ships
+        Board board = new Board();
+        board.addShip(1,1,1,Position.HORIZONTAL);
+        board.addShip(1, 6,6,Position.HORIZONTAL);
+        Shot shot1 = new Shot(1,1);
+        Shot shot2 = new Shot(6, 6);
+        board.shoot(shot1);
+        board.shoot(shot2);
+
+        assertTrue(board.isFinished());
+    }
+
+    @Test
+    public void checkIfFinishedFalse() {
+        //ShipLimits = 2 ships
+        Board board = new Board();
+        board.addShip(1,1,1,Position.HORIZONTAL);
+        board.addShip(1, 6,6,Position.HORIZONTAL);
+        Shot shot1 = new Shot(1,1);
+        Shot shot2 = new Shot(7, 6);
+        board.shoot(shot1);
+        board.shoot(shot2);
+
+        assertFalse(board.isFinished());
     }
 }

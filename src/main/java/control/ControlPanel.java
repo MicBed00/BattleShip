@@ -35,13 +35,13 @@ public class ControlPanel {
 
                 if (player.addShip(length, x, y, this.position)) {
                     System.out.printf("%s - masted ship added \n", length);
-                    char[][] instertedShipsByPlayer = Render.renderShipBeforeGame(player.getShips());
-                    Render.printBoard(instertedShipsByPlayer);
+                    Render.renderAndPrintBoardBeforeGame(player.getShips());
                     log.info("Player add ship:  {}", player.getShips().get(addedShipsCounter));
                     addedShipsCounter++;
                 }
             } catch (InputMismatchException | ShipLimitExceedException | OutOfBoundsException | CollidingException e) {
                 System.err.println(e.getMessage());
+                System.out.flush();
                 user.sc.nextLine();
                 continue;
             }
@@ -52,55 +52,34 @@ public class ControlPanel {
 
     public void playGame(Board player1Board, Board player2Board) throws ArrayIndexOutOfBoundsException {
         UI user = new UI();
-        List<Ship> deadShip = new ArrayList<>();
         List<Ship> opponentShips = player2Board.getShips();
-        int[] registerHit = new int[1];
         String activePlayer = "Player1";
         Board opponentBoard = player2Board;
+        boolean hit;
 
-        while (!opponentShips.isEmpty()) {
-            System.out.printf("It's %s's turn. Opponent's board:\n", activePlayer);
-            char[][] renderBoardBeforeShot = new Render().renderBeforeShots(opponentShips, opponentBoard);
-            Render.printBoard(renderBoardBeforeShot);
-            Shot shot;
+        while (!opponentBoard.isFinished()) {
+            opponentShips = opponentShips == player2Board.getShips() ? player1Board.getShips() : player2Board.getShips();
+            activePlayer = activePlayer.equals("Player1") ? "Player2" : "Player1";
+            opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
+
+            System.out.printf("It's %s turn.\n Opponent's board:\n", activePlayer);
+            Render.renderAndPrintBoard(opponentShips, opponentBoard);
 
             try {
                 System.out.printf("%s enter shot coordinates X: \n", activePlayer);
                 int x = user.getInt();
                 System.out.printf("%s enter shot coordinates Y: \n", activePlayer);
                 int y = user.getInt();
-                shot = opponentBoard.correctShoot(x, y);
+                Shot shot = new Shot(x, y);
+                opponentBoard.shoot(shot);
             } catch (ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
+                log.error("aaa", e);
                 System.err.println(e.getMessage());
                 continue;
             }
-
-            opponentShips.forEach(s -> {
-                if (s.isHit(shot.getX(), shot.getY())) {
-                    registerHit[0] = 1;
-                    if (s.isDead()) {
-                        deadShip.add(s);
-                    }
-                }
-            });
-
-            opponentBoard.printShoot(registerHit, opponentShips, shot);
-            if (!deadShip.isEmpty()) {
-                System.out.println("Ship " + deadShip.get(0) + " - sunk! \n");
-                opponentBoard.removeDeadShipFromList(deadShip);
-                log.debug("Remove sunken Ship from {}'s list", activePlayer);
-            }
-            if (opponentBoard.isFinished()) {
-                log.info("Game over");
-                System.out.printf("Win %s\n", activePlayer);
-                continue;
-            }
-
-            deadShip.clear();
-            registerHit[0] = 0;
-            opponentShips = opponentShips == player2Board.getShips() ? player1Board.getShips() : player2Board.getShips();
-            activePlayer = activePlayer.equals("Player1") ? "Player2" : "Player1";
-            opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
         }
+
+        log.info("Game over");
+        System.out.printf("Win %s\n", activePlayer);
     }
 }
