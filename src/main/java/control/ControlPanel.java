@@ -1,26 +1,27 @@
 package control;
 
 import board.Board;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import DataConfig.Position;
+import org.slf4j.LoggerFactory;
 import ship.Ship;
 import DataConfig.ShipSize;
 
 import java.util.*;
 
 public class ControlPanel {
-    private final Logger log = LoggerFactory.getLogger(ControlPanel.class);
+    private final Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("control.ControlPanel");
     Position position;
 
     public boolean prepareBeforeGame(Board player) throws InputMismatchException, IllegalArgumentException {
         UI user = new UI();
         int addedShipsCounter = 0;
-
+        log.setLevel(Level.INFO);
         while (addedShipsCounter != Board.shipLimit) {
             try {
                 System.out.printf("Specify length <%d-%d>%n", ShipSize.ONE.getSize(), ShipSize.FOUR.getSize());

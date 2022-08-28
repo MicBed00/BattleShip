@@ -201,7 +201,6 @@ public class Board {
     public boolean isFinished() {
         AtomicBoolean isFinished = new AtomicBoolean(true);
         ships.forEach(ship -> {
-
                     if(!ship.checkIfDead())
                         isFinished.set(false);
 

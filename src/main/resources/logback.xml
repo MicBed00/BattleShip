@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+<!--   c:/Trial/workspace/BattelShip/target/classes/test.log -->
+<!--    <appender name="FILE" class="ch.qos.logback.core.FileAppender">-->
+<!--        <file>logTest.log</file>-->
+<!--        <append>true</append>-->
+<!--        <encoder>-->
+<!--            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+<!--<property - deklaracja zmiennej-->
+    <property name="LOG_FILE" value="LogFileRolling" />
+    <!--    ROLLING FILE APPENDER-->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- keep 3 days' worth of history capped at 1GB total size -->
+            <maxHistory>3</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+<!--    dla każdego pakietu można ustalic własny poziom logowania oraz hierarchię logów parent - child. Wyższy pakiet jest rodzicem,
+a pakiet zagnieżdżony jest dzieckiem-->
+    <logger name =  "control.ControlPanel" leve = "DEBUG" />
+    <logger name =  "board.Board" leve = "INFO" />
     <root level="debug">
+<!--        poniżej podajemy nazwę, która reprezentuje daną klasę/pakiet. Dopiero po zadeklarowaniu nazwy w tym miejscu logowanie zacznie działać-->
+        <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
