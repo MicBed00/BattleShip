@@ -2,15 +2,19 @@ package control;
 
 import DataConfig.SizeBoard;
 import exceptions.OutOfBoundsException;
+import main.MainGame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import DataConfig.ShipSize;
 
 import java.util.InputMismatchException;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class UI {
+    private final Locale locale = new Locale(MainGame.currentLocal);
+    private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
     private final Logger log = LoggerFactory.getLogger(UI.class);
     Scanner sc;
 
@@ -23,8 +27,8 @@ public class UI {
         position = position.toUpperCase(Locale.ROOT);
 
         if (position.isEmpty()) {
-            log.warn("Empty string");
-            throw new InputMismatchException("String nie może być pusty. Wciśnij enter i wprowadź ponownie dane.");
+            log.warn(bundle.getString("emptyString"));
+            throw new InputMismatchException(bundle.getString("inputMismatchException"));
         }
         return position;
     }
@@ -32,8 +36,8 @@ public class UI {
     public int getInt() throws InputMismatchException, OutOfBoundsException {
         int num = sc.nextInt();
         if(num > SizeBoard.ROW.getSize()) {
-            log.warn("Date out of range");
-            throw new OutOfBoundsException("Dane poza zakresem. Wciśnij enter i wprowadź ponownie dane.");
+            log.warn(bundle.getString("dataOut"));
+            throw new OutOfBoundsException(bundle.getString("outOfBounds"));
         }
         sc.nextLine();
         return num;
@@ -43,8 +47,8 @@ public class UI {
         int length = getInt();
 
         if (length < ShipSize.ONE.getSize() || length > ShipSize.FOUR.getSize()) {
-            log.warn("Date out of range length: {}", length);
-            throw new OutOfBoundsException("Dane poza zakresem. Wciśnij enter i wprowadź ponownie dane.");
+            log.warn(bundle.getString("dataOut") + " {}", length);
+            throw new OutOfBoundsException(bundle.getString("outOfBounds"));
         }
         return length;
     }
@@ -55,8 +59,9 @@ public class UI {
 
         if (!position.equals("V") && !position.equals("H")) {
             log.warn("Incorrect position {}", position);
-            throw new OutOfBoundsException("Niepoprawna pozycja. Wciśnij enter i wprowadź ponownie dane.");
+            throw new OutOfBoundsException(bundle.getString("outOfBoundsPosition"));
         }
-        return position.equals("V") ? "VERTICAL" : "HORIZONTAL";
+        return position.equals("V") ? bundle.getString("vertical").toUpperCase(Locale.ROOT)
+                                    : bundle.getString("horizontal").toUpperCase(Locale.ROOT);
     }
 }

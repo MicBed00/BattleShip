@@ -8,6 +8,7 @@ import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
+import main.MainGame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import DataConfig.Position;
@@ -15,13 +16,12 @@ import ship.Ship;
 import DataConfig.ShipLimits;
 import DataConfig.ShipSize;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
+    private final Locale locale = new Locale(MainGame.currentLocal);
+    private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private static final int qtyShip4 = ShipLimits.SHIP4SAIL.getQty();
     private static final int qtyShip3 = ShipLimits.SHIP3SAIL.getQty();
@@ -52,7 +52,7 @@ public class Board {
         int beforeAddNewShip = ships.size();
         if (checkIfOutOfBounds(length, x, y, position)) {
             log.warn("Object Ship is out of Board");
-            throw new OutOfBoundsException("Statek wykracza poza obszar planszy. Wciśnij enter i wprowadź dane ponownie");
+            throw new OutOfBoundsException(bundle.getString("outOfBoundsShip"));
         }
         if (ships.isEmpty()) {
             ships.add(new Ship(length, x, y, position));
@@ -62,13 +62,13 @@ public class Board {
         ships.forEach(s -> {
             if (counterShip(ships, length)) {
                 log.warn("The ship limit has reached");
-                throw new ShipLimitExceedException("Limit statków " + length + " masztowych został osiągnięty. Wciśnij enter i wprowadź dane ponownie ");
+                throw new ShipLimitExceedException(bundle.getString("shipLimitExceed ") + length + " masztowych");
             }
             if (!isColliding(s, length, x, y, position)) {
                 copyList.add(new Ship(length, x, y, position));
             } else {
                 log.debug("Collision length: {}, x: {}, y: {}, position: {}", length, x, y, position);
-                throw new CollidingException("Kolizja ze statkiem " + s + " .Wciśnij enter i wprowadź dane ponownie");
+                throw new CollidingException(bundle.getString("collidingException"));
             }
         });
         ships.addAll(copyList);
@@ -173,7 +173,7 @@ public class Board {
     private boolean correctShot(Shot shot) {
         if (shotSamePlace(shot)) {
             log.warn("Shoot in the same place");
-            throw new ShotSamePlaceException("Shoot in the same place!");
+            throw new ShotSamePlaceException(bundle.getString("shotSamePlaceException"));
         }
         addShotToSet(shot);
         return true;
@@ -188,10 +188,10 @@ public class Board {
     }
 
     private void printShoot(boolean hit, List<Ship> list, Shot shot) throws ArrayIndexOutOfBoundsException {
-        System.out.println(hit ? "Hit!" : "Miss!");
+        System.out.println(hit ? bundle.getString("hit") : bundle.getString("miss"));
         if(hittedShip != null) {
             if (hittedShip.checkIfDead()) {
-                System.out.println("Ship " + hittedShip + " - sunk! \n");
+                System.out.println(bundle.getString("shipSunk") + hittedShip +" \n");
             }
         }
         Render.printBoard(new Render().renderShots(list, shotBoard, shot));

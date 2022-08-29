@@ -2,11 +2,16 @@ package ship;
 
 
 import DataConfig.Position;
+import main.MainGame;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class Ship {
+    private static final Locale locale = new Locale(MainGame.currentLocal);
+    private static final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
     private final int length;
     private final int xStart;
     private final int yStart;
@@ -86,10 +91,10 @@ public class Ship {
 
     @Override
     public String toString() {
-        return "typ: " + length + " masztowiec, pozycja:" +
+        return bundle.getString("type") + length + bundle.getString("mastheadPosition:") +
                 " x=" + xStart +
                 ", y=" + yStart +
-                ", position=" + position;
+                bundle.getString("pos") + "=" + position;
     }
 
     @Override
