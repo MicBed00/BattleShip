@@ -91,10 +91,10 @@ public class Ship {
 
     @Override
     public String toString() {
-        return bundle.getString("type") + length + bundle.getString("mastheadPosition:") +
+        return "type" + length + " masztowy, położenie" +
                 " x=" + xStart +
                 ", y=" + yStart +
-                bundle.getString("pos") + "=" + position;
+                "position" + "=" + position;
     }
 
     @Override

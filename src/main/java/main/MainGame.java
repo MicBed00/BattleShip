@@ -18,7 +18,7 @@ public class MainGame {
     //uzyskujemy dostęp do metody .setLevel, która nie jest zaimplementowana w loggerze slf4j.
 
     private static final Logger LOG = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("main.MainGame");
-    public static final String currentLocal = "pl";
+    public static final String currentLocal = "en";
     private static final Locale locale = new Locale(currentLocal);
     private static final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
 

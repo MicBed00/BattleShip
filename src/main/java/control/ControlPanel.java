@@ -23,9 +23,13 @@ public class ControlPanel {
     Position position;
 
     public boolean prepareBeforeGame(Board player) throws InputMismatchException, IllegalArgumentException {
+        log.setLevel(Level.WARN);
+        log.info("Testowy log poziom info, nie powinno go być");
+        log.warn("log WARN");
         UI user = new UI();
         int addedShipsCounter = 0;
         log.setLevel(Level.INFO);
+        log.info("zmiana poziomy logowania na info, log info");
         while (addedShipsCounter != Board.shipLimit) {
             try {
                 System.out.printf(bundle.getString("length") + " <%d-%d>%n", ShipSize.ONE.getSize(), ShipSize.FOUR.getSize());
@@ -41,7 +45,7 @@ public class ControlPanel {
                 if (player.addShip(length, x, y, this.position)) {
                     System.out.printf("%s - " + bundle.getString("addComuni") + "\n", length);
                     Render.renderAndPrintBoardBeforeGame(player.getShips());
-                    log.info(bundle.getString("logInfoadd") +  ": {}", player.getShips().get(addedShipsCounter));
+                 //   log.info(bundle.getString("logInfoadd") +  ": {}", player.getShips().get(addedShipsCounter));
                     addedShipsCounter++;
                 }
             } catch (InputMismatchException | ShipLimitExceedException | OutOfBoundsException | CollidingException e) {

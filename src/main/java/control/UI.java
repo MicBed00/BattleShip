@@ -61,7 +61,6 @@ public class UI {
             log.warn("Incorrect position {}", position);
             throw new OutOfBoundsException(bundle.getString("outOfBoundsPosition"));
         }
-        return position.equals("V") ? bundle.getString("vertical").toUpperCase(Locale.ROOT)
-                                    : bundle.getString("horizontal").toUpperCase(Locale.ROOT);
+        return position.equals("V") ? "VERTICAL" : "HORIZONTAL";
     }
 }
