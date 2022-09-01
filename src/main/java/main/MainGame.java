@@ -8,7 +8,9 @@ import org.junit.platform.commons.util.LruCache;
 import org.slf4j.LoggerFactory;
 
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -24,9 +26,20 @@ public class MainGame {
 
     public static void main(String[] args) {
 
+        Locale.setDefault(Locale.JAPAN);
+        LocalDateTime dt = LocalDateTime.of(2022, 1, 1, 10, 15, 50, 595);
+        String pattern = "dd-MMMM-yyyy HH:mm:ss.SSS";
+
+        DateTimeFormatter defaultTime = DateTimeFormatter.ofPattern(pattern);
+        DateTimeFormatter germanTime = DateTimeFormatter.ofPattern(pattern, Locale.GERMAN);
+
+
+
         //"battleship.log"
         LOG.info(bundle.getString("start") + " {} ", LocalTime.now());
         LOG.setLevel(Level.INFO);
+        System.out.println(dt.format(defaultTime));
+        System.out.println(dt.format(germanTime));
         Board player1Board = new Board();
         Board player2Board = new Board();
         ControlPanel cp = new ControlPanel();
