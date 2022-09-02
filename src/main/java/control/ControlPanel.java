@@ -21,7 +21,6 @@ public class ControlPanel {
     private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
 
     Position position;
-
     public boolean prepareBeforeGame(Board player) throws InputMismatchException, IllegalArgumentException {
         log.setLevel(Level.WARN);
         log.info("Testowy log poziom info, nie powinno go być");
