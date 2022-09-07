@@ -1,13 +1,19 @@
 package main;
 
+import DataConfig.Position;
 import board.Board;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import control.ControlPanel;
 import org.junit.platform.commons.util.LruCache;
 import org.slf4j.LoggerFactory;
+import serialization.JsonFile;
+import ship.Ship;
 
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -43,11 +49,32 @@ public class MainGame {
         Board player1Board = new Board();
         Board player2Board = new Board();
         ControlPanel cp = new ControlPanel();
+        JsonFile<Board> boardJson = null;
+        try {
+            boardJson = new JsonFile<>("target/BoardJson.json");
+            boardJson.creatJson(player1Board);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         // TODO
         LOG.setLevel(Level.DEBUG);
-        cp.prepareBeforeGame(player1Board);
-        cp.prepareBeforeGame(player2Board);
+        try {
+            cp.prepareBeforeGame(player1Board);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            cp.prepareBeforeGame(player2Board);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         LOG.info(bundle.getString("gamePrepared"));
         cp.playGame(player1Board, player2Board);
+
+
+
     }
 }

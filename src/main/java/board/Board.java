@@ -12,6 +12,7 @@ import main.MainGame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import DataConfig.Position;
+import serialization.JsonFile;
 import ship.Ship;
 import DataConfig.ShipLimits;
 import DataConfig.ShipSize;
@@ -21,8 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
     private final Locale locale = new Locale(MainGame.currentLocal);
-    private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
     private final Logger log = LoggerFactory.getLogger(Board.class);
+    private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
     private static final int qtyShip4 = ShipLimits.SHIP4SAIL.getQty();
     private static final int qtyShip3 = ShipLimits.SHIP3SAIL.getQty();
     private static final int qtyShip2 = ShipLimits.SHIP2SAIL.getQty();

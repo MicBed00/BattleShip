@@ -10,9 +10,11 @@ import exceptions.ShotSamePlaceException;
 import DataConfig.Position;
 import main.MainGame;
 import org.slf4j.LoggerFactory;
+import serialization.JsonFile;
 import ship.Ship;
 import DataConfig.ShipSize;
 
+import java.io.IOException;
 import java.util.*;
 
 public class ControlPanel {
@@ -21,7 +23,8 @@ public class ControlPanel {
     private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
 
     Position position;
-    public boolean prepareBeforeGame(Board player) throws InputMismatchException, IllegalArgumentException {
+    public boolean prepareBeforeGame(Board player) throws IOException {
+        JsonFile<Ship> shipJson = new JsonFile<>("target/ShipJson.json");
         log.setLevel(Level.WARN);
         log.info("Testowy log poziom info, nie powinno go być");
         log.warn("log WARN");
@@ -42,6 +45,7 @@ public class ControlPanel {
                     this.position = Position.valueOf(position);
 
                 if (player.addShip(length, x, y, this.position)) {
+                    shipJson.creatJson(new Ship(length, x, y, this.position));
                     System.out.printf("%s - " + bundle.getString("addComuni") + "\n", length);
                     Render.renderAndPrintBoardBeforeGame(player.getShips());
                  //   log.info(bundle.getString("logInfoadd") +  ": {}", player.getShips().get(addedShipsCounter));
@@ -55,6 +59,7 @@ public class ControlPanel {
             }
         }
         System.out.println(bundle.getString("boardReady") + "\n");
+        shipJson.closeJson();
         return true;
     }
 
@@ -80,14 +85,14 @@ public class ControlPanel {
                 int y = user.getInt();
                 Shot shot = new Shot(x, y);
                 opponentBoard.shoot(shot);
-            } catch (ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
+            } catch (InputMismatchException| ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
                 log.error(bundle.getString("error"), e);
                 System.err.println(e.getMessage());
                 continue;
             }
         }
 
-        log.info(bundle.getString("GameOver"));
+        log.info(bundle.getString("gameOver"));
         System.out.printf(bundle.getString("win") +  " %s\n", activePlayer);
     }
 }
