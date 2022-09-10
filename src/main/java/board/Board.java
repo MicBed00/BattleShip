@@ -2,6 +2,7 @@ package board;
 
 
 import DataConfig.SizeBoard;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import control.Render;
 import control.Shot;
 import exceptions.CollidingException;
@@ -12,7 +13,6 @@ import main.MainGame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import DataConfig.Position;
-import serialization.JsonFile;
 import ship.Ship;
 import DataConfig.ShipLimits;
 import DataConfig.ShipSize;
@@ -22,30 +22,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
     private final Locale locale = new Locale(MainGame.currentLocal);
-    private final Logger log = LoggerFactory.getLogger(Board.class);
     private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
+    private final Logger log = LoggerFactory.getLogger(Board.class);
     private static final int qtyShip4 = ShipLimits.SHIP4SAIL.getQty();
     private static final int qtyShip3 = ShipLimits.SHIP3SAIL.getQty();
     private static final int qtyShip2 = ShipLimits.SHIP2SAIL.getQty();
     private static final int qtyShip1 = ShipLimits.SHIP1SAIL.getQty();
     public static final int shipLimit = ShipLimits.SHIP_LIMIT.getQty();
-    int counterShip4 = 0;
-    int counterShip3 = 0;
-    int counterShip2 = 0;
-    int counterShip1 = 0;
+    private int counterShip4 = 0;
+    private int counterShip3 = 0;
+    private int counterShip2 = 0;
+    private int counterShip1 = 0;
 
-    List<Ship> ships = new ArrayList<>();
-    char[][] shotBoard = new char[Render.getSizeBoard()][Render.getSizeBoard()];
-    Set<Shot> opponetsShots = new HashSet<Shot>();
-    Ship hittedShip;
-    boolean registerHit;
+    private List<Ship> ships = new ArrayList<>();
+    private Map<Shot, Boolean> opponetsShots = new LinkedHashMap<>();
+    private Ship hittedShip;
+    private Boolean registerHit;
 
     public List<Ship> getShips() {
         return ships;
     }
 
-    public char[][] getShotBoard() {
-        return shotBoard;
+    public Map<Shot, Boolean> getOpponetsShots() {
+        return opponetsShots;
     }
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
@@ -63,7 +62,7 @@ public class Board {
         ships.forEach(s -> {
             if (counterShip(ships, length)) {
                 log.warn("The ship limit has reached");
-                throw new ShipLimitExceedException(bundle.getString("shipLimitExceed ") + length + " masztowych");
+                throw new ShipLimitExceedException(bundle.getString("shipLimitExceed") + length + " masztowych");
             }
             if (!isColliding(s, length, x, y, position)) {
                 copyList.add(new Ship(length, x, y, position));
@@ -86,12 +85,10 @@ public class Board {
     }
 
     private boolean counterShip(List<Ship> listShip, int length) {
-        List<Integer> list = listShip.stream()
+        List<Ship> list = listShip.stream()
                 .filter(s -> s.getLength() == length)
-                .map(Ship::getLength)
                 .toList();
 
-        for (Ship s : listShip) {
             if (length == ShipSize.FOUR.getSize() && list.size() < qtyShip4) {
                 counterShip4++;
                 return false;
@@ -108,7 +105,6 @@ public class Board {
                 counterShip1++;
                 return false;
             }
-        }
         return true;
     }
 
@@ -167,7 +163,8 @@ public class Board {
                }
            });
        }
-        printShoot(registerHit, ships, shot);
+       addShotToMap(shot, registerHit);
+       printShoot(opponetsShots, ships, shot);
        return registerHit;
     }
 
@@ -176,26 +173,25 @@ public class Board {
             log.warn("Shoot in the same place");
             throw new ShotSamePlaceException(bundle.getString("shotSamePlaceException"));
         }
-        addShotToSet(shot);
         return true;
     }
 
-    private void addShotToSet(Shot shot) {
-        opponetsShots.add(shot);
+    private void addShotToMap(Shot shot, boolean registerHit) {
+        opponetsShots.put(shot, registerHit);
     }
 
     private boolean shotSamePlace(Shot shot) {
-        return opponetsShots.contains(shot);
+        return opponetsShots.containsKey(shot);
     }
 
-    private void printShoot(boolean hit, List<Ship> list, Shot shot) throws ArrayIndexOutOfBoundsException {
-        System.out.println(hit ? bundle.getString("hit") : bundle.getString("miss"));
+    private void printShoot(Map<Shot, Boolean> opponetsShots, List<Ship> list, Shot shot) throws ArrayIndexOutOfBoundsException {
+        System.out.println(opponetsShots.get(shot) ? bundle.getString("hit") : bundle.getString("miss"));
         if(hittedShip != null) {
             if (hittedShip.checkIfDead()) {
                 System.out.println(bundle.getString("shipSunk") + hittedShip +" \n");
             }
         }
-        Render.printBoard(new Render().renderShots(list, shotBoard, shot));
+        Render.renderShots(opponetsShots);
         System.out.println("###################################################\n");
     }
 

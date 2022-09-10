@@ -6,6 +6,8 @@ import DataConfig.Position;
 import ship.Ship;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Render {
     private static final int ROW = SizeBoard.ROW.getSize();
@@ -45,60 +47,19 @@ public class Render {
     private static boolean ifVertical(Ship ship) {
         return ship.getPosition() == Position.VERTICAL;
     }
-    public static void renderAndPrintBoard(List<Ship> opponentShips, Board opponentBoard) {
-        char[][] renderBoardBeforeShot = new Render().renderBeforeShots(opponentShips, opponentBoard);
-        printBoard(renderBoardBeforeShot);
-    }
 
-    private char[][] renderBeforeShots(List<Ship> list, Board board) throws ArrayIndexOutOfBoundsException {
-        char[][] shots = board.getShotBoard();
-        list.forEach(s -> {
-            if (s.getPosition() == Position.HORIZONTAL) {
-                boolean[] ifHit = s.getHits();
-                for (int i = 0; i < s.getLength(); i++) {
-                    if (ifHit[i]) {
-                        shots[s.getYstart()][s.getXstart() - i] = '*';
-                    }
-                }
-            }
-            if (s.getPosition() == Position.VERTICAL) {
-                for (int i = 0; i < s.getLength(); i++) {
-                    boolean[] ifHit = s.getHits();
-                    if (ifHit[i]) {
-                        shots[s.getYstart() + i][s.getXstart()] = '*';
-                    }
-                }
-            }
-        });
-        return shots;
-    }
+    public static void renderShots(Map<Shot, Boolean> oppentsShot) throws ArrayIndexOutOfBoundsException {
+        char[][] shotsBoard = new char[ROW][COLUMNE];
 
-    public char[][] renderShots(List<Ship> list, char[][] shotBoard, Shot shot) throws ArrayIndexOutOfBoundsException {
-        char[][] shots = shotBoard;
-        shots[shot.getY()][shot.getX()] = 'O';
-        printShots(list, shots);
-        return shots;
-    }
-
-    private void printShots(List<Ship> list, char[][] shots) {
-        list.forEach(s -> {
-            if (s.getPosition() == Position.HORIZONTAL) {
-                boolean[] ifHit = s.getHits();
-                for (int i = 0; i < s.getLength(); i++) {
-                    if (ifHit[i]) {
-                        shots[s.getYstart()][s.getXstart() - i] = '*';
-                    }
-                }
+        Set<Shot> shot = oppentsShot.keySet();
+        for (Shot s : shot) {
+            if (oppentsShot.get(s)) {
+                shotsBoard[s.getY()][s.getX()] = 'X';
+            } else {
+                shotsBoard[s.getY()][s.getX()] = 'O';
             }
-            if (s.getPosition() == Position.VERTICAL) {
-                for (int i = 0; i < s.getLength(); i++) {
-                    boolean[] ifHit = s.getHits();
-                    if (ifHit[i]) {
-                        shots[s.getYstart() + i][s.getXstart()] = '*';
-                    }
-                }
-            }
-        });
+        }
+        printBoard(shotsBoard);
     }
 
     public static void printBoard(char[][] board) {
@@ -115,4 +76,5 @@ public class Render {
         }
         System.out.println("\n");
     }
+
 }
