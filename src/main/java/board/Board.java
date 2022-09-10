@@ -2,7 +2,6 @@ package board;
 
 
 import DataConfig.SizeBoard;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import control.Render;
 import control.Shot;
 import exceptions.CollidingException;
@@ -204,4 +203,20 @@ public class Board {
                 });
         return isFinished.get();
     }
+
+    public int[] statisticsShot() {
+        int numberOfshots = this.opponetsShots.size();
+        int numberShotsHit = numberOfShotsHit(this.opponetsShots);
+      return new int[] {numberOfshots, numberShotsHit};
+    }
+
+    private int numberOfShotsHit(Map<Shot, Boolean> opponetsShots) {
+        Set<Shot> shots = opponetsShots.keySet();
+        long counterAccurateShot = shots.stream()
+                .filter(opponetsShots::get)
+                .count();
+        return (int)counterAccurateShot;
+    }
+
+
 }

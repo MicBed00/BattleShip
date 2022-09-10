@@ -93,5 +93,25 @@ public class ControlPanel {
 
         log.info(bundle.getString("gameOver"));
         System.out.printf(bundle.getString("win") +  " %s\n", activePlayer);
+        statistics(player1Board, player2Board);
+    }
+
+    private void statistics(Board player1Board, Board player2Board) {
+        int[] statsPlayer1 = player1Board.statisticsShot();
+        int[] statsPlayer2 = player2Board.statisticsShot();
+        System.out.println("Statystyki graczy: ");
+        System.out.println("Zawodnik 1");
+        printStatistcs(statsPlayer2);
+        System.out.println("Zawodnik 2");
+        printStatistcs(statsPlayer1);
+
+    }
+
+    private void printStatistcs(int[] statsPlayer) {
+        System.out.println("Liczba strzałów: " + statsPlayer[0]);
+        System.out.println("Liczba celnych strzałów: " + statsPlayer[1]);
+        double pro = ((double)statsPlayer[1]/statsPlayer[0]*100);
+        System.out.println("Celność [%]: " + pro);
+        System.out.println();
     }
 }

@@ -29,11 +29,6 @@ public class Ship {
         this.hits = new boolean[length];
     }
 
-
-    public boolean[] getHits() {
-        return hits;
-    }
-
     public int getXstart() {
         return xStart;
     }
