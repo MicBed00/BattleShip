@@ -179,7 +179,7 @@ public class BoardTest {
         board.shoot(shot1);
         board.shoot(shot2);
 
-        assertTrue(board.isFinished());
+        assertTrue(board.getIsFinished());
     }
 
     @Test
@@ -193,6 +193,6 @@ public class BoardTest {
         board.shoot(shot1);
         board.shoot(shot2);
 
-        assertFalse(board.isFinished());
+        assertFalse(board.getIsFinished());
     }
 }

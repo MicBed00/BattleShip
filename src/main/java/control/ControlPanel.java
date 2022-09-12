@@ -68,7 +68,7 @@ public class ControlPanel {
         Board opponentBoard = player2Board;
         boolean hit;
 
-        while (!opponentBoard.isFinished()) {
+        while (!opponentBoard.getIsFinished()) {
             opponentShips = opponentShips == player2Board.getShips() ? player1Board.getShips() : player2Board.getShips();
             activePlayer = activePlayer.equals(bundle.getString("player1")) ? bundle.getString("player2") : bundle.getString("player1");
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
@@ -83,6 +83,7 @@ public class ControlPanel {
                 int y = user.getInt();
                 Shot shot = new Shot(x, y);
                 opponentBoard.shoot(shot);
+                // wznawiamy grę po oddaniu strzału przez zawodnika, dlatego po wznowieniu gry trzeba zmienić zawodnika - pomyśl jak to zrobić
                 saver.saveToFile(player1Board, player2Board, activePlayer);
             } catch (InputMismatchException| ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
                 log.error(bundle.getString("error"), e);

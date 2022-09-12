@@ -34,16 +34,26 @@ public class Board {
     private int counterShip1 = 0;
 
     private List<Ship> ships = new ArrayList<>();
+  //  @JsonSerialize(keyUsing = MapKeySerializer.class)
+  // @JsonDeserialize(keyUsing = MapKeyDeserializer.class)
     private Map<Shot, Boolean> opponetsShots = new LinkedHashMap<>();
     private Ship hittedShip;
     private Boolean registerHit;
-
+    private AtomicBoolean isFinished = new AtomicBoolean(true);
     public List<Ship> getShips() {
         return ships;
     }
 
     public Map<Shot, Boolean> getOpponetsShots() {
         return opponetsShots;
+    }
+
+    public Boolean getRegisterHit() {
+        return registerHit;
+    }
+
+    public void setRegisterHit(Boolean registerHit) {
+        this.registerHit = registerHit;
     }
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
@@ -194,14 +204,18 @@ public class Board {
         System.out.println("###################################################\n");
     }
 
-    public boolean isFinished() {
-        AtomicBoolean isFinished = new AtomicBoolean(true);
+    public boolean getIsFinished() {
+//        AtomicBoolean isFinished = new AtomicBoolean(true);
         ships.forEach(ship -> {
                     if(!ship.checkIfDead())
                         isFinished.set(false);
 
                 });
         return isFinished.get();
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished.set(finished);
     }
 
     public int[] statisticsShot() {
@@ -217,6 +231,4 @@ public class Board {
                 .count();
         return (int)counterAccurateShot;
     }
-
-
 }

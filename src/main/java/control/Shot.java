@@ -1,14 +1,24 @@
 package control;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Objects;
 
 public class Shot {
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
 
     public Shot(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+//   // @JsonCreator
+    public Shot(String s) {
+        String[] key = s.split(",");
+        this.x = Integer.parseInt(key[0]);
+        this.y = Integer.parseInt(key[1]);
     }
 
     public int getX() {
@@ -17,6 +27,13 @@ public class Shot {
 
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+    public void setY(int y) {
+        this.y = y;
     }
 
     @Override
@@ -30,5 +47,11 @@ public class Shot {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+        return    x + "," + y;
     }
 }
