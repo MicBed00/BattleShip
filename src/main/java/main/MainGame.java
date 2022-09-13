@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import control.ControlPanel;
 import org.slf4j.LoggerFactory;
 import serialization.GameStatus;
+import serialization.Reader;
 
 
 import java.io.File;
@@ -45,28 +46,30 @@ public class MainGame {
         LOG.setLevel(Level.INFO);
         System.out.println(dt.format(defaultTime));
         System.out.println(dt.format(germanTime));
-        Board player1Board = new Board();
-        Board player2Board = new Board();
+        Board player1Board = null;
+        Board player2Board = null;
         ControlPanel cp = new ControlPanel();
-//        String argFile = args[0];
-//        System.out.println(argFile);
-//        ObjectMapper mapper = new ObjectMapper();
-//        GameStatus gameStatus = null;
-//        try {
-//
-//            gameStatus = mapper.readValue(new File(argFile), GameStatus.class);
-//            System.out.println(gameStatus);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        Board board1 = gameStatus.getBoardsStatus().get(0);
-//        Board board2 = gameStatus.getBoardsStatus().get(1);
 
-        LOG.setLevel(Level.DEBUG);
-        cp.prepareBeforeGame(player1Board);
-        cp.prepareBeforeGame(player2Board);
-        LOG.info(bundle.getString("gamePrepared"));
-        //tutaj strzelić if i sprawdzać czy args jest puste czy nie, jesli nie to będzie plik json i trzeba go deserializować
+        if(args[0].isEmpty()) {
+            player1Board = new Board();
+            player2Board = new Board();
+
+            LOG.setLevel(Level.DEBUG);
+            cp.prepareBeforeGame(player1Board);
+            cp.prepareBeforeGame(player2Board);
+            LOG.info(bundle.getString("gamePrepared"));
+        } else {
+            String argFile = args[0];
+            GameStatus gameStatus = null;
+
+            try {
+                gameStatus = new Reader().readFromFile(argFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            player1Board = gameStatus.getBoardsStatus().get(0);
+            player2Board = gameStatus.getBoardsStatus().get(1);
+        }
 
         try {
             cp.playGame(player1Board, player2Board);
