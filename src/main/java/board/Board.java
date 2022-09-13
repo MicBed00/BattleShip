@@ -39,7 +39,7 @@ public class Board {
     private Map<Shot, Boolean> opponetsShots = new LinkedHashMap<>();
     private Ship hittedShip;
     private Boolean registerHit;
-    private AtomicBoolean isFinished = new AtomicBoolean(true);
+   // private AtomicBoolean isFinished = new AtomicBoolean(true);
     public List<Ship> getShips() {
         return ships;
     }
@@ -205,7 +205,7 @@ public class Board {
     }
 
     public boolean getIsFinished() {
-//        AtomicBoolean isFinished = new AtomicBoolean(true);
+        AtomicBoolean isFinished = new AtomicBoolean(true);
         ships.forEach(ship -> {
                     if(!ship.checkIfDead())
                         isFinished.set(false);
@@ -214,9 +214,9 @@ public class Board {
         return isFinished.get();
     }
 
-    public void setFinished(boolean finished) {
-        isFinished.set(finished);
-    }
+//    public void setFinished(boolean finished) {
+//        isFinished.set(finished);
+//    }
 
     public int[] statisticsShot() {
         int numberOfshots = this.opponetsShots.size();

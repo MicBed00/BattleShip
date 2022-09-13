@@ -6,9 +6,17 @@ import org.junit.jupiter.api.Test;
 import serialization.GameStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import serialization.Saver;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 class SaverTest {
 
@@ -22,38 +30,49 @@ class SaverTest {
 
         board2.addShip(1, 1, 1, Position.VERTICAL);
         board2.addShip(2, 5, 5, Position.HORIZONTAL);
-        //p2 strzela niecelnie
+        //strzela niecelnie
         board1.shoot(new Shot(9, 0));
         board1.shoot(new Shot(3, 5));
         board1.shoot(new Shot(5, 8));
         board1.shoot(new Shot(9, 9));
-        board1.getIsFinished();
+
         board2.shoot(new Shot(9, 0));
         board2.shoot(new Shot(0, 0));
         board2.shoot(new Shot(8, 8));
         board2.shoot(new Shot(9, 9));
-        board2.getIsFinished();
-        //p2 strzela celnie i eliminuje statki z planszy
+
+        //strzela celnie i eliminuje statki z planszy
         board1.shoot(new Shot(2, 2));
         board1.shoot(new Shot(2, 3));
         board1.shoot(new Shot(8, 2));
-        board1.shoot(new Shot(7, 2));
-        board1.getIsFinished();
+
         board2.shoot(new Shot(1, 1));
         board2.shoot(new Shot(5, 5));
         board2.shoot(new Shot(4, 5));
-        board2.getIsFinished();
 
-//        Saver saver = new Saver();
-//        saver.saveToFile(board1, board2, currentPlayer);
+        Saver saver = new Saver();
+        saver.saveToFile(board1,board2,currentPlayer);
+
         List<Board> boardList = new ArrayList<>();
         boardList.add(board1);
         boardList.add(board2);
+        File jsonFile = new File("target/gameStatus.json");
+        File expectedFile = new File("src/test/java/expectedFileTest.json");
+        testCreatJsonFile(currentPlayer, boardList, expectedFile);
+
+        assertThat(jsonFile).hasSameTextualContentAs(expectedFile);
+
+    }
+
+    private void testCreatJsonFile(String currentPlayer, List<Board> boardList, File expectedFile) throws IOException {
         GameStatus gameStatus = new GameStatus(boardList, currentPlayer);
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writerWithDefaultPrettyPrinter();
         String json = mapper.writeValueAsString(gameStatus);
 
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(expectedFile));
+        bufferedWriter.write(json);
+        bufferedWriter.close();
     }
 }

@@ -48,28 +48,28 @@ public class MainGame {
         Board player1Board = new Board();
         Board player2Board = new Board();
         ControlPanel cp = new ControlPanel();
-        String argFile = args[0];
-        System.out.println(argFile);
-        ObjectMapper mapper = new ObjectMapper();
-        GameStatus gameStatus = null;
-        try {
+//        String argFile = args[0];
+//        System.out.println(argFile);
+//        ObjectMapper mapper = new ObjectMapper();
+//        GameStatus gameStatus = null;
+//        try {
+//
+//            gameStatus = mapper.readValue(new File(argFile), GameStatus.class);
+//            System.out.println(gameStatus);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Board board1 = gameStatus.getBoardsStatus().get(0);
+//        Board board2 = gameStatus.getBoardsStatus().get(1);
 
-            gameStatus = mapper.readValue(new File(argFile), GameStatus.class);
-            System.out.println(gameStatus);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Board board1 = gameStatus.getBoardsStatus().get(0);
-        Board board2 = gameStatus.getBoardsStatus().get(1);
-
-//        LOG.setLevel(Level.DEBUG);
-//        cp.prepareBeforeGame(player1Board);
-//        cp.prepareBeforeGame(player2Board);
-//        LOG.info(bundle.getString("gamePrepared"));
+        LOG.setLevel(Level.DEBUG);
+        cp.prepareBeforeGame(player1Board);
+        cp.prepareBeforeGame(player2Board);
+        LOG.info(bundle.getString("gamePrepared"));
         //tutaj strzelić if i sprawdzać czy args jest puste czy nie, jesli nie to będzie plik json i trzeba go deserializować
 
         try {
-            cp.playGame(board1, board2);
+            cp.playGame(player1Board, player2Board);
         } catch (IOException e) {
             e.printStackTrace();
         }
