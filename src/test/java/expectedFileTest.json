@@ -1,0 +1,54 @@
+{
+  "boardsStatus" : [ {
+    "ships" : [ {
+      "length" : 2,
+      "position" : "VERTICAL",
+      "hits" : [ true, true ],
+      "ystart" : 2,
+      "xstart" : 2
+    }, {
+      "length" : 2,
+      "position" : "HORIZONTAL",
+      "hits" : [ true, false ],
+      "ystart" : 2,
+      "xstart" : 8
+    } ],
+    "opponetsShots" : {
+      "9,0" : false,
+      "3,5" : false,
+      "5,8" : false,
+      "9,9" : false,
+      "2,2" : true,
+      "2,3" : true,
+      "8,2" : true
+    },
+    "registerHit" : true,
+    "isFinished" : false
+  }, {
+    "ships" : [ {
+      "length" : 1,
+      "position" : "VERTICAL",
+      "hits" : [ true ],
+      "ystart" : 1,
+      "xstart" : 1
+    }, {
+      "length" : 2,
+      "position" : "HORIZONTAL",
+      "hits" : [ true, true ],
+      "ystart" : 5,
+      "xstart" : 5
+    } ],
+    "opponetsShots" : {
+      "9,0" : false,
+      "0,0" : false,
+      "8,8" : false,
+      "9,9" : false,
+      "1,1" : true,
+      "5,5" : true,
+      "4,5" : true
+    },
+    "registerHit" : true,
+    "isFinished" : true
+  } ],
+  "curretnPlayer" : "Zwodnik 1"
+}
