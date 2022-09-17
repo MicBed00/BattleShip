@@ -3,25 +3,18 @@ package main;
 import board.Board;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import control.ControlPanel;
+import control.UI;
 import org.slf4j.LoggerFactory;
 import serialization.GameStatus;
 import serialization.Reader;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class MainGame {
     // rzutujemy LoggerFactory na klasę Logger, ALE z biblioteki logback. Logger pochodzi również z logback. Dzięki temu rzutowaniu
@@ -29,8 +22,7 @@ public class MainGame {
 
     private static final Logger LOG = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("main.MainGame");
     public static final String currentLocal = "pl";
-    private static final Locale locale = new Locale(currentLocal);
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
+    private static UI user = new UI();
 
     public static void main(String[] args) {
 
@@ -42,7 +34,7 @@ public class MainGame {
         DateTimeFormatter germanTime = DateTimeFormatter.ofPattern(pattern, Locale.GERMAN);
 
         //"battleship.log"
-        LOG.info(bundle.getString("start") + " {} ", LocalTime.now());
+        LOG.info(user.messageBundle("start"));
         LOG.setLevel(Level.INFO);
         System.out.println(dt.format(defaultTime));
         System.out.println(dt.format(germanTime));
@@ -50,31 +42,36 @@ public class MainGame {
         Board player2Board = null;
         ControlPanel cp = new ControlPanel();
 
-        if(args[0].isEmpty()) {
+//        if((0 < args.length) && (args!= null)) {
+//            String argFile = args[0];
+//            GameStatus gameStatus = null;
+//            try {
+//                gameStatus = new Reader().readFromFile(argFile);
+//
+//                player1Board = gameStatus.getBoardsStatus().get(0);
+//                player2Board = gameStatus.getBoardsStatus().get(1);
+//
+//                cp.playGame(player1Board, player2Board);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
             player1Board = new Board();
             player2Board = new Board();
 
             LOG.setLevel(Level.DEBUG);
             cp.prepareBeforeGame(player1Board);
             cp.prepareBeforeGame(player2Board);
-            LOG.info(bundle.getString("gamePrepared"));
-        } else {
-            String argFile = args[0];
-            GameStatus gameStatus = null;
+            LOG.info(user.messageBundle("gamePrepared"));
 
             try {
-                gameStatus = new Reader().readFromFile(argFile);
+                cp.playGame(player1Board, player2Board);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            player1Board = gameStatus.getBoardsStatus().get(0);
-            player2Board = gameStatus.getBoardsStatus().get(1);
         }
 
-        try {
-            cp.playGame(player1Board, player2Board);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
-}
+//}

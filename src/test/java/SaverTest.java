@@ -53,18 +53,19 @@ class SaverTest {
         Saver saver = new Saver();
         saver.saveToFile(board1,board2,currentPlayer);
 
-        List<Board> boardList = new ArrayList<>();
-        boardList.add(board1);
-        boardList.add(board2);
+
         File jsonFile = new File("target/gameStatus.json");
         File expectedFile = new File("src/test/java/expectedFileTest.json");
-        testCreatJsonFile(currentPlayer, boardList, expectedFile);
+   //  testCreatJsonFile(currentPlayer, board1, board2, expectedFile);  //
 
         assertThat(jsonFile).hasSameTextualContentAs(expectedFile);
 
     }
 
-    private void testCreatJsonFile(String currentPlayer, List<Board> boardList, File expectedFile) throws IOException {
+    private void testCreatJsonFile(String currentPlayer, Board board1, Board board2, File expectedFile) throws IOException {
+        List<Board> boardList = new ArrayList<>();
+        boardList.add(board1);
+        boardList.add(board2);
         GameStatus gameStatus = new GameStatus(boardList, currentPlayer);
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);

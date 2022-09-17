@@ -2,13 +2,14 @@ package board;
 
 
 import DataConfig.SizeBoard;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import control.Render;
 import control.Shot;
+import control.UI;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
-import main.MainGame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import DataConfig.Position;
@@ -20,9 +21,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
-    private final Locale locale = new Locale(MainGame.currentLocal);
-    private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
     private final Logger log = LoggerFactory.getLogger(Board.class);
+    private final UI user = new UI();
     private static final int qtyShip4 = ShipLimits.SHIP4SAIL.getQty();
     private static final int qtyShip3 = ShipLimits.SHIP3SAIL.getQty();
     private static final int qtyShip2 = ShipLimits.SHIP2SAIL.getQty();
@@ -39,7 +39,6 @@ public class Board {
     private Map<Shot, Boolean> opponetsShots = new LinkedHashMap<>();
     private Ship hittedShip;
     private Boolean registerHit;
-   // private AtomicBoolean isFinished = new AtomicBoolean(true);
     public List<Ship> getShips() {
         return ships;
     }
@@ -61,7 +60,7 @@ public class Board {
         int beforeAddNewShip = ships.size();
         if (checkIfOutOfBounds(length, x, y, position)) {
             log.warn("Object Ship is out of Board");
-            throw new OutOfBoundsException(bundle.getString("outOfBoundsShip"));
+            throw new OutOfBoundsException(user.getBundle().getString("outOfBoundsShip"));
         }
         if (ships.isEmpty()) {
             ships.add(new Ship(length, x, y, position));
@@ -71,13 +70,13 @@ public class Board {
         ships.forEach(s -> {
             if (counterShip(ships, length)) {
                 log.warn("The ship limit has reached");
-                throw new ShipLimitExceedException(bundle.getString("shipLimitExceed") + length + " masztowych");
+                throw new ShipLimitExceedException(user.getBundle().getString("shipLimitExceed"));
             }
             if (!isColliding(s, length, x, y, position)) {
                 copyList.add(new Ship(length, x, y, position));
             } else {
                 log.debug("Collision length: {}, x: {}, y: {}, position: {}", length, x, y, position);
-                throw new CollidingException(bundle.getString("collidingException"));
+                throw new CollidingException(user.getBundle().getString("collidingException"));
             }
         });
         ships.addAll(copyList);
@@ -180,7 +179,7 @@ public class Board {
     private boolean correctShot(Shot shot) {
         if (shotSamePlace(shot)) {
             log.warn("Shoot in the same place");
-            throw new ShotSamePlaceException(bundle.getString("shotSamePlaceException"));
+            throw new ShotSamePlaceException(user.getBundle().getString("shotSamePlaceException"));
         }
         return true;
     }
@@ -194,24 +193,24 @@ public class Board {
     }
 
     private void printShoot(Map<Shot, Boolean> opponetsShots, List<Ship> list, Shot shot) throws ArrayIndexOutOfBoundsException {
-        System.out.println(opponetsShots.get(shot) ? bundle.getString("hit") : bundle.getString("miss"));
+        System.out.println(opponetsShots.get(shot) ? user.messageBundle("hit") : user.messageBundle("miss"));
         if(hittedShip != null) {
             if (hittedShip.checkIfDead()) {
-                System.out.println(bundle.getString("shipSunk") + hittedShip +" \n");
+                System.out.println(user.messageBundle("shipSunk") + hittedShip +" \n");
             }
         }
         Render.renderShots(opponetsShots);
         System.out.println("###################################################\n");
     }
 
-    public boolean getIsFinished() {
+    @JsonIgnore
+    public AtomicBoolean getIsFinished() {
         AtomicBoolean isFinished = new AtomicBoolean(true);
         ships.forEach(ship -> {
                     if(!ship.checkIfDead())
                         isFinished.set(false);
-
                 });
-        return isFinished.get();
+        return isFinished;
     }
 
 //    public void setFinished(boolean finished) {

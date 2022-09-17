@@ -40,7 +40,6 @@ public class Saver {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
         bufferedWriter.write(file);
         bufferedWriter.close();
-
     }
 
     private List<Board> creatBoardsList(Board board1, Board board2) {

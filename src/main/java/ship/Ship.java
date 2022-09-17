@@ -1,34 +1,25 @@
 package ship;
 
-
 import DataConfig.Position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import main.MainGame;
+import control.UI;
 
-import java.beans.ConstructorProperties;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public class Ship {
-    private static final Locale locale = new Locale(MainGame.currentLocal);
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
+    private UI user = new UI();
     private  int length;
     private  int xStart;
     private  int yStart;
     private Position position;
     private boolean[] hits;
-    // |-|-|-|-|
-    // | |1| |1|
-    // |-|-|-|-|
-
 
    public Ship() {
 
    }
+
     public Ship(int length, int x, int y, Position position) {
         this.length = length;
         this.xStart = x;
@@ -37,10 +28,11 @@ public class Ship {
         this.hits = new boolean[length];
     }
 
-    @JsonSetter("xstart")           //w trakcie deserializacji nie rozpoznawało mi nazwy pola
+    @JsonSetter("xstart")           //w trakcie deserializacji nie rozpoznawało nazwy pola
     public void setxStart(int xStart) {
         this.xStart = xStart;
     }
+
     @JsonSetter("ystart")
     public void setyStart(int yStart) {
         this.yStart = yStart;
@@ -50,6 +42,7 @@ public class Ship {
         return xStart;
     }
     @JsonIgnore
+
     public int getXend() {
         return position == Position.HORIZONTAL ? xStart - length + 1 : xStart;
     }
@@ -57,6 +50,7 @@ public class Ship {
     public int getYstart() {
         return yStart;
     }
+
     @JsonIgnore
     public int getYend() {
         return position == Position.VERTICAL ? yStart + length - 1 : yStart;
@@ -110,10 +104,10 @@ public class Ship {
 
     @Override
     public String toString() {
-        return "type" + length + " masztowy, położenie" +
-                " x=" + xStart +
-                ", y=" + yStart +
-                "position" + "=" + position;
+        return "type " + length + " masztowy, położenie" +
+                " x= " + xStart +
+                ", y= " + yStart +
+                " position" + "=" + position;
     }
 
     @Override
