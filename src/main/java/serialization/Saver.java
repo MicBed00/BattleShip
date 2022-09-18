@@ -28,8 +28,8 @@ public class Saver {
         List<Board> boardList = creatBoardsList(board1, board2);
         GameStatus gameStatus = new GameStatus(boardList, currentPlayer);
         String str = null;
-        if(gameStatus == null) {
-            throw new NullObject("Object is null");
+        if(board1 == null || board2 == null || currentPlayer == null) {
+            throw new NullObject("Object is null or incomplete");
         } else {
            str = objectMapper.writeValueAsString(gameStatus);
         }

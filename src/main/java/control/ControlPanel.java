@@ -9,8 +9,9 @@ import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
 import DataConfig.Position;
 import org.slf4j.LoggerFactory;
+import serialization.GameStatus;
 import serialization.Saver;
-import ship.Ship;
+
 
 import java.io.IOException;
 import java.util.*;
@@ -60,12 +61,10 @@ public class ControlPanel {
         log.info("Rozpoczęcie gry");
         UI user = new UI();
         Saver saver = new Saver();
-        List<Ship> opponentShips = player2Board.getShips();
         String activePlayer = user.messageBundle("player1");
         Board opponentBoard = player2Board;
 
         while (!opponentBoard.getIsFinished().get()) {
-            opponentShips = opponentShips == player2Board.getShips() ? player1Board.getShips() : player2Board.getShips();
             activePlayer = activePlayer.equals(user.messageBundle("player1")) ? user.messageBundle("player2") : user.messageBundle("player1");
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
 
@@ -79,7 +78,6 @@ public class ControlPanel {
                 int y = user.getInt();
                 Shot shot = new Shot(x, y);
                 opponentBoard.shoot(shot);
-                // wznawiamy grę po oddaniu strzału przez zawodnika, dlatego po wznowieniu gry trzeba zmienić zawodnika - pomyśl jak to zrobić
                 saver.saveToFile(player1Board, player2Board, activePlayer);
             } catch (InputMismatchException | ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
                 log.error(user.getBundle().getString("error"), e);
@@ -92,6 +90,43 @@ public class ControlPanel {
         statistics(player1Board, player2Board);
     }
 
+    public void playGame(GameStatus gameStatus) throws ArrayIndexOutOfBoundsException, IOException {
+        log.info("Wznowienie gry z pliku");
+        UI user = new UI();
+        Saver saver = new Saver();
+        String activePlayer = gameStatus.getCurretnPlayer();
+        activePlayer = activePlayer.equals(user.messageBundle("player1")) ? user.messageBundle("player1") : user.messageBundle("player2");
+        Board player1Board = gameStatus.getBoardsStatus().get(0);
+        Board player2Board = gameStatus.getBoardsStatus().get(1);
+
+        Board opponentBoard = gameStatus.getCurretnPlayer().equals(user.getBundle().getString("player1")) ?
+                player2Board : player1Board;
+
+        while (!opponentBoard.getIsFinished().get()) {
+            activePlayer = activePlayer.equals(user.messageBundle("player1")) ? user.messageBundle("player2") : user.messageBundle("player1");
+            opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
+
+            System.out.printf(user.messageBundle("information") + ": %s.\n" + user.messageBundle("boardInfo") + ":\n", activePlayer);
+            Render.renderShots(opponentBoard.getOpponetsShots());
+
+            try {
+                System.out.printf("%s " + user.messageBundle("coordX") + ": \n", activePlayer);
+                int x = user.getInt();
+                System.out.printf("%s " + user.messageBundle("coordY") + ": \n", activePlayer);
+                int y = user.getInt();
+                Shot shot = new Shot(x, y);
+                opponentBoard.shoot(shot);
+                saver.saveToFile(player1Board, player2Board, activePlayer);
+            } catch (InputMismatchException | ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException e) {
+                log.error(user.getBundle().getString("error"), e);
+                System.err.println(e.getMessage());
+                continue;
+            }
+        }
+        log.info(user.messageBundle("gameOver"));
+        System.out.printf(user.messageBundle("win") + " %s\n", activePlayer);
+        statistics(player1Board, player2Board);
+    }
     private void statistics(Board player1Board, Board player2Board) {
         int[] statsPlayer1 = player1Board.statisticsShot();
         int[] statsPlayer2 = player2Board.statisticsShot();

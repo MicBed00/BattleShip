@@ -22,6 +22,7 @@ public class GameStatus {
         return boardsStatus;
     }
 
+
     public String getCurretnPlayer() {
         return curretnPlayer;
     }

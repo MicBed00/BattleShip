@@ -42,21 +42,18 @@ public class MainGame {
         Board player2Board = null;
         ControlPanel cp = new ControlPanel();
 
-//        if((0 < args.length) && (args!= null)) {
-//            String argFile = args[0];
-//            GameStatus gameStatus = null;
-//            try {
-//                gameStatus = new Reader().readFromFile(argFile);
-//
-//                player1Board = gameStatus.getBoardsStatus().get(0);
-//                player2Board = gameStatus.getBoardsStatus().get(1);
-//
-//                cp.playGame(player1Board, player2Board);
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
+        if((0 < args.length) && (args!= null)) {
+            String argFile = args[0];
+            GameStatus gameStatus = null;
+            try {
+                gameStatus = new Reader().readFromFile(argFile);
+
+                cp.playGame(gameStatus);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
             player1Board = new Board();
             player2Board = new Board();
 
@@ -74,4 +71,4 @@ public class MainGame {
 
 
     }
-//}
+}
