@@ -1,7 +1,5 @@
 package control;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Objects;
@@ -9,12 +7,26 @@ import java.util.Objects;
 public class Shot {
     private int x;
     private int y;
+    private State state;
+
+    enum State {
+        PREPARING,
+        MISSED,
+        HIT
+    }
 
     public Shot(int x, int y) {
+        this.state = State.PREPARING;
         this.x = x;
         this.y = y;
     }
-//   // @JsonCreator
+
+    public Shot(State state, int x, int y) {
+        this.state = state;
+        this.x = x;
+        this.y = y;
+    }
+
     public Shot(String s) {
         String[] key = s.split(",");
         this.x = Integer.parseInt(key[0]);

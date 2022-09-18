@@ -41,8 +41,8 @@ public class Ship {
     public int getXstart() {
         return xStart;
     }
-    @JsonIgnore
 
+    @JsonIgnore
     public int getXend() {
         return position == Position.HORIZONTAL ? xStart - length + 1 : xStart;
     }

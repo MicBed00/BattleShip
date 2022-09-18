@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.*;
+import control.StatePreperationGame;
 import exceptions.NullObject;
 
 import java.io.BufferedWriter;
@@ -18,21 +19,17 @@ public class Saver {
     private final String filePath = "target/gameStatus.json";
     private ObjectMapper objectMapper;
 
-    public Saver() throws IOException {
+    public Saver() {
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.writerWithDefaultPrettyPrinter();
     }
 
-    public void saveToFile(Board board1, Board board2, String currentPlayer) throws IOException, NullObject{
+    public void saveToFile(Board board1, Board board2, int currentPlayer, StatePreperationGame state) throws IOException, NullObject{
         List<Board> boardList = creatBoardsList(board1, board2);
-        GameStatus gameStatus = new GameStatus(boardList, currentPlayer);
-        String str = null;
-        if(board1 == null || board2 == null || currentPlayer == null) {
-            throw new NullObject("Object is null or incomplete");
-        } else {
-           str = objectMapper.writeValueAsString(gameStatus);
-        }
+        GameStatus gameStatus = new GameStatus(boardList, currentPlayer, state);
+        String str = objectMapper.writeValueAsString(gameStatus);
+
         writeStringtoFile(str);
     }
 
@@ -44,7 +41,9 @@ public class Saver {
 
     private List<Board> creatBoardsList(Board board1, Board board2) {
         List<Board> list = new ArrayList<>();
+        if(board2.getShips().size() > 0)
         list.add(board1);
+        if(board2.getShips().size() > 0)
         list.add(board2);
         return list;
     }

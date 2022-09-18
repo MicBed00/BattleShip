@@ -20,18 +20,17 @@ import DataConfig.ShipSize;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static DataConfig.ShipLimits.SHIP4SAIL;
+
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private final UI user = new UI();
-    private static final int qtyShip4 = ShipLimits.SHIP4SAIL.getQty();
+    private static final int qtyShip4 = SHIP4SAIL.getQty();
     private static final int qtyShip3 = ShipLimits.SHIP3SAIL.getQty();
     private static final int qtyShip2 = ShipLimits.SHIP2SAIL.getQty();
     private static final int qtyShip1 = ShipLimits.SHIP1SAIL.getQty();
     public static final int shipLimit = ShipLimits.SHIP_LIMIT.getQty();
-    private int counterShip4 = 0;
-    private int counterShip3 = 0;
-    private int counterShip2 = 0;
-    private int counterShip1 = 0;
+
 
     private List<Ship> ships = new ArrayList<>();
   //  @JsonSerialize(keyUsing = MapKeySerializer.class)
@@ -39,6 +38,7 @@ public class Board {
     private Map<Shot, Boolean> opponetsShots = new LinkedHashMap<>();
     private Ship hittedShip;
     private Boolean registerHit;
+
     public List<Ship> getShips() {
         return ships;
     }
@@ -98,19 +98,15 @@ public class Board {
                 .toList();
 
             if (length == ShipSize.FOUR.getSize() && list.size() < qtyShip4) {
-                counterShip4++;
                 return false;
             }
             if (length == ShipSize.THREE.getSize() && list.size() < qtyShip3) {
-                counterShip3++;
                 return false;
             }
             if (length == ShipSize.TWO.getSize() && list.size() < qtyShip2) {
-                counterShip2++;
                 return false;
             }
             if (length == ShipSize.ONE.getSize() && list.size() < qtyShip1) {
-                counterShip1++;
                 return false;
             }
         return true;
@@ -212,7 +208,7 @@ public class Board {
                 });
         return isFinished;
     }
-
+//
 //    public void setFinished(boolean finished) {
 //        isFinished.set(finished);
 //    }

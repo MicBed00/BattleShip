@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import DataConfig.ShipSize;
 
 import java.text.MessageFormat;
-import java.time.LocalTime;
 import java.util.*;
 
 public class UI {
@@ -25,12 +24,10 @@ public class UI {
     Scanner sc;
 
     public String messageBundle(String key) {
-
         MessageFormat formatter = new MessageFormat("");
         formatter.setLocale(locale);
 
         formatter.applyPattern(bundle.getString(key));
-
 
         return formatter.format(getMessageArg());
     }

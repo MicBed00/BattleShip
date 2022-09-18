@@ -2,6 +2,7 @@ import DataConfig.Position;
 import board.Board;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import control.Shot;
+import control.StatePreperationGame;
 import org.junit.jupiter.api.Test;
 import serialization.GameStatus;
 
@@ -22,7 +23,8 @@ class SaverTest {
 
     @Test
     void serialiationStatusGameTest() throws IOException {
-        String currentPlayer = "Zwodnik 1";
+        int currentPlayer = 1;
+        StatePreperationGame state = StatePreperationGame.FINISHED;
         Board board1 = new Board();
         Board board2 = new Board();
         board1.addShip(2, 2, 2, Position.VERTICAL);
@@ -51,22 +53,21 @@ class SaverTest {
         board2.shoot(new Shot(4, 5));
 
         Saver saver = new Saver();
-        saver.saveToFile(board1,board2,currentPlayer);
+        saver.saveToFile(board1,board2,currentPlayer, state);
 
 
         File jsonFile = new File("target/gameStatus.json");
         File expectedFile = new File("src/test/java/expectedFileTest.json");
-   //  testCreatJsonFile(currentPlayer, board1, board2, expectedFile);  //
+     testCreatJsonFile(currentPlayer, board1, board2, expectedFile, state);  //
 
         assertThat(jsonFile).hasSameTextualContentAs(expectedFile);
-
     }
 
-    private void testCreatJsonFile(String currentPlayer, Board board1, Board board2, File expectedFile) throws IOException {
+    private void testCreatJsonFile(int currentPlayer, Board board1, Board board2, File expectedFile, StatePreperationGame state) throws IOException {
         List<Board> boardList = new ArrayList<>();
         boardList.add(board1);
         boardList.add(board2);
-        GameStatus gameStatus = new GameStatus(boardList, currentPlayer);
+        GameStatus gameStatus = new GameStatus(boardList, currentPlayer, state);
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writerWithDefaultPrettyPrinter();
