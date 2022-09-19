@@ -12,37 +12,19 @@ import java.util.*;
 
 public class UI {
     private final Locale locale = new Locale(MainGame.currentLocal);
-
     public ResourceBundle getBundle() {
         return bundle;
     }
-
     private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
-    MessageFormat messageFormat = new MessageFormat(" ");
     private final Logger log = LoggerFactory.getLogger(UI.class);
-
     Scanner sc;
 
-    public String messageBundle(String key) {
-        MessageFormat formatter = new MessageFormat("");
-        formatter.setLocale(locale);
-
-        formatter.applyPattern(bundle.getString(key));
-
-        return formatter.format(getMessageArg());
+    public String messageBundle(String key, Object... arguments) {
+        return MessageFormat.format(getString(key), arguments);
     }
 
-    private Object[] getMessageArg() {
-
-        Object[] messageArguments = {
-                ShipSize.ONE.getSize(),
-                ShipSize.FOUR.getSize(),
-                new Date(),
-             //   new Integer(getLength())
-        };
-
-        return messageArguments;
-
+    private String getString(String key) {
+        return bundle.getString(key);
     }
 
     public String getStringOrFail() throws InputMismatchException {

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class MainGame {
     // rzutujemy LoggerFactory na klasę Logger, ALE z biblioteki logback. Logger pochodzi również z logback. Dzięki temu rzutowaniu
     //uzyskujemy dostęp do metody .setLevel, która nie jest zaimplementowana w loggerze slf4j.
     private static final Logger LOG = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("main.MainGame");
-    public static final String currentLocal = "pl";
+    public static final String currentLocal = "en";
     private static UI user = new UI();
 
     public static void main(String[] args) {
@@ -34,7 +35,7 @@ public class MainGame {
         DateTimeFormatter germanTime = DateTimeFormatter.ofPattern(pattern, Locale.GERMAN);
 
         //"battleship.log"
-        LOG.info(user.messageBundle("start"));
+        LOG.info(user.messageBundle("start", new Date()));
         LOG.setLevel(Level.INFO);
         System.out.println(dt.format(defaultTime));
         System.out.println(dt.format(germanTime));

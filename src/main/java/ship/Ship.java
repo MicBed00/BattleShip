@@ -102,10 +102,12 @@ public class Ship {
 
     @Override
     public String toString() {
-        return "type " + length + " masztowy, położenie" +
-                " x= " + xStart +
-                ", y= " + yStart +
-                " position" + "=" + position;
+        return "Ship{" +
+                "length=" + length +
+                ", xStart=" + xStart +
+                ", yStart=" + yStart +
+                ", position=" + position +
+                '}';
     }
 
     @Override

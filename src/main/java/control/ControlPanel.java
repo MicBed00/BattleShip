@@ -14,8 +14,7 @@ import serialization.Saver;
 
 import java.io.IOException;
 import java.util.*;
-
-
+import static DataConfig.ShipLimits.*;
 public class ControlPanel {
     private final Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("control.ControlPanel");
     private final UI user = new UI();
@@ -24,6 +23,8 @@ public class ControlPanel {
 
 
     public GameStatus prepareBeforeGame(GameStatus gameStatus) {
+        log.info("Wznowienie gry");
+        System.out.println(user.messageBundle("resume", new Date()));
         log.setLevel(Level.WARN);
         log.info("Testowy log poziom info, nie powinno go być");
         log.warn("log WARN");
@@ -38,20 +39,20 @@ public class ControlPanel {
         Board player = gameStatus.getCurretnPlayer() == 1 ? player2Board : player1Board;
         int activePlayer = gameStatus.getCurretnPlayer() == 1 ? 2 : 1;
 
-        while (addedShipsCounter != (Board.shipLimit*2)) {
+        while (addedShipsCounter != (SHIP_LIMIT.getQty()* NUMBER_BOARDS)) {
             try {
-                System.out.println(user.messageBundle("length") + activePlayer);
+                System.out.println(user.messageBundle("length", activePlayer, SHIP4SAIL.getQty(), SHIP1SAIL.getQty()));
                 int length = user.getLength();
-                System.out.println(user.messageBundle("x"));
+                System.out.println(user.messageBundle("x", activePlayer));
                 int x = user.getInt();
-                System.out.println(user.messageBundle("y"));
+                System.out.println(user.messageBundle("y", activePlayer));
                 int y = user.getInt();
-                System.out.println(user.messageBundle("position"));
+                System.out.println(user.messageBundle("position", activePlayer));
                 String position = user.getPosition();
                 this.position = Position.valueOf(position);
 
                 if (player.addShip(length, x, y, this.position)) {
-                    System.out.println(user.messageBundle("addComuni"));
+                    System.out.println(user.messageBundle("addComuni", length));
                     Render.renderAndPrintBoardBeforeGame(player.getShips());
                     addedShipsCounter++;
                 }
@@ -107,20 +108,20 @@ public class ControlPanel {
         Board player = player1Board;
         int activePlayer = 1;
 
-        while (addedShipsCounter != Board.shipLimit*NUMBER_BOARDS) {
+        while (addedShipsCounter != (SHIP_LIMIT.getQty() * NUMBER_BOARDS)) {
             try {
-                System.out.println(user.messageBundle("length") + activePlayer);
+                System.out.println(user.messageBundle("length", activePlayer, SHIP4SAIL.getQty(), SHIP1SAIL.getQty()));
                 int length = user.getLength();
-                System.out.println(user.messageBundle("x"));
+                System.out.println(user.messageBundle("x", activePlayer));
                 int x = user.getInt();
-                System.out.println(user.messageBundle("y"));
+                System.out.println(user.messageBundle("y", activePlayer));
                 int y = user.getInt();
-                System.out.println(user.messageBundle("position"));
+                System.out.println(user.messageBundle("position", activePlayer));
                 String position = user.getPosition();
                 this.position = Position.valueOf(position);
 
                 if (player.addShip(length, x, y, this.position)) {
-                    System.out.println(user.messageBundle("addComuni"));
+                    System.out.println(user.messageBundle("addComuni", length));
                     Render.renderAndPrintBoardBeforeGame(player.getShips());
                     addedShipsCounter++;
                 }
@@ -150,7 +151,6 @@ public class ControlPanel {
     }
 
     public void playGame(GameStatus gameStatus) throws ArrayIndexOutOfBoundsException {
-        log.info("Wznowienie gry");
         UI user = new UI();
         Saver saver = new Saver();
         int activePlayer = gameStatus.getCurretnPlayer();
@@ -163,13 +163,13 @@ public class ControlPanel {
             activePlayer = activePlayer == 1 ? 2 : 1;
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
 
-            System.out.printf(user.messageBundle("information") + ": %s.\n" + user.messageBundle("boardInfo") + ":\n", activePlayer);
-            Render.renderShots(opponentBoard.getOppenetShots());
+            System.out.printf(user.messageBundle("information",activePlayer ) + "\n" + user.messageBundle("boardInfo") + "\n");
+            Render.renderShots(opponentBoard.getOpponetShots());
 
             try {
-                System.out.printf("%s " + user.messageBundle("coordX") + ": \n", activePlayer);
+                System.out.printf(user.messageBundle("coordX", activePlayer) + "\n");
                 int x = user.getInt();
-                System.out.printf("%s " + user.messageBundle("coordY") + ": \n", activePlayer);
+                System.out.printf(user.messageBundle("coordY", activePlayer) + "\n");
                 int y = user.getInt();
                 Shot shot = new Shot(x, y);
                 opponentBoard.shoot(shot);
@@ -186,25 +186,25 @@ public class ControlPanel {
             e.printStackTrace();
         }
         log.info(user.messageBundle("gameOver"));
-        System.out.printf(user.messageBundle("win") + " %s\n", activePlayer);
+        System.out.printf(user.messageBundle("win", activePlayer) +  "\n");
         statistics(player1Board, player2Board);
     }
 
     private void statistics(Board player1Board, Board player2Board) {
         int[] statsPlayer1 = player1Board.statisticsShot();
         int[] statsPlayer2 = player2Board.statisticsShot();
-        System.out.println("Statystyki graczy: ");
-        System.out.println("Zawodnik 1");
-        printStatistcs(statsPlayer2);
-        System.out.println("Zawodnik 2");
+        System.out.println(user.messageBundle("stats"));
+        System.out.println(user.messageBundle("player1"));
         printStatistcs(statsPlayer1);
+        System.out.println(user.messageBundle("player2"));
+        printStatistcs(statsPlayer2);
     }
 
     private void printStatistcs(int[] statsPlayer) {
-        System.out.println("Liczba strzałów: " + statsPlayer[0]);
-        System.out.println("Liczba celnych strzałów: " + statsPlayer[1]);
+        System.out.println(user.messageBundle("numberShots", statsPlayer[0]));
+        System.out.println(user.messageBundle("hittedShot", statsPlayer[1]));
         double pro = ((double) statsPlayer[1] / statsPlayer[0] * 100);
-        System.out.println("Celność [%]: " + String.format("%.2f",pro));
+        System.out.println(user.messageBundle("accurancy",String.format("%.2f",pro)));
         System.out.println();
     }
 }

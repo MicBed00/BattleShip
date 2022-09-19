@@ -60,17 +60,6 @@ public class Render {
                         shotsBoard[s.getY()][s.getX()] = 'O';
                     }
                 });
-
-//        Iterator<Shot> iterator = oppentsShot.iterator();
-//
-//        for (Iterator<Shot> it = iterator; it.hasNext(); ) {
-//            Shot s = it.next();
-//            if (s.getState().equals(Shot.State.HIT)) {
-//                shotsBoard[s.getY()][s.getX()] = 'X';
-//            } else {
-//                shotsBoard[s.getY()][s.getX()] = 'O';
-//            }
-//        }
         printBoard(shotsBoard);
     }
 

@@ -1,6 +1,6 @@
 package board;
 
-
+import DataConfig.ShipLimits;
 import DataConfig.SizeBoard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import control.Render;
@@ -14,26 +14,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import DataConfig.Position;
 import ship.Ship;
-import DataConfig.ShipLimits;
 import DataConfig.ShipSize;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static DataConfig.ShipLimits.SHIP4SAIL;
+import static DataConfig.ShipLimits.*;
 
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private final UI user = new UI();
-    private static final int qtyShip4 = SHIP4SAIL.getQty();
-    private static final int qtyShip3 = ShipLimits.SHIP3SAIL.getQty();
-    private static final int qtyShip2 = ShipLimits.SHIP2SAIL.getQty();
-    private static final int qtyShip1 = ShipLimits.SHIP1SAIL.getQty();
-    public static final int shipLimit = ShipLimits.SHIP_LIMIT.getQty();
-
-
+    private final ShipLimits shipLimits = SHIP_LIMIT;
     private List<Ship> ships = new ArrayList<>();
-    private Set<Shot> oppenetShots = new HashSet<>();
+    private Set<Shot> opponetShots = new HashSet<>();
     private Ship hittedShip;
     @JsonIgnore
     private Boolean registerHit;
@@ -42,8 +35,8 @@ public class Board {
         return ships;
     }
 
-    public Set<Shot> getOppenetShots() {
-        return oppenetShots;
+    public Set<Shot> getOpponetShots() {
+        return opponetShots;
     }
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
@@ -51,7 +44,7 @@ public class Board {
         int beforeAddNewShip = ships.size();
         if (checkIfOutOfBounds(length, x, y, position)) {
             log.warn("Object Ship is out of Board");
-            throw new OutOfBoundsException(user.getBundle().getString("outOfBoundsShip"));
+            throw new OutOfBoundsException(user.messageBundle("outOfBoundsShip"));
         }
         if (ships.isEmpty()) {
             ships.add(new Ship(length, x, y, position));
@@ -61,13 +54,13 @@ public class Board {
         ships.forEach(s -> {
             if (counterShip(ships, length)) {
                 log.warn("The ship limit has reached");
-                throw new ShipLimitExceedException(user.getBundle().getString("shipLimitExceed"));
+                throw new ShipLimitExceedException(user.messageBundle("shipLimitExceed", length));
             }
             if (!isColliding(s, length, x, y, position)) {
                 copyList.add(new Ship(length, x, y, position));
             } else {
                 log.debug("Collision length: {}, x: {}, y: {}, position: {}", length, x, y, position);
-                throw new CollidingException(user.getBundle().getString("collidingException"));
+                throw new CollidingException(user.messageBundle("collidingException", s.toString()));
             }
         });
         ships.addAll(copyList);
@@ -88,16 +81,16 @@ public class Board {
                 .filter(s -> s.getLength() == length)
                 .toList();
 
-            if (length == ShipSize.FOUR.getSize() && list.size() < qtyShip4) {
+            if (length == ShipSize.FOUR.getSize() && list.size() < SHIP4SAIL.getQty()) {
                 return false;
             }
-            if (length == ShipSize.THREE.getSize() && list.size() < qtyShip3) {
+            if (length == ShipSize.THREE.getSize() && list.size() < SHIP3SAIL.getQty()) {
                 return false;
             }
-            if (length == ShipSize.TWO.getSize() && list.size() < qtyShip2) {
+            if (length == ShipSize.TWO.getSize() && list.size() < SHIP2SAIL.getQty()) {
                 return false;
             }
-            if (length == ShipSize.ONE.getSize() && list.size() < qtyShip1) {
+            if (length == ShipSize.ONE.getSize() && list.size() < SHIP1SAIL.getQty()) {
                 return false;
             }
         return true;
@@ -107,7 +100,6 @@ public class Board {
         if (ship.getXstart() == x && ship.getYstart() == y) {
             return true;
         }
-
         if (position == Position.HORIZONTAL) {
             if (ship.getYstart() == y) {
                 if (x - length < 0) {
@@ -160,29 +152,29 @@ public class Board {
                }
            });
        }
-       oppenetShots.add(shot);
-       printShoot(oppenetShots, shot);
+       opponetShots.add(shot);
+       printShoot(opponetShots, shot);
        return registerHit;
     }
 
     private boolean correctShot(Shot shot) {
         if (shotSamePlace(shot)) {
             log.warn("Shoot in the same place");
-            throw new ShotSamePlaceException(user.getBundle().getString("shotSamePlaceException"));
+            throw new ShotSamePlaceException(user.messageBundle("shotSamePlaceException"));
         }
         return true;
     }
 
 
     private boolean shotSamePlace(Shot shot) {
-        return oppenetShots.contains(shot);
+        return opponetShots.contains(shot);
     }
 
     private void printShoot(Set<Shot> shotList, Shot shot) throws ArrayIndexOutOfBoundsException {
         System.out.println(shot.getState().equals(Shot.State.HIT) ? user.messageBundle("hit") : user.messageBundle("miss"));
         if(hittedShip != null) {
             if (hittedShip.checkIfDead()) {
-                System.out.println(user.messageBundle("shipSunk") + hittedShip +" \n");
+                System.out.println(user.messageBundle("shipSunk", hittedShip)+ "\n");
             }
         }
         Render.renderShots(shotList);
@@ -200,8 +192,8 @@ public class Board {
     }
 
     public int[] statisticsShot() {
-        int numberOfshots = this.oppenetShots.size();
-        int numberShotsHit = numberOfShotsHit(this.oppenetShots);
+        int numberOfshots = this.opponetShots.size();
+        int numberShotsHit = numberOfShotsHit(this.opponetShots);
       return new int[] {numberOfshots, numberShotsHit};
     }
 
