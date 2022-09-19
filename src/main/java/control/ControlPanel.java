@@ -164,12 +164,12 @@ public class ControlPanel {
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
 
             System.out.printf(user.messageBundle("information") + ": %s.\n" + user.messageBundle("boardInfo") + ":\n", activePlayer);
-            Render.renderShots(opponentBoard.getOpponetsShots());
+            Render.renderShots(opponentBoard.getOppenetShots());
 
             try {
-                System.out.printf("%s " + user.messageBundle("coordX ") + ": \n", activePlayer);
+                System.out.printf("%s " + user.messageBundle("coordX") + ": \n", activePlayer);
                 int x = user.getInt();
-                System.out.printf("%s " + user.messageBundle("coordY ") + ": \n", activePlayer);
+                System.out.printf("%s " + user.messageBundle("coordY") + ": \n", activePlayer);
                 int y = user.getInt();
                 Shot shot = new Shot(x, y);
                 opponentBoard.shoot(shot);

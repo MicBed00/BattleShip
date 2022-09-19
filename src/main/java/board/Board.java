@@ -33,26 +33,17 @@ public class Board {
 
 
     private List<Ship> ships = new ArrayList<>();
-  //  @JsonSerialize(keyUsing = MapKeySerializer.class)
-  // @JsonDeserialize(keyUsing = MapKeyDeserializer.class)
-    private Map<Shot, Boolean> opponetsShots = new LinkedHashMap<>();
+    private Set<Shot> oppenetShots = new HashSet<>();
     private Ship hittedShip;
+    @JsonIgnore
     private Boolean registerHit;
 
     public List<Ship> getShips() {
         return ships;
     }
 
-    public Map<Shot, Boolean> getOpponetsShots() {
-        return opponetsShots;
-    }
-
-    public Boolean getRegisterHit() {
-        return registerHit;
-    }
-
-    public void setRegisterHit(Boolean registerHit) {
-        this.registerHit = registerHit;
+    public Set<Shot> getOppenetShots() {
+        return oppenetShots;
     }
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
@@ -156,19 +147,21 @@ public class Board {
     }
 
     public boolean shoot(Shot shot) throws ShotSamePlaceException {
+        shot.setState(Shot.State.MISSED);
         registerHit = false;
         hittedShip = null;
 
        if(correctShot(shot)) {
            ships.forEach(ship -> {
                if (ship.checkIfHit(shot.getX(), shot.getY())) {
+                   shot.setState(Shot.State.HIT);
                    registerHit = true;
                    hittedShip = ship;
                }
            });
        }
-       addShotToMap(shot, registerHit);
-       printShoot(opponetsShots, ships, shot);
+       oppenetShots.add(shot);
+       printShoot(oppenetShots, shot);
        return registerHit;
     }
 
@@ -180,22 +173,19 @@ public class Board {
         return true;
     }
 
-    private void addShotToMap(Shot shot, boolean registerHit) {
-        opponetsShots.put(shot, registerHit);
-    }
 
     private boolean shotSamePlace(Shot shot) {
-        return opponetsShots.containsKey(shot);
+        return oppenetShots.contains(shot);
     }
 
-    private void printShoot(Map<Shot, Boolean> opponetsShots, List<Ship> list, Shot shot) throws ArrayIndexOutOfBoundsException {
-        System.out.println(opponetsShots.get(shot) ? user.messageBundle("hit") : user.messageBundle("miss"));
+    private void printShoot(Set<Shot> shotList, Shot shot) throws ArrayIndexOutOfBoundsException {
+        System.out.println(shot.getState().equals(Shot.State.HIT) ? user.messageBundle("hit") : user.messageBundle("miss"));
         if(hittedShip != null) {
             if (hittedShip.checkIfDead()) {
                 System.out.println(user.messageBundle("shipSunk") + hittedShip +" \n");
             }
         }
-        Render.renderShots(opponetsShots);
+        Render.renderShots(shotList);
         System.out.println("###################################################\n");
     }
 
@@ -208,21 +198,16 @@ public class Board {
                 });
         return isFinished;
     }
-//
-//    public void setFinished(boolean finished) {
-//        isFinished.set(finished);
-//    }
 
     public int[] statisticsShot() {
-        int numberOfshots = this.opponetsShots.size();
-        int numberShotsHit = numberOfShotsHit(this.opponetsShots);
+        int numberOfshots = this.oppenetShots.size();
+        int numberShotsHit = numberOfShotsHit(this.oppenetShots);
       return new int[] {numberOfshots, numberShotsHit};
     }
 
-    private int numberOfShotsHit(Map<Shot, Boolean> opponetsShots) {
-        Set<Shot> shots = opponetsShots.keySet();
+    private int numberOfShotsHit(Set<Shot> shots) {
         long counterAccurateShot = shots.stream()
-                .filter(opponetsShots::get)
+                .filter(s -> s.getState().equals(Shot.State.HIT))
                 .count();
         return (int)counterAccurateShot;
     }

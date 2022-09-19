@@ -9,11 +9,12 @@ public class Shot {
     private int y;
     private State state;
 
-    enum State {
+    public enum State {
         PREPARING,
         MISSED,
         HIT
     }
+    public Shot() {};
 
     public Shot(int x, int y) {
         this.state = State.PREPARING;
@@ -25,6 +26,14 @@ public class Shot {
         this.state = state;
         this.x = x;
         this.y = y;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public Shot(String s) {
@@ -62,7 +71,6 @@ public class Shot {
     }
 
     @Override
-    @JsonValue
     public String toString() {
         return    x + "," + y;
     }

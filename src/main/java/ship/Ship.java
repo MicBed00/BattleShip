@@ -16,9 +16,7 @@ public class Ship {
     private Position position;
     private boolean[] hits;
 
-   public Ship() {
-
-   }
+   public Ship() {}
 
     public Ship(int length, int x, int y, Position position) {
         this.length = length;
