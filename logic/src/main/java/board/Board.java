@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private final UI user = new UI();
-    private final ShipLimits shipLimits = ShipLimits.SHIP_LIMIT;
+//    private final ShipLimits shipLimits = ShipLimits.SHIP_LIMIT;
     private List<Ship> ships = new ArrayList<>();
     private Set<Shot> opponetShots = new HashSet<>();
     private Ship hittedShip;

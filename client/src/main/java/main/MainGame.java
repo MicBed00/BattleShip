@@ -20,7 +20,7 @@ public class MainGame {
     // rzutujemy LoggerFactory na klasę Logger, ALE z biblioteki logback. Logger pochodzi również z logback. Dzięki temu rzutowaniu
     //uzyskujemy dostęp do metody .setLevel, która nie jest zaimplementowana w loggerze slf4j.
     private static final Logger LOG = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("main.MainGame");
-    public static final String currentLocal = "en";
+//    public static final String currentLocal = "pl";
     private static UI user = new UI();
 
     public static void main(String[] args) {
