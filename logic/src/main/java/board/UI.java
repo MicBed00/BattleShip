@@ -11,14 +11,14 @@ import java.util.*;
 
 public class UI {
     public Locale local = new Locale("en");
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
     ResourceBundle bundle = ResourceBundle.getBundle("Bundle", local);
    // public ResourceBundle bundle = ResourceBundle.getBundle("Bundle", local);
     private final Logger log = LoggerFactory.getLogger(UI.class);
     public Scanner sc;
 
-    public ResourceBundle getBundle() {
-        return bundle;
-    }
 
     public String messageBundle(String key, Object... arguments) {
         return MessageFormat.format(getString(key), arguments);
