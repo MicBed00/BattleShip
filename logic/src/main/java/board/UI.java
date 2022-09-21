@@ -1,4 +1,4 @@
-package control;
+package board;
 
 import DataConfig.SizeBoard;
 import exceptions.OutOfBoundsException;
@@ -17,7 +17,7 @@ public class UI {
     }
     private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", locale);
     private final Logger log = LoggerFactory.getLogger(UI.class);
-    Scanner sc;
+    public Scanner sc;
 
     public String messageBundle(String key, Object... arguments) {
         return MessageFormat.format(getString(key), arguments);

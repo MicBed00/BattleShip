@@ -3,7 +3,7 @@ package ship;
 import DataConfig.Position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import control.UI;
+import board.UI;
 
 import java.util.Arrays;
 import java.util.Objects;

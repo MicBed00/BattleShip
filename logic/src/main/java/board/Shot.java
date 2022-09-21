@@ -1,6 +1,4 @@
-package control;
-
-import com.fasterxml.jackson.annotation.JsonValue;
+package board;
 
 import java.util.Objects;
 

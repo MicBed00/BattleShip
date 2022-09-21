@@ -1,30 +1,28 @@
 package board;
 
+import DataConfig.Position;
 import DataConfig.ShipLimits;
+import DataConfig.ShipSize;
 import DataConfig.SizeBoard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import control.Render;
-import control.Shot;
-import control.UI;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import DataConfig.Position;
 import ship.Ship;
-import DataConfig.ShipSize;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static DataConfig.ShipLimits.*;
 
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private final UI user = new UI();
-    private final ShipLimits shipLimits = SHIP_LIMIT;
+    private final ShipLimits shipLimits = ShipLimits.SHIP_LIMIT;
     private List<Ship> ships = new ArrayList<>();
     private Set<Shot> opponetShots = new HashSet<>();
     private Ship hittedShip;
@@ -81,16 +79,16 @@ public class Board {
                 .filter(s -> s.getLength() == length)
                 .toList();
 
-            if (length == ShipSize.FOUR.getSize() && list.size() < SHIP4SAIL.getQty()) {
+            if (length == ShipSize.FOUR.getSize() && list.size() < ShipLimits.SHIP4SAIL.getQty()) {
                 return false;
             }
-            if (length == ShipSize.THREE.getSize() && list.size() < SHIP3SAIL.getQty()) {
+            if (length == ShipSize.THREE.getSize() && list.size() < ShipLimits.SHIP3SAIL.getQty()) {
                 return false;
             }
-            if (length == ShipSize.TWO.getSize() && list.size() < SHIP2SAIL.getQty()) {
+            if (length == ShipSize.TWO.getSize() && list.size() < ShipLimits.SHIP2SAIL.getQty()) {
                 return false;
             }
-            if (length == ShipSize.ONE.getSize() && list.size() < SHIP1SAIL.getQty()) {
+            if (length == ShipSize.ONE.getSize() && list.size() < ShipLimits.SHIP1SAIL.getQty()) {
                 return false;
             }
         return true;

@@ -1,4 +1,4 @@
-package control;
+package board;
 
 public enum StatePreperationGame {
     IN_PROCCESS,

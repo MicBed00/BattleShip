@@ -1,13 +1,10 @@
-package control;
+package board;
 
-import board.Board;
-import DataConfig.SizeBoard;
 import DataConfig.Position;
+import DataConfig.SizeBoard;
 import ship.Ship;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class Render {

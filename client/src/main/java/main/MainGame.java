@@ -1,19 +1,16 @@
 package main;
 
-import board.Board;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import control.ControlPanel;
-import control.StatePreperationGame;
-import control.UI;
+import board.StatePreperationGame;
+import board.UI;
 import org.slf4j.LoggerFactory;
 import serialization.GameStatus;
 import serialization.Reader;
 
-
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;

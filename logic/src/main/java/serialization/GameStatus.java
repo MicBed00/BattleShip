@@ -1,8 +1,7 @@
 package serialization;
 
 import board.Board;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import control.StatePreperationGame;
+import board.StatePreperationGame;
 
 import java.util.List;
 

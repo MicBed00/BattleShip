@@ -1,11 +1,11 @@
+import DataConfig.Position;
 import board.Board;
-import control.Shot;
+import board.Shot;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
 import org.junit.jupiter.api.Test;
-import DataConfig.Position;
 import ship.Ship;
 
 import java.util.ArrayList;

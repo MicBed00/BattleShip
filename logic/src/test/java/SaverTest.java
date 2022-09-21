@@ -1,12 +1,11 @@
 import DataConfig.Position;
 import board.Board;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import control.Shot;
-import control.StatePreperationGame;
+import board.Shot;
+import board.StatePreperationGame;
 import org.junit.jupiter.api.Test;
 import serialization.GameStatus;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import serialization.Saver;
 
 import java.io.BufferedWriter;
