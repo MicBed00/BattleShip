@@ -1,24 +1,19 @@
 import DataConfig.Position;
 import board.Board;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import board.Shot;
 import board.StatePreperationGame;
 import org.junit.jupiter.api.Test;
 import serialization.GameStatus;
+import serialization.Reader;
 import serialization.Saver;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-class SaverTest {
+public class SaverTest {
 
     @Test
     void serialiationStatusGameTest() throws IOException {
@@ -52,28 +47,20 @@ class SaverTest {
         board2.shoot(new Shot(4, 5));
 
         Saver saver = new Saver();
+
+        GameStatus gameStatus = getGameStatus(currentPlayer, state, board1, board2);
         saver.saveToFile(board1,board2,currentPlayer, state);
+        GameStatus gameStatusAfterDeser = new Reader().readFromFile("target/gameStatus.json");
 
-
-        File jsonFile = new File("target/gameStatus.json");
-        File expectedFile = new File("src/test/java/expectedFileTest.json");
-     testCreatJsonFile(currentPlayer, board1, board2, expectedFile, state);  //
-
-        assertThat(jsonFile).hasSameTextualContentAs(expectedFile);
+        assertEquals(gameStatus, gameStatusAfterDeser);
     }
 
-    private void testCreatJsonFile(int currentPlayer, Board board1, Board board2, File expectedFile, StatePreperationGame state) throws IOException {
+    private GameStatus getGameStatus(int currentPlayer, StatePreperationGame state,
+                                     Board board1, Board board2) {
         List<Board> boardList = new ArrayList<>();
         boardList.add(board1);
         boardList.add(board2);
-        GameStatus gameStatus = new GameStatus(boardList, currentPlayer, state);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.writerWithDefaultPrettyPrinter();
-        String json = mapper.writeValueAsString(gameStatus);
-
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(expectedFile));
-        bufferedWriter.write(json);
-        bufferedWriter.close();
+        return new GameStatus(boardList, currentPlayer, state);
     }
+
 }
