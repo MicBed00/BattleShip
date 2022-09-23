@@ -4,6 +4,7 @@ import board.Board;
 import board.StatePreperationGame;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GameStatus {
     private List<Board> boardsStatus;
@@ -51,5 +52,18 @@ public class GameStatus {
                 ", curretnPlayer=" + curretnPlayer +
                 ", state=" + state +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameStatus that = (GameStatus) o;
+        return curretnPlayer == that.curretnPlayer && Objects.equals(boardsStatus, that.boardsStatus) && state == that.state;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(boardsStatus, curretnPlayer, state);
     }
 }

@@ -12,6 +12,7 @@
       <module name="BattelShip" target="17" />
       <module name="BattelShip - client" target="17" />
       <module name="BattelShip - logic" target="17" />
+      <module name="cli" target="17" />
       <module name="client" target="17" />
       <module name="logic" target="17" />
       <module name="newModule" target="17" />

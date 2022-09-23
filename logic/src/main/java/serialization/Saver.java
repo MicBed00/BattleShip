@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Saver {
-    private final String filePath = "target/gameStatus.json";
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public Saver() {
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.writerWithDefaultPrettyPrinter();
     }
+
 
     public void saveToFile(Board board1, Board board2, int currentPlayer, StatePreperationGame state) throws IOException, NullObject{
         List<Board> boardList = creatBoardsList(board1, board2);
@@ -31,6 +31,7 @@ public class Saver {
     }
 
     private void writeStringtoFile(String file) throws IOException {
+        String filePath = "target/gameStatus.json";
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
         bufferedWriter.write(file);
         bufferedWriter.close();

@@ -13,16 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ship.Ship;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private final UI user = new UI();
-//    private final ShipLimits shipLimits = ShipLimits.SHIP_LIMIT;
     private List<Ship> ships = new ArrayList<>();
     private Set<Shot> opponetShots = new HashSet<>();
     private Ship hittedShip;
@@ -187,6 +183,19 @@ public class Board {
                         isFinished.set(false);
                 });
         return isFinished;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board = (Board) o;
+        return Objects.equals(ships, board.ships) && Objects.equals(opponetShots, board.opponetShots);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ships, opponetShots);
     }
 
     public int[] statisticsShot() {
