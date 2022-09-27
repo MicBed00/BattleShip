@@ -2,8 +2,6 @@ package board;
 
 import DataConfig.Position;
 import DataConfig.ShipLimits;
-import DataConfig.ShipSize;
-import DataConfig.SizeBoard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
@@ -75,18 +73,18 @@ public class Board {
                 .filter(s -> s.getLength() == length)
                 .toList();
 
-            if (length == ShipSize.FOUR.getSize() && list.size() < ShipLimits.SHIP4SAIL.getQty()) {
-                return false;
-            }
-            if (length == ShipSize.THREE.getSize() && list.size() < ShipLimits.SHIP3SAIL.getQty()) {
-                return false;
-            }
-            if (length == ShipSize.TWO.getSize() && list.size() < ShipLimits.SHIP2SAIL.getQty()) {
-                return false;
-            }
-            if (length == ShipSize.ONE.getSize() && list.size() < ShipLimits.SHIP1SAIL.getQty()) {
-                return false;
-            }
+        if (length == ShipSize.FOUR.getSize() && list.size() < ShipLimits.SHIP4SAIL.getQty()) {
+            return false;
+        }
+        if (length == ShipSize.THREE.getSize() && list.size() < ShipLimits.SHIP3SAIL.getQty()) {
+            return false;
+        }
+        if (length == ShipSize.TWO.getSize() && list.size() < ShipLimits.SHIP2SAIL.getQty()) {
+            return false;
+        }
+        if (length == ShipSize.ONE.getSize() && list.size() < ShipLimits.SHIP1SAIL.getQty()) {
+            return false;
+        }
         return true;
     }
 
@@ -137,18 +135,18 @@ public class Board {
         registerHit = false;
         hittedShip = null;
 
-       if(correctShot(shot)) {
-           ships.forEach(ship -> {
-               if (ship.checkIfHit(shot.getX(), shot.getY())) {
-                   shot.setState(Shot.State.HIT);
-                   registerHit = true;
-                   hittedShip = ship;
-               }
-           });
-       }
-       opponetShots.add(shot);
-       printShoot(opponetShots, shot);
-       return registerHit;
+        if (correctShot(shot)) {
+            ships.forEach(ship -> {
+                if (ship.checkIfHit(shot.getX(), shot.getY())) {
+                    shot.setState(Shot.State.HIT);
+                    registerHit = true;
+                    hittedShip = ship;
+                }
+            });
+        }
+        opponetShots.add(shot);
+        printShoot(opponetShots, shot);
+        return registerHit;
     }
 
     private boolean correctShot(Shot shot) {
@@ -166,9 +164,9 @@ public class Board {
 
     private void printShoot(Set<Shot> shotList, Shot shot) throws ArrayIndexOutOfBoundsException {
         System.out.println(shot.getState().equals(Shot.State.HIT) ? user.messageBundle("hit") : user.messageBundle("miss"));
-        if(hittedShip != null) {
+        if (hittedShip != null) {
             if (hittedShip.checkIfDead()) {
-                System.out.println(user.messageBundle("shipSunk", hittedShip)+ "\n");
+                System.out.println(user.messageBundle("shipSunk", hittedShip) + "\n");
             }
         }
         Render.renderShots(shotList);
@@ -179,9 +177,9 @@ public class Board {
     public AtomicBoolean getIsFinished() {
         AtomicBoolean isFinished = new AtomicBoolean(true);
         ships.forEach(ship -> {
-                    if(!ship.checkIfDead())
-                        isFinished.set(false);
-                });
+            if (!ship.checkIfDead())
+                isFinished.set(false);
+        });
         return isFinished;
     }
 
@@ -201,13 +199,13 @@ public class Board {
     public int[] statisticsShot() {
         int numberOfshots = this.opponetShots.size();
         int numberShotsHit = numberOfShotsHit(this.opponetShots);
-      return new int[] {numberOfshots, numberShotsHit};
+        return new int[]{numberOfshots, numberShotsHit};
     }
 
     private int numberOfShotsHit(Set<Shot> shots) {
         long counterAccurateShot = shots.stream()
                 .filter(s -> s.getState().equals(Shot.State.HIT))
                 .count();
-        return (int)counterAccurateShot;
+        return (int) counterAccurateShot;
     }
 }

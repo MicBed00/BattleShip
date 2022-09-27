@@ -1,6 +1,6 @@
-package DataConfig;
+package board;
 
-public enum ShipSize {
+ enum ShipSize {
     FOUR(4),
     THREE(3),
     TWO(2),

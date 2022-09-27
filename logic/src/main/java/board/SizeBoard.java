@@ -1,6 +1,6 @@
-package DataConfig;
+package board;
 
-public enum SizeBoard {
+enum SizeBoard {
     ROW(10),
     COLUMNE(10);
 

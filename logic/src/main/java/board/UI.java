@@ -1,24 +1,22 @@
 package board;
 
-import DataConfig.SizeBoard;
 import exceptions.OutOfBoundsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import DataConfig.ShipSize;
 
 import java.text.MessageFormat;
 import java.util.*;
 
 public class UI {
     public Locale local = new Locale("en");
-    public ResourceBundle getBundle() {
-        return bundle;
-    }
-    ResourceBundle bundle = ResourceBundle.getBundle("Bundle", local);
+    private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", local);
    // public ResourceBundle bundle = ResourceBundle.getBundle("Bundle", local);
     private final Logger log = LoggerFactory.getLogger(UI.class);
     public Scanner sc;
 
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
 
     public String messageBundle(String key, Object... arguments) {
         return MessageFormat.format(getString(key), arguments);

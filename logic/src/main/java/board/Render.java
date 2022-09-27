@@ -1,7 +1,6 @@
 package board;
 
 import DataConfig.Position;
-import DataConfig.SizeBoard;
 import ship.Ship;
 
 import java.util.List;

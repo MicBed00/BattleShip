@@ -37,7 +37,7 @@ public class MainGame {
         System.out.println(dt.format(germanTime));
         ControlPanel cp = new ControlPanel();
 
-        if((0 < args.length) && (args!= null)) {
+        if ((0 < args.length) && (args != null)) {
             String argFile = args[0];
             GameStatus gameStatus = null;
             try {
@@ -45,10 +45,10 @@ public class MainGame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(Objects.requireNonNull(gameStatus).getState().equals(StatePreperationGame.IN_PROCCESS)) {
-               GameStatus game =  cp.prepareBeforeGame(gameStatus);
-               cp.playGame(game);
-            }else {
+            if (Objects.requireNonNull(gameStatus).getState().equals(StatePreperationGame.IN_PROCCESS)) {
+                GameStatus game = cp.prepareBeforeGame(gameStatus);
+                cp.playGame(game);
+            } else {
                 cp.playGame(gameStatus);
             }
         } else {

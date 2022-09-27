@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SaverTest {
 
     @Test
-    void serialiationStatusGameTest() throws IOException {
+    public void serialiationStatusGameTest() throws IOException {
         int currentPlayer = 1;
         StatePreperationGame state = StatePreperationGame.FINISHED;
         Board board1 = new Board();
@@ -49,7 +49,7 @@ public class SaverTest {
         Saver saver = new Saver();
 
         GameStatus gameStatus = getGameStatusBeforeSaveToFile(currentPlayer, state, board1, board2);
-        saver.saveToFile(board1,board2,currentPlayer, state);
+        saver.saveToFile(board1, board2, currentPlayer, state);
         GameStatus gameStatusAfterDeser = new Reader().readFromFile("target/gameStatus.json");
 
         assertEquals(gameStatus, gameStatusAfterDeser);
