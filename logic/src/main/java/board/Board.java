@@ -19,7 +19,7 @@ public class Board {
     private final UI user = new UI();
     private List<Ship> ships = new ArrayList<>();
     private Set<Shot> opponetShots = new HashSet<>();
-    private Ship hittedShip;
+    public List<Ship> hittedShip = new ArrayList<>();
     @JsonIgnore
     private Boolean registerHit;
 
@@ -62,10 +62,10 @@ public class Board {
     }
 
     private boolean checkIfOutOfBounds(int length, int x, int y, Position position) {
-        return Position.VERTICAL == position && y + length > Render.getSizeBoard()
+        return Position.VERTICAL == position && y + length > SizeBoard.ROW.getSize()
                 || Position.HORIZONTAL == position && (x + 1) - length < 0
-                || x > Render.getSizeBoard()
-                || y > Render.getSizeBoard();
+                || x > SizeBoard.ROW.getSize()
+                || y > SizeBoard.ROW.getSize();
     }
 
     private boolean counterShip(List<Ship> listShip, int length) {
@@ -130,23 +130,20 @@ public class Board {
         return ship.getXstart() >= x && ship.getXstart() - ship.getLength() <= x && ship.getYstart() > y;
     }
 
-    public boolean shoot(Shot shot) throws ShotSamePlaceException {
-        shot.setState(Shot.State.MISSED);
-        registerHit = false;
-        hittedShip = null;
-
+    public Set<Shot> shoot(Shot shot) throws ShotSamePlaceException {
         if (correctShot(shot)) {
+            shot.setState(Shot.State.MISSED);
             ships.forEach(ship -> {
                 if (ship.checkIfHit(shot.getX(), shot.getY())) {
                     shot.setState(Shot.State.HIT);
-                    registerHit = true;
-                    hittedShip = ship;
+                    hittedShip.add(ship);
                 }
             });
+        } else {
+            shot.setState(Shot.State.INVALID);
         }
         opponetShots.add(shot);
-        printShoot(opponetShots, shot);
-        return registerHit;
+        return opponetShots;
     }
 
     private boolean correctShot(Shot shot) {
@@ -157,20 +154,8 @@ public class Board {
         return true;
     }
 
-
     private boolean shotSamePlace(Shot shot) {
         return opponetShots.contains(shot);
-    }
-
-    private void printShoot(Set<Shot> shotList, Shot shot) throws ArrayIndexOutOfBoundsException {
-        System.out.println(shot.getState().equals(Shot.State.HIT) ? user.messageBundle("hit") : user.messageBundle("miss"));
-        if (hittedShip != null) {
-            if (hittedShip.checkIfDead()) {
-                System.out.println(user.messageBundle("shipSunk", hittedShip) + "\n");
-            }
-        }
-        Render.renderShots(shotList);
-        System.out.println("###################################################\n");
     }
 
     @JsonIgnore

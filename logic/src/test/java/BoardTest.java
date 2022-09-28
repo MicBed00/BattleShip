@@ -6,10 +6,6 @@ import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
 import org.junit.jupiter.api.Test;
-import ship.Ship;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -128,11 +124,11 @@ public class BoardTest {
     public void correctShotMiss() {
         //given
         Board board = new Board();
-        List<Ship> list = new ArrayList<>();
         Shot shot = new Shot(4, 5);
-
-        assertFalse(board.shoot(shot));
+        board.shoot(shot);
+        assertEquals(Shot.State.MISSED, shot.getState());
     }
+
 
     @Test
     public void correctShotHit() {
@@ -140,8 +136,8 @@ public class BoardTest {
         Board board2 = new Board();
         board2.addShip(2, 2, 2, Position.VERTICAL);
         Shot shot = new Shot(2, 3);
-
-        assertTrue(board2.shoot(shot));
+        board2.shoot(shot);
+        assertEquals(Shot.State.HIT, shot.getState());
     }
 
     @Test

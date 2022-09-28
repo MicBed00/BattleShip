@@ -1,18 +1,16 @@
-package board;
+package control;
 
 import DataConfig.Position;
+import board.Shot;
 import ship.Ship;
 
 import java.util.List;
 import java.util.Set;
 
 public class Render {
-    private static final int ROW = SizeBoard.ROW.getSize();
-    private static final int COLUMNE = SizeBoard.COLUMNE.getSize();
+    private static final int ROW = 10;
+    private static final int COLUMNE = 10;
 
-    public static int getSizeBoard() {
-        return ROW;
-    }
 
     public static void renderAndPrintBoardBeforeGame(List<Ship> listShip) {
         char[][] instertedShipsByPlayer = Render.renderShipBeforeGame(listShip);

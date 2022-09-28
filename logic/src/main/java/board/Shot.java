@@ -10,7 +10,8 @@ public class Shot {
     public enum State {
         PREPARING,
         MISSED,
-        HIT
+        HIT,
+        INVALID
     }
     public Shot() {};
 

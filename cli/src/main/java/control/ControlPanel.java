@@ -14,17 +14,13 @@ import serialization.GameStatus;
 import serialization.Saver;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.List;
+import java.util.*;
 
 public class ControlPanel {
     private final Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("control.ControlPanel");
     private final UI user = new UI();
     private static final int NUMBER_BOARDS = 2;
     Position position;
-
 
     public GameStatus prepareBeforeGame(GameStatus gameStatus) {
         log.info("Wznowienie gry");
@@ -176,7 +172,8 @@ public class ControlPanel {
                 System.out.printf(user.messageBundle("coordY", activePlayer) + "\n");
                 int y = user.getInt();
                 Shot shot = new Shot(x, y);
-                opponentBoard.shoot(shot);
+                Set<Shot> opponetShots = opponentBoard.shoot(shot);
+                printShoot(opponetShots, shot, opponentBoard);
                 saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.IN_PROCCESS);
             } catch (InputMismatchException | ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException | IOException e) {
                 log.error(user.getBundle().getString("error"), e);
@@ -194,6 +191,15 @@ public class ControlPanel {
         statistics(player1Board, player2Board);
     }
 
+        private void printShoot(Set<Shot> shotList, Shot shot, Board oppenetBoard) throws ArrayIndexOutOfBoundsException {
+        System.out.println(shot.getState().equals(Shot.State.HIT) ? user.messageBundle("hit") : user.messageBundle("miss"));
+        int lastElementHittedList = oppenetBoard.hittedShip.size() - 1;
+            if (oppenetBoard.hittedShip.get(lastElementHittedList).checkIfDead()) {
+                System.out.println(user.messageBundle("shipSunk", oppenetBoard.hittedShip.get(lastElementHittedList)) + "\n");
+            }
+        Render.renderShots(shotList);
+        System.out.println("###################################################\n");
+    }
     private void statistics(Board player1Board, Board player2Board) {
         int[] statsPlayer1 = player1Board.statisticsShot();
         int[] statsPlayer2 = player2Board.statisticsShot();
