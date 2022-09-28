@@ -2,14 +2,15 @@ package control;
 
 import DataConfig.Position;
 import board.Shot;
+import board.SizeBoard;
 import ship.Ship;
 
 import java.util.List;
 import java.util.Set;
 
 public class Render {
-    private static final int ROW = 10;
-    private static final int COLUMNE = 10;
+    private static final int ROW = SizeBoard.ROW.getSize();
+    private static final int COLUMNE = SizeBoard.COLUMNE.getSize();
 
 
     public static void renderAndPrintBoardBeforeGame(List<Ship> listShip) {

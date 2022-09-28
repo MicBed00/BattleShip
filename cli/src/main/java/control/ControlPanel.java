@@ -176,7 +176,7 @@ public class ControlPanel {
                 printShoot(opponetShots, shot, opponentBoard);
                 saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.IN_PROCCESS);
             } catch (InputMismatchException | ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException | IOException e) {
-                log.error(user.getBundle().getString("error"), e);
+                log.error(user.messageBundle("error", e));
                 System.err.println(e.getMessage());
                 continue;
             }

@@ -31,7 +31,7 @@ public class Saver {
     }
 
     private void writeStringtoFile(String file) throws IOException {
-        String filePath = "target/gameStatus.json";
+        String filePath = "logic/target/gameStatus.json";
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
         bufferedWriter.write(file);
         bufferedWriter.close();

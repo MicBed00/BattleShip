@@ -1,6 +1,6 @@
 package board;
 
- enum ShipSize {
+ public enum ShipSize {
     FOUR(4),
     THREE(3),
     TWO(2),
