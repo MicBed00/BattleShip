@@ -127,7 +127,6 @@ public class ControlPanel {
                 }
 
                 saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.IN_PROCCESS );
-
             } catch (InputMismatchException | ShipLimitExceedException | OutOfBoundsException | CollidingException | IOException e) {
                 System.err.println(e.getMessage());
                 System.out.flush();
@@ -194,7 +193,7 @@ public class ControlPanel {
         private void printShoot(Set<Shot> shotList, Shot shot, Board oppenetBoard) throws ArrayIndexOutOfBoundsException {
         System.out.println(shot.getState().equals(Shot.State.HIT) ? user.messageBundle("hit") : user.messageBundle("miss"));
         int lastElementHittedList = oppenetBoard.hittedShip.size() - 1;
-            if (oppenetBoard.hittedShip.get(lastElementHittedList).checkIfDead()) {
+            if ((lastElementHittedList >= 0) && oppenetBoard.hittedShip.get(lastElementHittedList).checkIfDead()) {
                 System.out.println(user.messageBundle("shipSunk", oppenetBoard.hittedShip.get(lastElementHittedList)) + "\n");
             }
         Render.renderShots(shotList);
