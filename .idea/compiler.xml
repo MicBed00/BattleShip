@@ -17,6 +17,7 @@
       <module name="logic" target="17" />
       <module name="newModule" target="17" />
       <module name="web" target="17" />
+      <module name="webApp" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -24,6 +25,7 @@
       <module name="cli" options="" />
       <module name="logic" options="" />
       <module name="web" options="-parameters" />
+      <module name="webApp" options="-parameters" />
     </option>
   </component>
 </project>

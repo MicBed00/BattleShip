@@ -11,7 +11,7 @@
     <modules>
         <module>logic</module>
         <module>cli</module>
-        <module>web</module>
+        <module>webApp</module>
     </modules>
 
     <properties>
