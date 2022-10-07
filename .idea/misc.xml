@@ -4,6 +4,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/../../Wygnerowane Spring/web/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -11,7 +12,6 @@
         <option value="$PROJECT_DIR$/BattelShip - logic/pom.xml" />
         <option value="$PROJECT_DIR$/client/pom.xml" />
         <option value="$PROJECT_DIR$/newModule/pom.xml" />
-        <option value="$PROJECT_DIR$/web/pom.xml" />
       </set>
     </option>
   </component>
