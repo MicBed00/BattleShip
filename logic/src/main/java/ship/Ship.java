@@ -27,12 +27,12 @@ public class Ship {
     }
 
     @JsonSetter("xstart")           //w trakcie deserializacji nie rozpoznawało nazwy pola
-    public void setxStart(int xStart) {
+    public void setxstart(int xStart) {
         this.xStart = xStart;
     }
 
     @JsonSetter("ystart")
-    public void setyStart(int yStart) {
+    public void setystart(int yStart) {
         this.yStart = yStart;
     }
 
@@ -62,6 +62,23 @@ public class Ship {
         this.hits = hits;
     }
 
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+
     public boolean checkIfHit(int x, int y) {
         if (this.position == Position.HORIZONTAL) {
             if (ifTheShipHit(x, y)) {
@@ -90,14 +107,6 @@ public class Ship {
                 return false;
         }
         return true;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public Position getPosition() {
-        return position;
     }
 
     @Override

@@ -9,13 +9,35 @@
         <h1>Add Ship</h1>
     </div>
     <div align="center">
-        <form th:action="@{/addShip}" th:object="${newShip}" method="post">
-            <p>Length:      <input type="text" th:field="*{length}"></p><br>
-            <p>X:           <input type="text" th:field="*{xstart}"></p><br>
-            <p>Y:           <input type="text" th:field="*{ystart}"></p><br>
+        <form th:action="@{/addShip}" th:object="${ship}" method="post">
+            <p>Length:      <input type="number" th:field="*{length}"></p><br>
+            <p>X:           <input type="number" th:field="*{xstart}"></p><br>
+            <p>Y:           <input type="number" th:field="*{ystart}"></p><br>
             <p>Orientation: <input type="text" th:field="*{position}"></p><br>
             <p><input type="submit" value="add new ship"></p>
         </form>
+
+        <tr th:each="ship: ${listShip}">
+            <td th:text="${ship.getLength}"></td>
+            <td th:text="${ship.getXstart}">X: </td>
+            <td th:text="${ship.getYstart}">Y: </td>
+            <td th:text="${ship.getPosition}">Orientacja: </td>
+            <p>##############################################</p>
+        </tr>
+        <tr th:each="ship: ${listShipPLY2}">
+            <td th:text="${ship.getLength}"></td>
+            <td th:text="${ship.getXstart}">X: </td>
+            <td th:text="${ship.getYstart}">Y: </td>
+            <td th:text="${ship.getPosition}">Orientacja: </td>
+            <p>##############################################</p>
+        </tr>
+
+<!--        <form th:action="@{/add-car}" th:object="${car}" method="post">-->
+<!--            <p>Model: <input type="text" th:field="*{model}"></p>-->
+<!--            <p>Mark: <input type="text" th:field="*{mark}"></p>-->
+<!--            <p>Mark: <input type="text" th:field="*{poj}"></p>-->
+<!--            <p><input type="submit" value="add new car"></p>-->
+<!--        </form>-->
     </div>
 </body>
 </html>
