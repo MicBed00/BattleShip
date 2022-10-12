@@ -1,8 +1,10 @@
 package com.web;
 
+import DataConfig.Position;
 import DataConfig.ShipLimits;
 import board.Board;
 import org.springframework.stereotype.Service;
+import ship.Ship;
 
 import java.util.*;
 
@@ -39,4 +41,12 @@ public class GameService {
         return size == ShipLimits.SHIP_LIMIT.getQty();
     }
 
+//    public Ship convertToShip(ShipFacade shipFacade) {
+//        String[] coorXY = shipFacade.getCoord().split(",");
+//        int l = Integer.parseInt(shipFacade.getLength());
+//        int x = Integer.parseInt(coorXY[0]);
+//        int y = Integer.parseInt(coorXY[1]);
+//        Position pos = Position.valueOf(shipFacade.getPosition());
+//        return new Ship(l, x, y, pos);
+//    }
 }

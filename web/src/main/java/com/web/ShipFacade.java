@@ -3,17 +3,15 @@ package com.web;
 
 public class ShipFacade {
     private String length;
-    private String xstart;
-    private String ystart;
+    private String coord;
     private String position;
 
     public ShipFacade() {
     }
 
-    public ShipFacade(String length, String xStart, String yStart, String position) {
+    public ShipFacade(String length, String coord, String position) {
         this.length = length;
-        this.xstart = xStart;
-        this.ystart = yStart;
+        this.coord = coord;
         this.position = position;
     }
 
@@ -25,20 +23,12 @@ public class ShipFacade {
         this.length = length;
     }
 
-    public String getXstart() {
-        return xstart;
+    public String getCoord() {
+        return coord;
     }
 
-    public void setXstart(String xstart) {
-        this.xstart = xstart;
-    }
-
-    public String getYstart() {
-        return ystart;
-    }
-
-    public void setYstart(String ystart) {
-        this.ystart = ystart;
+    public void setCoord(String coord) {
+        this.coord = coord;
     }
 
     public String getPosition() {
@@ -47,15 +37,5 @@ public class ShipFacade {
 
     public void setPosition(String position) {
         this.position = position;
-    }
-
-    @Override
-    public String toString() {
-        return "ShipFacade{" +
-                "length=" + length +
-                ", xStart=" + xstart +
-                ", yStart=" + ystart +
-                ", position=" + position +
-                '}';
     }
 }

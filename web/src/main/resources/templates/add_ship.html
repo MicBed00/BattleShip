@@ -21,7 +21,7 @@ for (i = 0; i < squares.length; i++) {
         <h1>Add Ship</h1>
     </div>
     <div align="center">
-        <form action="#" th:action="@{/addShip}" th:object="${ship}" method="post">
+        <form action="#" th:action="@{/addShip}" th:object="${shipfacade}" method="post">
                 <label>Wielkość statku: </label>
                 <select th:name="length">
                     <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
@@ -37,12 +37,12 @@ for (i = 0; i < squares.length; i++) {
 
             <table id="brd" border="1" cellspacing="2" cellpadding="2">
                 <tr height="30"
-                    th:each="ystart, Y : ${#numbers.sequence(1, 10)}">
-                    <td th:each="xstart, X : ${#numbers.sequence(1, 10)}"
+                    th:each="row, Y : ${#numbers.sequence(1, 10)}">
+                    <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
                         width="30"
                     >
-                    <input type="submit" th:name="xstart"
-                           th:value="${Y.index}"/>
+                    <input type="submit" th:name="coord"
+                           th:value="|${Y.index},${X.index}|"/>
                     </td>
                 </tr>
             </table>
