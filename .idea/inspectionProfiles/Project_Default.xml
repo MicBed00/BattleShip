@@ -4,11 +4,22 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="4">
+          <list size="15">
             <item index="0" class="java.lang.String" itemvalue="th:text" />
             <item index="1" class="java.lang.String" itemvalue="th:object" />
             <item index="2" class="java.lang.String" itemvalue="th:action" />
             <item index="3" class="java.lang.String" itemvalue="th:field" />
+            <item index="4" class="java.lang.String" itemvalue="th:each" />
+            <item index="5" class="java.lang.String" itemvalue="th:value" />
+            <item index="6" class="java.lang.String" itemvalue="th:filed" />
+            <item index="7" class="java.lang.String" itemvalue="th:data-col" />
+            <item index="8" class="java.lang.String" itemvalue="th:data-row" />
+            <item index="9" class="java.lang.String" itemvalue="th:style" />
+            <item index="10" class="java.lang.String" itemvalue="height" />
+            <item index="11" class="java.lang.String" itemvalue="th:scoped" />
+            <item index="12" class="java.lang.String" itemvalue="th:data-ystart" />
+            <item index="13" class="java.lang.String" itemvalue="th:data-xstart" />
+            <item index="14" class="java.lang.String" itemvalue="th:name" />
           </list>
         </value>
       </option>

@@ -1,52 +1,51 @@
 package com.web;
 
-import DataConfig.Position;
 
 public class ShipFacade {
-    private  int length;
-    private  int xStart;
-    private  int yStart;
-    private int position;
+    private String length;
+    private String xstart;
+    private String ystart;
+    private String position;
 
     public ShipFacade() {
     }
 
-    public ShipFacade(int length, int xStart, int yStart, int position) {
+    public ShipFacade(String length, String xStart, String yStart, String position) {
         this.length = length;
-        this.xStart = xStart;
-        this.yStart = yStart;
+        this.xstart = xStart;
+        this.ystart = yStart;
         this.position = position;
     }
 
-    public int getLength() {
+    public String getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public void setLength(String length) {
         this.length = length;
     }
 
-    public int getxStart() {
-        return xStart;
+    public String getXstart() {
+        return xstart;
     }
 
-    public void setxStart(int xStart) {
-        this.xStart = xStart;
+    public void setXstart(String xstart) {
+        this.xstart = xstart;
     }
 
-    public int getyStart() {
-        return yStart;
+    public String getYstart() {
+        return ystart;
     }
 
-    public void setyStart(int yStart) {
-        this.yStart = yStart;
+    public void setYstart(String ystart) {
+        this.ystart = ystart;
     }
 
-    public int getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 
@@ -54,8 +53,8 @@ public class ShipFacade {
     public String toString() {
         return "ShipFacade{" +
                 "length=" + length +
-                ", xStart=" + xStart +
-                ", yStart=" + yStart +
+                ", xStart=" + xstart +
+                ", yStart=" + ystart +
                 ", position=" + position +
                 '}';
     }
