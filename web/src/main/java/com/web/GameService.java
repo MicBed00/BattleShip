@@ -19,7 +19,6 @@ public class GameService {
     GameService() {
         shipSize = new ArrayList<>();
         boardList = new ArrayList<>();
-//        positionList = new ArrayList<Position>(Arrays.asList(Position.values()));
         positionList = new ArrayList<>();
         positionList.add("VERTICAL");
         positionList.add("HORIZONTAL");
@@ -39,6 +38,17 @@ public class GameService {
 
     public boolean checkIsEqualTheLimitShip(int size) {
         return size == ShipLimits.SHIP_LIMIT.getQty();
+    }
+
+    public List<String> getShipSize() {
+        return shipSize;
+    }
+
+    public int getSizeQtyShips(int player) {
+        return boardList.get(player).getShips().size();
+    }
+    public List<String> getOrientation() {
+        return positionList;
     }
 
 //    public Ship convertToShip(ShipFacade shipFacade) {

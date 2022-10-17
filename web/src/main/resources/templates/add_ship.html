@@ -3,18 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Battle Ship add ship</title>
-    <script>
-    // get an array containing the <td> elements
-var squares = document.getElementsByTagName('td');
 
-// loop through that array, adding an event to each element:
-for (i = 0; i < squares.length; i++) {
-  squares[i].addEventListener('click', function (e) {
-    console.log('clicked on row ' + this.getAttribute('data-row')
-        + ' col ' + this.getAttribute('data-col'));
-  });
-}
-</script>
 </head>
 <body>
     <div align="center">
@@ -32,21 +21,15 @@ for (i = 0; i < squares.length; i++) {
                     <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
                 </select>
 
-<!--            <p>X:           <input type="number" th:field="*{xstart}"></p><br>-->
-<!--            <p>Y:           <input type="number" th:field="*{ystart}"></p><br>-->
-
-            <table id="brd" border="1" cellspacing="2" cellpadding="2">
+            <table id="table" border="1" cellspacing="2" cellpadding="2">
                 <tr height="30"
                     th:each="row, Y : ${#numbers.sequence(1, 10)}">
                     <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
-                        width="30"
-                    >
-                    <input type="submit" th:name="coord"
-                           th:value="|${Y.index},${X.index}|"/>
+                        width="30">
+                    <input type="submit" th:name="coord" th:value="|${Y.index},${X.index}|"/>
                     </td>
                 </tr>
             </table>
-            <p><input type="submit" value="add new ship"></p>
         </form>
     </div>
 
@@ -74,7 +57,27 @@ for (i = 0; i < squares.length; i++) {
 <!--    </table>-->
 <!--    </div>-->
 
-
+    <script>
+        document.getElementById("table").addEventListener("click", function (event) {
+            var target = event.target,
+                col,row,rX,cX;
+            target.style.backgroundColor = "red";
+            if(target.type !== "button") {return}
+            col = target.parentElement;
+            row = col.parentElement;
+            rX = row.rowIndex;
+            cX = col.cellIndex;
+        });
+        // var squares = document.getElementsByTagName('td');
+        //
+        // // loop through that array, adding an event to each element:
+        // for (i = 0; i < squares.length; i++) {
+        //     squares[i].addEventListener('click', function (e) {
+        //         console.log('clicked on row ' + this.getAttribute('data-row')
+        //             + ' col ' + this.getAttribute('data-col'));
+        //     });
+        // }
+    </script>
 
 </body>
 </html>
