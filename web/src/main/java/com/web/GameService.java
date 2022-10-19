@@ -1,6 +1,5 @@
 package com.web;
 
-import DataConfig.Position;
 import DataConfig.ShipLimits;
 import board.Board;
 import org.springframework.stereotype.Service;
@@ -8,6 +7,7 @@ import ship.Ship;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class GameService {
@@ -55,11 +55,19 @@ public class GameService {
     }
     public boolean shouldRender(int x, int y) {
         AtomicBoolean result = new AtomicBoolean(false);
-
-        List<Ship> list = boardPlayer1.getShips();
+        AtomicReference<Ship> hitShip = null;
+        List<Ship> list;
+      /*
+      stworzyć warunek, który na podstawie pozycji i długości trafionego statku będzie możliwa
+      zamiana koloru komórek punktów pośrednich (xStart, xEnd)
+       */
+       list =  boardPlayer2.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
+            boardPlayer1.getShips() :  boardPlayer2.getShips();
 
         list.forEach(s -> {
-            if(s.getXstart() == x && s.getYstart() == y)
+            if((s.getXstart() == x && s.getYstart() == y)
+                || s.getXend() == x && s.getYend() == y)
+                hitShip.set(s);
                 result.set(true);
         });
 

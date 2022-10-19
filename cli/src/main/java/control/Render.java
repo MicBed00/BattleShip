@@ -72,5 +72,4 @@ public class Render {
         }
         System.out.println("\n");
     }
-
 }

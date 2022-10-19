@@ -45,7 +45,7 @@ public class GameController {
                  }else if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(1))) {
                 gameService.boardPlayer2.addShip(l,x,y,pos);
                 if(gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(1))) {
-                    return "addedShip";
+                    return "redirect:/addedShip";
                 }
         }
         return "redirect:/startGame";
@@ -60,7 +60,6 @@ public class GameController {
     @GetMapping("/addedShip")
     public String boardAfterAddedShip(Model model) {
         model.addAttribute("ships", gameService.boardPlayer1.getShips());
-      //  model.addAttribute("render", gameService);
         return "addShip_success";
     }
 
