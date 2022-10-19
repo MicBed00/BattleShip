@@ -20,15 +20,19 @@
                 <select th:name="position">
                     <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
                 </select>
+            <br><br>
 
-            <table id="table" border="1" cellspacing="2" cellpadding="2">
+            <table style="background-color: cornflowerblue" id="table" border="1" cellspacing="2" cellpadding="2">
+                <tbody>
                 <tr height="30"
                     th:each="row, Y : ${#numbers.sequence(1, 10)}">
                     <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
-                        width="30">
+                        width="30"
+                     >
                     <input type="submit" th:name="coord" th:value="|${Y.index},${X.index}|"/>
                     </td>
                 </tr>
+               </tbody>
             </table>
         </form>
     </div>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ship.Ship;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class GameService {
@@ -15,6 +16,7 @@ public class GameService {
     List<String> positionList;
     Board boardPlayer1;
     Board boardPlayer2;
+    RenderBoard renderBoard;
 //    Map<String, Integer> shipLimits = new TreeMap<>()
     GameService() {
         shipSize = new ArrayList<>();
@@ -30,6 +32,7 @@ public class GameService {
         boardPlayer2 = new Board();
         boardList.add(boardPlayer1);
         boardList.add(boardPlayer2);
+        renderBoard = new RenderBoard();
     }
 
     public boolean checkIsOverTheLimitShip(int size){
@@ -50,7 +53,19 @@ public class GameService {
     public List<String> getOrientation() {
         return positionList;
     }
+    public boolean shouldRender(int x, int y) {
+        AtomicBoolean result = new AtomicBoolean(false);
 
+        List<Ship> list = boardPlayer1.getShips();
+
+        list.forEach(s -> {
+            if(s.getXstart() == x && s.getYstart() == y)
+                result.set(true);
+        });
+
+        return result.get();
+
+    }
 //    public Ship convertToShip(ShipFacade shipFacade) {
 //        String[] coorXY = shipFacade.getCoord().split(",");
 //        int l = Integer.parseInt(shipFacade.getLength());

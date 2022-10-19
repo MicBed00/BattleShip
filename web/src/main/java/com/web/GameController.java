@@ -40,22 +40,28 @@ public class GameController {
         if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(0))) {
             gameService.boardPlayer1.addShip(l, x, y, pos);
             if (gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(0))) {
-                return "addShip_success";
+                return "redirect:/addedShip";
             }
                  }else if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(1))) {
                 gameService.boardPlayer2.addShip(l,x,y,pos);
                 if(gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(1))) {
-                    return "addShip_success";
+                    return "addedShip";
                 }
         }
         return "redirect:/startGame";
     }
+//
+//    @GetMapping(value = "/addShip_success", produces = "application/json")
+//    @ResponseBody
+//    public List<Ship> shipList() {
+//        return gameService.boardPlayer1.getShips();
+//    }
 
-    @GetMapping(value = "/addShip_success", produces = "application/json")
-    @ResponseBody
-    public List<Ship> shipList() {
-        return gameService.boardPlayer1.getShips();
+    @GetMapping("/addedShip")
+    public String boardAfterAddedShip(Model model) {
+        model.addAttribute("ships", gameService.boardPlayer1.getShips());
+      //  model.addAttribute("render", gameService);
+        return "addShip_success";
     }
-
 
 }
