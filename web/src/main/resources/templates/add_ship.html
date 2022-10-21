@@ -10,14 +10,14 @@
         <h1>Add Ship</h1>
     </div>
     <div align="center">
-        <form action="#" th:action="@{/addShip}" th:object="${shipfacade}" method="post">
+
                 <label>Wielkość statku: </label>
-                <select th:name="length">
+                <select id="length" th:name="length">
                     <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
                 </select>
 
                 <label>Orientacja: </label>
-                <select th:name="position">
+                <select id="orientation" th:name="position">
                     <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
                 </select>
             <br><br>
@@ -26,15 +26,14 @@
                 <tbody>
                 <tr height="30"
                     th:each="row, Y : ${#numbers.sequence(1, 10)}">
-                    <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
+                    <td th:id="|${X.index}+${Y.index}| "th:each="columne, X : ${#numbers.sequence(1, 10)}"
                         width="30"
                      >
-                    <input type="submit" th:name="coord" th:value="|${Y.index},${X.index}|"/>
+                    <button th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip()"/>
                     </td>
                 </tr>
                </tbody>
             </table>
-        </form>
     </div>
 
 <!--    <div>-->
@@ -62,11 +61,12 @@
 <!--    </div>-->
 
     <script>
+
+        var rX, cX;
         document.getElementById("table").addEventListener("click", function (event) {
             var target = event.target,
-                col,row,rX,cX;
-            target.style.backgroundColor = "red";
-            if(target.type !== "button") {return}
+                col,row,
+            // if(target.type !== "button") {return}
             col = target.parentElement;
             row = col.parentElement;
             rX = row.rowIndex;
@@ -81,7 +81,65 @@
         //             + ' col ' + this.getAttribute('data-col'));
         //     });
         // }
+
+    function adderShip(){
+        var length = document.getElementById("length").value;
+        var orietn =  document.getElementById("orientation").value;
+
+        new BattleShipClient().addShip(length, x, y, orietn, (status, responseBody) => {
+            //tu robię obsługę onSuccess z metody poniżej addShip. W tym miejscu przekazje cos na wzór lambdy z dwoma argumentami (status, reponseBody)
+        //    status - to status odpowiedzi serwera http, respnseBody - to odpowiedź serwera body http. Te argumentu są przkeazywane dalej patrz poniżej.
+        //tutaj piszę co ma  zrobić z tymi danymi - czyli po dodaniu statku ma mi się wyświetlić ten statek na planszy
+
+        alert("Dodałeś statek!"+ "numer statusu" + status + "")
+
+        }, (status, reposnseBody) => {
+        //walidacja błędu czyli sprawdzam jaki status i co zwrócił serwer typ: wyrzuca moje wyjątki albo kod błędu 500 i pisze info alert bład blblblb
+        //    mogę stworzyć zmienna err => let err =""; i pszypisać do niej tresć błedu jeśli jest a jeśli nie ma to zwrócć pusty ciąg i sprawdzać czy err jest pusty czy zawiera treść
+
+        });
+
+
+    }
+        class BattleShipClient {
+
+            addShip(lenght, x, y, orient, onSuccess, onError) {
+                this.post("/addShip", "length=" + length + "&orient=" + orient + "&coord=" + x + "," + y, null, onSuccess, onError);
+            }
+
+            delete(path, body, progressUpdate, success, error) {
+                this.call("delete", path, body, progressUpdate, success, error);
+            }
+
+
+            post(path, body, progressUpdate, success, error) {
+                this.call("post", path, body, progressUpdate, success, error);
+            }
+
+            call(method, path, body, progressUpdate, success, error) {
+                let request = new XMLHttpRequest();
+                request.upload.addEventListener('progress', function (event) {
+                    if (event.lengthComputable) {
+                        let progress = event.loaded / event.total;
+                        if (progressUpdate != null)
+                            progressUpdate(progress);
+                    }
+                }, false);
+                request.onreadystatechange = function () {
+                    if (this.readyState === XMLHttpRequest.DONE)
+                        if (this.status >= 200 && this.status <= 299) {
+                            let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null;
+                            success(this.status, body);
+                        } else if (error !== undefined)
+                            error(this.status, this.responseText);
+                };
+                request.open(method.toUpperCase(), path, true);
+                request.send(body);
+            }
+        }
+
     </script>
 
 </body>
 </html>
+

@@ -30,13 +30,13 @@ public class GameController {
     }
 
     @PostMapping("/addShip")
-    public String creatNewShip(@ModelAttribute("shipfacade") ShipFacade shipFacade) {
-        String[] coorXY = shipFacade.getCoord().split(",");
-        int l = Integer.parseInt(shipFacade.getLength());
-        int x = Integer.parseInt(coorXY[0]);
-        int y = Integer.parseInt(coorXY[1]);
-        Position pos = Position.valueOf(shipFacade.getPosition());
-        System.out.println(new Ship(l,x,y,pos));
+    public String creatNewShip(@ModelAttribute("shipfacade") Ship ship) {
+//        String[] coorXY = shipFacade.getCoord().split(",");
+        int l = ship.getLength();
+        int x = ship.getXstart();
+        int y = ship.getYstart();
+        Position pos = ship.getPosition();
+        System.out.println(ship);
         if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(0))) {
             gameService.boardPlayer1.addShip(l, x, y, pos);
             if (gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(0))) {
@@ -62,5 +62,7 @@ public class GameController {
         model.addAttribute("ships", gameService.boardPlayer1.getShips());
         return "addShip_success";
     }
+
+
 
 }

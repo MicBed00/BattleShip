@@ -55,7 +55,6 @@ public class GameService {
     }
     public boolean shouldRender(int x, int y) {
         AtomicBoolean result = new AtomicBoolean(false);
-        AtomicReference<Ship> hitShip = null;
         List<Ship> list;
       /*
       stworzyć warunek, który na podstawie pozycji i długości trafionego statku będzie możliwa
@@ -65,10 +64,10 @@ public class GameService {
             boardPlayer1.getShips() :  boardPlayer2.getShips();
 
         list.forEach(s -> {
-            if((s.getXstart() == x && s.getYstart() == y)
-                || s.getXend() == x && s.getYend() == y)
-                hitShip.set(s);
+            if(s.checkIfHit(x, y)) {
+
                 result.set(true);
+            }
         });
 
         return result.get();

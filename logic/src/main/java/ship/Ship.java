@@ -81,24 +81,28 @@ public class Ship {
 
     public boolean checkIfHit(int x, int y) {
         if (this.position == Position.HORIZONTAL) {
-            if (ifTheShipHit(x, y)) {
-                hits[getXstart() - x] = true;
+            if (ifTheShipHitHoriz(x, y)) {
+//                hits[getXstart() - x] = true;
                 return true;
             }
         }
 
         if (this.position == Position.VERTICAL) {
-            if (ifTheShipHit(x, y)) {
-                hits[y - getYstart()] = true;
+            if (ifTheShipHitVeric(x, y)) {
+//                hits[y - getYstart()] = true;
                 return true;
             }
         }
         return false;
     }
 
-    private boolean ifTheShipHit(int x, int y) {
-        return getYstart() == y && getXstart() >= x && getXend() <= x
-                || getXstart() == x && getYstart() <= y && getYend() >= y;
+    private boolean ifTheShipHitHoriz(int x, int y) {
+        return getYstart() == y && getXstart() >= x && getXend() <= x;
+
+    }
+
+    private boolean ifTheShipHitVeric(int x, int y) {
+        return getXstart() == x && getYstart() <= y && getYend() >= y;
     }
 
     public boolean checkIfDead() {

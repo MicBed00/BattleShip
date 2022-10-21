@@ -19,7 +19,7 @@
                 th:each="row, Y : ${#numbers.sequence(1, 10)}">
                 <td th:each="col, X : ${#numbers.sequence(1, 10)}"
                     width="30"
-                    th:style="${@gameService.shouldRender(Y.index, X.index) ? 'background:yellow' : 'background:blue'}">
+                    th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}">
 
                </td>
             </tr>
