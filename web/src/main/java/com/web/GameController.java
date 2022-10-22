@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 import ship.Ship;
 
@@ -25,19 +26,18 @@ public class GameController {
         model.addAttribute("ship", shipFacade);
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
-
         return "add_ship";
     }
 
     @PostMapping("/addShip")
     public String creatNewShip(@ModelAttribute Ship ship) {
-//        String[] coorXY = shipFacade.getCoord().split(",");
         int l = ship.getLength();
         int x = ship.getXstart();
         int y = ship.getYstart();
         Position pos = ship.getPosition();
         System.out.println("dł "+l+" x "+x+" y "+ y+ " orien "+ pos);
         System.out.println(ship);
+
         if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(0))) {
             gameService.boardPlayer1.addShip(l, x, y, pos);
             if (gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(0))) {
