@@ -30,12 +30,13 @@ public class GameController {
     }
 
     @PostMapping("/addShip")
-    public String creatNewShip(@ModelAttribute("shipfacade") Ship ship) {
+    public String creatNewShip(@ModelAttribute Ship ship) {
 //        String[] coorXY = shipFacade.getCoord().split(",");
         int l = ship.getLength();
         int x = ship.getXstart();
         int y = ship.getYstart();
         Position pos = ship.getPosition();
+        System.out.println("dł "+l+" x "+x+" y "+ y+ " orien "+ pos);
         System.out.println(ship);
         if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(0))) {
             gameService.boardPlayer1.addShip(l, x, y, pos);
@@ -48,7 +49,7 @@ public class GameController {
                     return "redirect:/addedShip";
                 }
         }
-        return "redirect:/startGame";
+        return "redirect:/addedShip";
     }
 //
 //    @GetMapping(value = "/addShip_success", produces = "application/json")

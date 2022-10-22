@@ -12,7 +12,7 @@
     <div align="center">
 
                 <label>Wielkość statku: </label>
-                <select id="length" th:name="length">
+                <select id="len" th:name="length">
                     <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
                 </select>
 
@@ -26,15 +26,29 @@
                 <tbody>
                 <tr height="30"
                     th:each="row, Y : ${#numbers.sequence(1, 10)}">
-                    <td th:id="|${X.index}+${Y.index}| "th:each="columne, X : ${#numbers.sequence(1, 10)}"
+                    <td  th:each="columne, X : ${#numbers.sequence(1, 10)}"
                         width="30"
                      >
-                    <button th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip()"/>
+                    <button th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip(event)"/>
                     </td>
                 </tr>
                </tbody>
             </table>
     </div>
+
+<!--    <div id="responseServer">-->
+<!--        <table style="background-color: cornflowerblue" id="table1" border="1" cellspacing="2" cellpadding="2">-->
+<!--            <tr height="30"-->
+<!--                th:each="row, Y : ${#numbers.sequence(1, 10)}">-->
+<!--                <td th:id="|${X.index}+${Y.index}|" th:each="col, X : ${#numbers.sequence(1, 10)}"-->
+<!--                    width="30"-->
+<!--                    th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}">-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
+
+
+<!--    </div>-->
 
 <!--    <div>-->
 <!--        <tr th:each="ship: ${listShip}">-->
@@ -62,16 +76,7 @@
 
     <script>
 
-        var rX, cX;
-        document.getElementById("table").addEventListener("click", function (event) {
-            var target = event.target,
-                col,row,
-            // if(target.type !== "button") {return}
-            col = target.parentElement;
-            row = col.parentElement;
-            rX = row.rowIndex;
-            cX = col.cellIndex;
-        });
+
         // var squares = document.getElementsByTagName('td');
         //
         // // loop through that array, adding an event to each element:
@@ -81,17 +86,33 @@
         //             + ' col ' + this.getAttribute('data-col'));
         //     });
         // }
-
-    function adderShip(){
-        var length = document.getElementById("length").value;
+    //
+    function adderShip(event){
+        var length = document.getElementById("len").value;
         var orietn =  document.getElementById("orientation").value;
+        var x, y;
+        // document.getElementById("table").addEventListener("click", function (event) {
+            var target = event.target,
+                col,row,
+                // if(target.type !== "button") {return}
+                col = target.parentElement;
+            row = col.parentElement;
+            y = row.rowIndex;
+            x = col.cellIndex;
+            console.log("Współrzedne pierwsza metoda w skrypcie"+ " "+ y+" "+ x+ " length"+ length);
+
+        // });
 
         new BattleShipClient().addShip(length, x, y, orietn, (status, responseBody) => {
             //tu robię obsługę onSuccess z metody poniżej addShip. W tym miejscu przekazje cos na wzór lambdy z dwoma argumentami (status, reponseBody)
         //    status - to status odpowiedzi serwera http, respnseBody - to odpowiedź serwera body http. Te argumentu są przkeazywane dalej patrz poniżej.
         //tutaj piszę co ma  zrobić z tymi danymi - czyli po dodaniu statku ma mi się wyświetlić ten statek na planszy
 
-        alert("Dodałeś statek!"+ "numer statusu" + status + "")
+        //    1. sprawdzam status ODPOWIEDZI Z SERWERA
+        //    2. jesli jest ok np 200 (tzn, że moje dane są ok i program nie wyrzucił błędu np że statek jest poza planszą) to wyświetlam tablicę z dodanym statkiem
+        //    3. do wyświetlenia tablicy ze statkiem wykorzystuję reponseBody z serwera. W tym przypadku metoda put po otrzymaniu danych zwraca /addedShip - przekierowanie do
+        //    metody  get i zwraca listę dodanych statków
+        alert("Dodałeś statek!"+ "numer statusu" + responseBody)
 
         }, (status, reposnseBody) => {
         //walidacja błędu czyli sprawdzam jaki status i co zwrócił serwer typ: wyrzuca moje wyjątki albo kod błędu 500 i pisze info alert bład blblblb
@@ -101,10 +122,13 @@
 
 
     }
+
+
         class BattleShipClient {
 
-            addShip(lenght, x, y, orient, onSuccess, onError) {
-                this.post("/addShip", "length=" + length + "&orient=" + orient + "&coord=" + x + "," + y, null, onSuccess, onError);
+            addShip(length, x, y, orient, onSuccess, onError) {
+                console.log("jestem w addShip"+ length+" "+x+" "+y+" "+orient);
+                this.post("/addShip", "length=" + length + "&x=" + x + "&y=" + y + "&orient=" + orient, null, onSuccess, onError);
             }
 
             delete(path, body, progressUpdate, success, error) {
@@ -113,6 +137,7 @@
 
 
             post(path, body, progressUpdate, success, error) {
+                console.log("jestem w post"+ " "+body);
                 this.call("post", path, body, progressUpdate, success, error);
             }
 
@@ -125,15 +150,18 @@
                             progressUpdate(progress);
                     }
                 }, false);
+                console.log("jestem po progresie"+ " "+ body)
                 request.onreadystatechange = function () {
                     if (this.readyState === XMLHttpRequest.DONE)
                         if (this.status >= 200 && this.status <= 299) {
-                            let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null;
+                            // let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
+                            let body = this.responseText;
                             success(this.status, body);
                         } else if (error !== undefined)
                             error(this.status, this.responseText);
                 };
                 request.open(method.toUpperCase(), path, true);
+                console.log("body przed wysłaniem do posta" +body)
                 request.send(body);
             }
         }
