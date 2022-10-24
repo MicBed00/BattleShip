@@ -6,11 +6,8 @@
 
 </head>
 <body>
-    <div align="center">
-        <h1>Add Ship</h1>
-    </div>
     <div id="responseServer" align="center">
-
+        <h1>Add Ship</h1>
                 <label>Wielkość statku: </label>
                 <select id="len" th:name="length">
                     <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
@@ -63,12 +60,12 @@
             }
 
         }, (status, reposnseBody) => {
-        var err ="";
             if(status >= 400 && status <= 499) {
                 alert("Błąd " + reposnseBody);
                 window:location.replace("http://localhost:8080/startGame");
             } else if(status >= 500) {
                 alert("Błąd" + reposnseBody);
+                window:location.replace("http://localhost:8080/startGame");
             }
 
         });
