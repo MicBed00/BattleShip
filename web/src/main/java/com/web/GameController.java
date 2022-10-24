@@ -26,30 +26,28 @@ public class GameController {
         model.addAttribute("ship", shipFacade);
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
+//        model.addAttribute("ships", gameService.boardPlayer1.getShips());
         return "add_ship";
     }
 
     @PostMapping("/addShip")
     public String creatNewShip(@ModelAttribute Ship ship) {
-        int l = ship.getLength();
-        int x = ship.getXstart();
-        int y = ship.getYstart();
-        Position pos = ship.getPosition();
-        System.out.println("dł "+l+" x "+x+" y "+ y+ " orien "+ pos);
         System.out.println(ship);
-
         if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(0))) {
-            gameService.boardPlayer1.addShip(l, x, y, pos);
-            if (gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(0))) {
-                return "redirect:/addedShip";
-            }
-                 }else if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(1))) {
-                gameService.boardPlayer2.addShip(l,x,y,pos);
+            gameService.boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
+                                            ship.getYstart(), ship.getPosition());
+//            if (gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(0))) {
+//                return "redirect:/addedShip";
+//
+//           }
+        }else if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(1))) {
+                gameService.boardPlayer2.addShip(ship.getLength(), ship.getXstart(),
+                                                ship.getYstart(), ship.getPosition());
                 if(gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(1))) {
                     return "redirect:/addedShip";
                 }
         }
-        return "redirect:/addedShip";
+        return "redirect:/startGame";
     }
 //
 //    @GetMapping(value = "/addShip_success", produces = "application/json")
@@ -60,7 +58,7 @@ public class GameController {
 
     @GetMapping("/addedShip")
     public String boardAfterAddedShip(Model model) {
-        model.addAttribute("ships", gameService.boardPlayer1.getShips());
+        model.addAttribute("game", gameService);
         return "addShip_success";
     }
 

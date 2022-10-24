@@ -78,30 +78,41 @@ public class Ship {
         return position;
     }
 
-
     public boolean checkIfHit(int x, int y) {
         if (this.position == Position.HORIZONTAL) {
-            if (ifTheShipHitHoriz(x, y)) {
-//                hits[getXstart() - x] = true;
+            if (ifTheShipHoriz(x, y)) {
+                hits[getXstart() - x] = true;
                 return true;
             }
         }
-
         if (this.position == Position.VERTICAL) {
-            if (ifTheShipHitVeric(x, y)) {
-//                hits[y - getYstart()] = true;
+            if (ifTheShipVeric(x, y)) {
+                hits[y - getYstart()] = true;
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean checkIfShipIsPreset(int x, int y) {
+        if (this.position == Position.HORIZONTAL) {
+            if (ifTheShipHoriz(x, y)) {
+                return true;
+            }
+        }
+        if (this.position == Position.VERTICAL) {
+            if (ifTheShipVeric(x, y)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean ifTheShipHitHoriz(int x, int y) {
+    private boolean ifTheShipHoriz(int x, int y) {
         return getYstart() == y && getXstart() >= x && getXend() <= x;
 
     }
 
-    private boolean ifTheShipHitVeric(int x, int y) {
+    private boolean ifTheShipVeric(int x, int y) {
         return getXstart() == x && getYstart() <= y && getYend() >= y;
     }
 

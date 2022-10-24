@@ -14,13 +14,12 @@
         </a>
         <br>
         <br>
-        <table style="background-color: cornflowerblue" id="table" border="1" cellspacing="2" cellpadding="2">
+        <table style="background-color: blue" id="table" border="1" cellspacing="2" cellpadding="2">
             <tr height="30"
                 th:each="row, Y : ${#numbers.sequence(1, 10)}">
                 <td th:each="col, X : ${#numbers.sequence(1, 10)}"
                     width="30"
-                    th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}">
-
+                    th:style="${game.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}">
                </td>
             </tr>
         </table>

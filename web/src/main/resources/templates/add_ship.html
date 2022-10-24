@@ -9,7 +9,7 @@
     <div align="center">
         <h1>Add Ship</h1>
     </div>
-    <div align="center">
+    <div id="responseServer" align="center">
 
                 <label>Wielkość statku: </label>
                 <select id="len" th:name="length">
@@ -22,30 +22,23 @@
                 </select>
             <br><br>
 
-            <table style="background-color: cornflowerblue" id="table" border="1" cellspacing="2" cellpadding="2">
+            <table style="background-color: blue" id="table" border="1" cellspacing="2" cellpadding="2">
                 <tbody>
                 <tr height="30"
                     th:each="row, Y : ${#numbers.sequence(1, 10)}">
                     <td  th:each="columne, X : ${#numbers.sequence(1, 10)}"
                         width="30"
+                         th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}"
                      >
-                    <button th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip(event)"></button>
+                    <button th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip(event)"
+                            style="height:33px;width:33px; background-color: blue"
+                            th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}"></button>
                     </td>
                 </tr>
                </tbody>
             </table>
     </div>
 
-<!--    <div id="responseServer">-->
-<!--        <table style="background-color: cornflowerblue" id="table1" border="1" cellspacing="2" cellpadding="2">-->
-<!--            <tr height="30"-->
-<!--                th:each="row, Y : ${#numbers.sequence(1, 10)}">-->
-<!--                <td th:id="|${X.index}+${Y.index}|" th:each="col, X : ${#numbers.sequence(1, 10)}"-->
-<!--                    width="30"-->
-<!--                    th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}">-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </table>-->
 
     <script>
     function adderShip(event){
@@ -54,7 +47,6 @@
         var xstart, ystart;
         var target = event.target,
                 col,row,
-
             col = target.parentElement;
             row = col.parentElement;
             ystart = row.rowIndex;
@@ -62,15 +54,23 @@
             console.log("Współrzedne pierwsza metoda w skrypcie"+ " "+ ystart+" "+ xstart+ " length"+ length);
 
         new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
-        //    1. sprawdzam status ODPOWIEDZI Z SERWERA
-        //    2. jesli jest ok np 200 (tzn, że moje dane są ok i program nie wyrzucił błędu np że statek jest poza planszą) to wyświetlam tablicę z dodanym statkiem
-        //    3. do wyświetlenia tablicy ze statkiem wykorzystuję reponseBody z serwera. W tym przypadku metoda put po otrzymaniu danych zwraca /addedShip - przekierowanie do
-        //    metody  get i zwraca listę dodanych statków
-        alert("Dodałeś statek!"+ responseBody)
+            if(status >= 200 && status <= 299) {
+                alert("Dodałeś statek!");
+                document.getElementById("responseServer").innerHTML= responseBody;
+                // window:location.replace("http://localhost:8080/startGame");
+            }else {
+
+            }
+
         }, (status, reposnseBody) => {
-        //walidacja błędu czyli sprawdzam jaki status i co zwrócił serwer typ: wyrzuca moje wyjątki albo kod błędu 500 i pisze info alert bład blblblb
-        //    mogę stworzyć zmienna err => let err =""; i pszypisać do niej tresć błedu jeśli jest a jeśli nie ma to zwrócć pusty ciąg i sprawdzać czy err jest pusty czy zawiera treść
-        alert("Błąd " + reposnseBody);
+        var err ="";
+            if(status >= 400 && status <= 499) {
+                alert("Błąd " + reposnseBody);
+                window:location.replace("http://localhost:8080/startGame");
+            } else if(status >= 500) {
+                alert("Błąd" + reposnseBody);
+            }
+
         });
     }
         class BattleShipClient {

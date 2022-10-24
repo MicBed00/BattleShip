@@ -7,7 +7,6 @@ import ship.Ship;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class GameService {
@@ -56,22 +55,15 @@ public class GameService {
     public boolean shouldRender(int x, int y) {
         AtomicBoolean result = new AtomicBoolean(false);
         List<Ship> list;
-      /*
-      stworzyć warunek, który na podstawie pozycji i długości trafionego statku będzie możliwa
-      zamiana koloru komórek punktów pośrednich (xStart, xEnd)
-       */
-       list =  boardPlayer2.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
+       list =  boardPlayer1.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
             boardPlayer1.getShips() :  boardPlayer2.getShips();
 
         list.forEach(s -> {
-            if(s.checkIfHit(x, y)) {
-
+            if(s.checkIfShipIsPreset(x, y)) {
                 result.set(true);
             }
         });
-
         return result.get();
-
     }
 //    public Ship convertToShip(ShipFacade shipFacade) {
 //        String[] coorXY = shipFacade.getCoord().split(",");
