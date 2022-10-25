@@ -7,7 +7,6 @@ import ship.Ship;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class GameService {
@@ -36,43 +35,43 @@ public class GameService {
     }
 
     public boolean checkIsOverTheLimitShip(int size){
-        return size < ShipLimits.SHIP_LIMIT.getQty();
-    }
-
-    public boolean checkIsEqualTheLimitShip(int size) {
-        return size == ShipLimits.SHIP_LIMIT.getQty();
+        return size <= ShipLimits.SHIP_LIMIT.getQty();
     }
 
     public List<String> getShipSize() {
         return shipSize;
     }
 
-    public int getSizeQtyShips(int player) {
-        return boardList.get(player).getShips().size();
-    }
     public List<String> getOrientation() {
         return positionList;
     }
     public boolean shouldRender(int x, int y) {
         AtomicBoolean result = new AtomicBoolean(false);
         List<Ship> list;
-      /*
-      stworzyć warunek, który na podstawie pozycji i długości trafionego statku będzie możliwa
-      zamiana koloru komórek punktów pośrednich (xStart, xEnd)
-       */
-       list =  boardPlayer2.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
-            boardPlayer1.getShips() :  boardPlayer2.getShips();
+        list =  boardPlayer1.getShips().size() <= ShipLimits.SHIP_LIMIT.getQty() ?
+            boardPlayer1.getShips() : boardPlayer2.getShips();
 
         list.forEach(s -> {
-            if(s.checkIfHit(x, y)) {
-
+            if(s.checkIfShipIsPreset(x, y)) {
                 result.set(true);
             }
         });
-
         return result.get();
-
     }
+
+    public List<Ship> getList(Ship ship) {
+        if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
+            boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
+                                ship.getYstart(), ship.getPosition());
+                return boardPlayer1.getShips();
+        }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
+            boardPlayer2.addShip(ship.getLength(), ship.getXstart(),
+                                ship.getYstart(), ship.getPosition());
+                return boardPlayer2.getShips();
+        }
+        return null;
+    }
+
 //    public Ship convertToShip(ShipFacade shipFacade) {
 //        String[] coorXY = shipFacade.getCoord().split(",");
 //        int l = Integer.parseInt(shipFacade.getLength());

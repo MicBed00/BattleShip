@@ -1,10 +1,7 @@
 package com.web;
 
-import DataConfig.Position;
-import DataConfig.ShipLimits;
-import board.Board;
-import board.SizeBoard;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,31 +22,19 @@ public class GameController {
         model.addAttribute("ship", shipFacade);
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
-
+//        model.addAttribute("ships", gameService.boardPlayer1.getShips());
         return "add_ship";
     }
 
-    @PostMapping("/addShip")
-    public String creatNewShip(@ModelAttribute("shipfacade") Ship ship) {
-//        String[] coorXY = shipFacade.getCoord().split(",");
-        int l = ship.getLength();
-        int x = ship.getXstart();
-        int y = ship.getYstart();
-        Position pos = ship.getPosition();
+    @PostMapping(value = "/addShip",
+    produces = "application/json")
+    @ResponseBody
+    public List<Ship> addShiptoList(@ModelAttribute Ship ship) throws Exception{
         System.out.println(ship);
-        if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(0))) {
-            gameService.boardPlayer1.addShip(l, x, y, pos);
-            if (gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(0))) {
-                return "redirect:/addedShip";
-            }
-                 }else if(gameService.checkIsOverTheLimitShip(gameService.getSizeQtyShips(1))) {
-                gameService.boardPlayer2.addShip(l,x,y,pos);
-                if(gameService.checkIsEqualTheLimitShip(gameService.getSizeQtyShips(1))) {
-                    return "redirect:/addedShip";
-                }
-        }
-        return "redirect:/startGame";
+        return gameService.getList(ship);
     }
+
+
 //
 //    @GetMapping(value = "/addShip_success", produces = "application/json")
 //    @ResponseBody
@@ -59,7 +44,7 @@ public class GameController {
 
     @GetMapping("/addedShip")
     public String boardAfterAddedShip(Model model) {
-        model.addAttribute("ships", gameService.boardPlayer1.getShips());
+        model.addAttribute("game", gameService);
         return "addShip_success";
     }
 
