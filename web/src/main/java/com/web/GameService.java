@@ -35,7 +35,7 @@ public class GameService {
     }
 
     public boolean checkIsOverTheLimitShip(int size){
-        return size <= ShipLimits.SHIP_LIMIT.getQty();
+        return size < ShipLimits.SHIP_LIMIT.getQty();
     }
 
     public List<String> getShipSize() {
@@ -48,11 +48,11 @@ public class GameService {
     public boolean shouldRender(int x, int y) {
         AtomicBoolean result = new AtomicBoolean(false);
         List<Ship> list;
-        list =  boardPlayer1.getShips().size() <= ShipLimits.SHIP_LIMIT.getQty() ?
+        list =  boardPlayer1.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
             boardPlayer1.getShips() : boardPlayer2.getShips();
 
         list.forEach(s -> {
-            if(s.checkIfShipIsPreset(x, y)) {
+            if(s.checkIfShipIsPresent(x, y)) {
                 result.set(true);
             }
         });

@@ -82,14 +82,28 @@ public class Ship {
     public boolean checkIfHit(int x, int y) {
         if (this.position == Position.HORIZONTAL) {
             if (ifTheShipHitHoriz(x, y)) {
-//                hits[getXstart() - x] = true;
+                hits[getXstart() - x] = true;
+                return true;
+            }
+        }
+        if (this.position == Position.VERTICAL) {
+            if (ifTheShipHitVeric(x, y)) {
+                hits[y - getYstart()] = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfShipIsPresent(int x, int y) {
+        if (this.position == Position.HORIZONTAL) {
+            if (ifTheShipHitHoriz(x, y)) {
                 return true;
             }
         }
 
         if (this.position == Position.VERTICAL) {
             if (ifTheShipHitVeric(x, y)) {
-//                hits[y - getYstart()] = true;
                 return true;
             }
         }

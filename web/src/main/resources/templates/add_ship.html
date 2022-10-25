@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Battle Ship add ship</title>
+    <style>
+        .tblClass {
+            border:2px solid #000000;
+        }
+
+    </style>
 
 </head>
 <body>
@@ -23,17 +29,20 @@
                 <tbody>
                 <tr height="30"
                     th:each="row, Y : ${#numbers.sequence(1, 10)}">
-                    <td  th:each="columne, X : ${#numbers.sequence(1, 10)}"
+                    <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
                         width="30"
-                         th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}"
-                     >
-                    <button th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip(event)"
-                            style="height:33px;width:33px; background-color: blue"
-                            th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}"></button>
+                         th:style="${'background:blue'}">
+                    <button  th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip(event)"
+                            style="height:33px;width:33px; background-color: blue"></button>
                     </td>
                 </tr>
                </tbody>
             </table>
+    </div>
+
+    <div id="res" >
+
+
     </div>
 
 
@@ -52,19 +61,14 @@
 
         new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
             if(status >= 200 && status <= 299) {
+              renderShip(responseBody)
 
+                //do poprawy warunek w if(), co jeśli będę chciał zmienić liczbę statków na jednej planszy??
+                if(responseBody.length === 2) {
 
-               var zm = responseBody
-               console.log("zm[0] "+ zm[0].position)
-               // console.log("zm[1] "+ zm[1].position)
-               // zm.prototype.forEach((item, index, array) => {
-               //   console.log(item, index);
-               //
-               // });
-                alert("Dodałeś statek!     Dł    " + zm[0].length);
-                // document.getElementById("responseServer").innerHTML= responseBody;
+                    window:location.replace("http://localhost:8080/startGame");
+                }
 
-                // window:location.replace("http://localhost:8080/startGame");
             }else {
 
             }
@@ -79,6 +83,35 @@
             }
 
         });
+
+        function renderShip(responseBody) {
+            console.log("rozmiar listy" + responseBody.length)
+            for(let i = 0; i <= 10; i ++) {
+                for(let j = 0; j <=10; j++) {
+                    for(let k = 0; k < responseBody.length; k++) {
+                        //nie wiem jak zrobić lepszy warunek w if(), zwykłe porównanie daje zawsze false
+                            if(responseBody[k].position.length === "HORIZONTAL".length) {
+
+                                if(responseBody[k].ystart === j && responseBody[k].xstart >= i
+                                    && (responseBody[k].xstart - responseBody[k].length+1) <=i)
+
+                                    document.getElementById(i+","+j).style.background = "yellow";
+                            } else {
+
+                                if(responseBody[k].xstart === i && responseBody[k].ystart <= j
+                                    && (responseBody[k].ystart + responseBody[k].length-1) >= j)
+
+                                    document.getElementById(i+","+j).style.background = "yellow";
+                            }
+
+                    }
+                }
+
+            }
+
+            console.log("Po tabeli");
+
+        }
     }
         class BattleShipClient {
 
