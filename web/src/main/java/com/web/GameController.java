@@ -3,7 +3,6 @@ package com.web;
 import board.Board;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,22 +26,18 @@ public class GameController {
         return "add_ship";
     }
 
-    @PostMapping(value = "/addShip",
-    produces = "application/json")
+    @PostMapping(value = "/addShip", produces = "application/json")
     @ResponseBody
     public ResponseEntity<List<Ship>> addShiptoList(@ModelAttribute Ship ship) throws Exception{
         System.out.println(ship);
-        return new ResponseEntity<>(gameService.getList(ship), HttpStatus.OK);
+        return new ResponseEntity<>(gameService.addShiptoList(ship), HttpStatus.OK);
     }
 
-    @GetMapping("/addedShip")
-    public String boardAfterAddedShip(Model model) {
-        model.addAttribute("game", gameService);
-        return "addShip_success";
+    @GetMapping(value = "/gameInProcces", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<List<Board>> getList() {
+        return new ResponseEntity<>(gameService.getBoardList(), HttpStatus.OK);
     }
-//
-//    @GetMapping("/gameInProcces")
-//    public
 
 
 
