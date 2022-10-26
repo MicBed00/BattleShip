@@ -1,5 +1,6 @@
 package com.web;
 
+import board.Board;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,14 +34,6 @@ public class GameController {
         System.out.println(ship);
         return gameService.getList(ship);
     }
-
-
-//
-//    @GetMapping(value = "/addShip_success", produces = "application/json")
-//    @ResponseBody
-//    public List<Ship> shipList() {
-//        return gameService.boardPlayer1.getShips();
-//    }
 
     @GetMapping("/addedShip")
     public String boardAfterAddedShip(Model model) {

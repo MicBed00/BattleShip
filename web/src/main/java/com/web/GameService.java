@@ -45,39 +45,31 @@ public class GameService {
     public List<String> getOrientation() {
         return positionList;
     }
-    public boolean shouldRender(int x, int y) {
-        AtomicBoolean result = new AtomicBoolean(false);
-        List<Ship> list;
-        list =  boardPlayer1.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
-            boardPlayer1.getShips() : boardPlayer2.getShips();
-
-        list.forEach(s -> {
-            if(s.checkIfShipIsPresent(x, y)) {
-                result.set(true);
-            }
-        });
-        return result.get();
-    }
+//    public boolean shouldRender(int x, int y) {
+//        AtomicBoolean result = new AtomicBoolean(false);
+//        List<Ship> list;
+//        list =  boardPlayer1.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
+//            boardPlayer1.getShips() : boardPlayer2.getShips();
+//
+//        list.forEach(s -> {
+//            if(s.checkIfShipIsPresent(x, y)) {
+//                result.set(true);
+//            }
+//        });
+//        return result.get();
+//    }
 
     public List<Ship> getList(Ship ship) {
         if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
             boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
                                 ship.getYstart(), ship.getPosition());
-                return boardPlayer1.getShips();
+            return boardPlayer1.getShips();
         }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
             boardPlayer2.addShip(ship.getLength(), ship.getXstart(),
                                 ship.getYstart(), ship.getPosition());
-                return boardPlayer2.getShips();
+            return boardPlayer2.getShips();
         }
         return null;
     }
 
-//    public Ship convertToShip(ShipFacade shipFacade) {
-//        String[] coorXY = shipFacade.getCoord().split(",");
-//        int l = Integer.parseInt(shipFacade.getLength());
-//        int x = Integer.parseInt(coorXY[0]);
-//        int y = Integer.parseInt(coorXY[1]);
-//        Position pos = Position.valueOf(shipFacade.getPosition());
-//        return new Ship(l, x, y, pos);
-//    }
 }

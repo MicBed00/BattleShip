@@ -4,80 +4,97 @@
     <meta charset="UTF-8">
     <title>Battle Ship add ship</title>
     <style>
-        .tblClass {
-            border:2px solid #000000;
+        .tableResponse {
+            border: 2px solid;
+            background-color: blue;
+            width: 400px;
         }
-
+        .row {
+            width: 50px;
+            height: 30px;
+            border: 1px solid;
+        }
+        .cell {
+            width: 50px;
+            height: 30px;
+            border: 1px solid;
+        }
     </style>
 
 </head>
 <body>
-    <div id="responseServer" align="center">
-        <h1>Add Ship</h1>
-                <label>Wielkość statku: </label>
-                <select id="len" th:name="length">
-                    <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
-                </select>
+<div align="center">
+    <h1>Add Ship</h1>
+    <label>Wielkość statku: </label>
+    <select id="len" th:name="length">
+        <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
+    </select>
 
-                <label>Orientacja: </label>
-                <select id="orientation" th:name="position">
-                    <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
-                </select>
-            <br><br>
+    <label>Orientacja: </label>
+    <select id="orientation" th:name="position">
+        <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
+    </select>
+    <br><br>
 
-            <table style="background-color: blue" id="table" border="1" cellspacing="2" cellpadding="2">
-                <tbody>
-                <tr height="30"
-                    th:each="row, Y : ${#numbers.sequence(1, 10)}">
-                    <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
-                        width="30"
-                         th:style="${'background:blue'}">
-                    <button  th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|" onclick="adderShip(event)"
-                            style="height:33px;width:33px; background-color: blue"></button>
-                    </td>
-                </tr>
-               </tbody>
-            </table>
-    </div>
+    <table style="background-color: blue" id="oldTable" border="1" cellspacing="2" cellpadding="2">
+        <tbody>
+        <tr height="30"
+            th:each="row, Y : ${#numbers.sequence(1, 10)}">
+            <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
+                width="30"
+                th:style="${'background:blue'}">
+                <button th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|"
+                        onclick="adderShip(event)"
+                        style="height:23px;width:23px; background-color: blue"></button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <br>
+    <button id="accept" style="height: 50px; width: 100px" onclick="acc()" disabled>Accept</button>
+</div>
 
-    <div id="res" >
+<div id="responseServer"> </div>
 
 
-    </div>
 
+<script>
+    function acc() {
+        document.getElementById("oldTable").style.backgroundColor = "blue";
+        window:location.replace("http://localhost:8080/startGame");
+    }
 
-    <script>
-    function adderShip(event){
+    function adderShip(event) {
         var length = document.getElementById("len").value;
-        var position =  document.getElementById("orientation").value;
+        var position = document.getElementById("orientation").value;
         var xstart, ystart;
-        var target = event.target,
-                col,row,
+        var target = event.target, col, row,
+
             col = target.parentElement;
-            row = col.parentElement;
-            ystart = row.rowIndex;
-            xstart = col.cellIndex;
-            console.log("Współrzedne pierwsza metoda w skrypcie"+ " "+ ystart+" "+ xstart+ " length"+ length);
+        row = col.parentElement;
+        ystart = row.rowIndex;
+        xstart = col.cellIndex;
+        console.log("Współrzedne pierwsza metoda w skrypcie" + " " + ystart + " " + xstart + " length" + length);
 
         new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
-            if(status >= 200 && status <= 299) {
-              renderShip(responseBody)
-
-                //do poprawy warunek w if(), co jeśli będę chciał zmienić liczbę statków na jednej planszy??
+            if (status >= 200 && status <= 299) {
+                console.log("PRZED RENDROWANIEM STATKÓW");
+                console.log("Rozmiar responseBody: "+ responseBody.length)
+                renderShip(responseBody)
                 if(responseBody.length === 2) {
-
-                    window:location.replace("http://localhost:8080/startGame");
+                    document.getElementById("accept").disabled = false;
                 }
-
-            }else {
+            } else {
 
             }
 
         }, (status, reposnseBody) => {
-            if(status >= 400 && status <= 499) {
+            if (status >= 400 && status <= 499) {
                 alert("Błąd " + reposnseBody);
                 location.replace("http://localhost:8080/startGame");
-            } else if(status >= 500) {
+            } else if (status >= 500) {
                 alert("Błąd" + reposnseBody);
                 location.replace("http://localhost:8080/startGame");
             }
@@ -85,80 +102,107 @@
         });
 
         function renderShip(responseBody) {
-            console.log("rozmiar listy" + responseBody.length)
-            for(let i = 0; i <= 10; i ++) {
-                for(let j = 0; j <=10; j++) {
-                    for(let k = 0; k < responseBody.length; k++) {
-                        //nie wiem jak zrobić lepszy warunek w if(), zwykłe porównanie daje zawsze false
-                            if(responseBody[k].position.length === "HORIZONTAL".length) {
+            const table = document.createElement("table");
+            table.setAttribute("class", "tableResponse");
+            const tbBody = document.createElement("tbody");
 
-                                if(responseBody[k].ystart === j && responseBody[k].xstart >= i
-                                    && (responseBody[k].xstart - responseBody[k].length+1) <=i)
 
-                                    document.getElementById(i+","+j).style.background = "yellow";
+            for (let i = 0; i < 10; i++) {
+
+                const row = document.createElement("tr");
+                row.setAttribute("class", "row");
+
+                for (let j = 0; j < 10; j++) {
+
+                    const cell = document.createElement("td");
+                    cell.setAttribute("class", "cell");
+                    cell.innerHTML = "<button onclick=\"adderShip(event)\" style=\"height:23px;width:23px; background-color: blue\"></button> "
+                    // const button = document.createElement("button");
+                    // button.setAttribute("id", i + "," +j);
+                    // button.onclick = adderShip(even);
+                    if(responseBody != null) {
+
+                        for(let k = 0; k < responseBody.length; k ++) {
+                            if (responseBody[k].position.length === "HORIZONTAL".length) {
+
+                                if (responseBody[k].ystart === i && responseBody[k].xstart >= j
+                                    && (responseBody[k].xstart - responseBody[k].length + 1) <= j)
+
+                                    cell.style.backgroundColor = "yellow";
+
                             } else {
 
-                                if(responseBody[k].xstart === i && responseBody[k].ystart <= j
-                                    && (responseBody[k].ystart + responseBody[k].length-1) >= j)
+                                if (responseBody[k].xstart === j && responseBody[k].ystart <= i
+                                    && (responseBody[k].ystart + responseBody[k].length - 1) >= i)
 
-                                    document.getElementById(i+","+j).style.background = "yellow";
+                                    cell.style.backgroundColor = "yellow";
+
                             }
-
+                        }
                     }
-                }
 
+                    row.appendChild(cell);
+                }
+                tbBody.appendChild(row);
             }
 
-            console.log("Po tabeli");
+            table.appendChild(tbBody);
+            document.getElementById("oldTable").innerHTML = ""; // czyści diva
+            document.getElementById("oldTable").appendChild(table);
 
+
+        }
+
+
+    }
+
+
+    class BattleShipClient {
+
+        addShip(length, xstart, ystart, position, onSuccess, onError) {
+            console.log("w addShip " + length + " " + xstart + " " + ystart + " " + position);
+            this.post("/addShip", "length=" + length + "&xstart=" + xstart + "&ystart=" + ystart + "&position=" + position, null, onSuccess, onError);
+        }
+
+        delete(path, body, progressUpdate, success, error) {
+            this.call("delete", path, body, progressUpdate, success, error);
+        }
+
+
+        post(path, body, progressUpdate, success, error) {
+            console.log("w post " + body);
+            this.call("post", path, body, progressUpdate, success, error);
+        }
+
+        call(method, path, body, progressUpdate, success, error) {
+            let request = new XMLHttpRequest();
+            request.upload.addEventListener('progress', function (event) {
+                if (event.lengthComputable) {
+                    let progress = event.loaded / event.total;
+                    if (progressUpdate != null)
+                        progressUpdate(progress);
+                }
+            }, false);
+            console.log("po progresie " + body)
+            request.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE)
+                    if (this.status >= 200 && this.status <= 299) {
+                        console.log(this.responseText + "SUROWE PRZED PARSEM ")
+                        let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
+                        //let body = this.responseText;
+                        console.log("Body po parsie" + body);
+                        success(this.status, body);
+                    } else if (error !== undefined)
+                        error(this.status, this.responseText);
+            };
+            request.open(method.toUpperCase(), path, true);
+            console.log("body przed wysłaniem do posta" + body)
+            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');  //'application/json' - dla wysyłania jsona
+            // var data = JSON.stringify(body); // zmiana danych na jsona
+            request.send(body);
         }
     }
-        class BattleShipClient {
-
-            addShip(length, xstart, ystart, position, onSuccess, onError) {
-                console.log("w addShip "+ length+" "+xstart+" "+ystart+" "+position);
-                this.post("/addShip", "length=" + length + "&xstart=" + xstart + "&ystart=" + ystart + "&position=" + position, null, onSuccess, onError);
-            }
-
-            delete(path, body, progressUpdate, success, error) {
-                this.call("delete", path, body, progressUpdate, success, error);
-            }
-
-
-            post(path, body, progressUpdate, success, error) {
-                console.log("w post " + body);
-                this.call("post", path, body, progressUpdate, success, error);
-            }
-
-            call(method, path, body, progressUpdate, success, error) {
-                let request = new XMLHttpRequest();
-                request.upload.addEventListener('progress', function (event) {
-                    if (event.lengthComputable) {
-                        let progress = event.loaded / event.total;
-                        if (progressUpdate != null)
-                            progressUpdate(progress);
-                    }
-                }, false);
-                console.log("po progresie "+ body)
-                request.onreadystatechange = function () {
-                    if (this.readyState === XMLHttpRequest.DONE)
-                        if (this.status >= 200 && this.status <= 299) {
-                            console.log(this.responseText + "SUROWE PRZED PARSEM ")
-                             let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
-                            //let body = this.responseText;
-                            console.log("Body po parsie" + body);
-                            success(this.status, body);
-                        } else if (error !== undefined)
-                            error(this.status, this.responseText);
-                };
-                request.open(method.toUpperCase(), path, true);
-                console.log("body przed wysłaniem do posta" +body)
-                request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');  //'application/json' - dla wysyłania jsona
-                // var data = JSON.stringify(body); // zmiana danych na jsona
-                request.send(body);
-            }
-        }
-    </script>
+</script>
 </body>
 </html>
 
