@@ -30,9 +30,9 @@ public class GameController {
     @PostMapping(value = "/addShip",
     produces = "application/json")
     @ResponseBody
-    public List<Ship> addShiptoList(@ModelAttribute Ship ship) throws Exception{
+    public ResponseEntity<List<Ship>> addShiptoList(@ModelAttribute Ship ship) throws Exception{
         System.out.println(ship);
-        return gameService.getList(ship);
+        return new ResponseEntity<>(gameService.getList(ship), HttpStatus.OK);
     }
 
     @GetMapping("/addedShip")
@@ -40,6 +40,9 @@ public class GameController {
         model.addAttribute("game", gameService);
         return "addShip_success";
     }
+//
+//    @GetMapping("/gameInProcces")
+//    public
 
 
 

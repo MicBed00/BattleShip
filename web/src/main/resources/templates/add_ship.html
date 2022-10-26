@@ -19,6 +19,11 @@
             height: 30px;
             border: 1px solid;
         }
+        .button {
+            height:23px;
+            width:23px;
+            background-color: blue;
+        }
     </style>
 
 </head>
@@ -53,7 +58,7 @@
     <br>
     <br>
     <br>
-    <button id="accept" style="height: 50px; width: 100px" onclick="acc()" disabled>Accept</button>
+    <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
 </div>
 
 <div id="responseServer"> </div>
@@ -61,36 +66,31 @@
 
 
 <script>
-    function acc() {
-        document.getElementById("oldTable").style.backgroundColor = "blue";
-        window:location.replace("http://localhost:8080/startGame");
-    }
 
     function adderShip(event) {
         var length = document.getElementById("len").value;
         var position = document.getElementById("orientation").value;
         var xstart, ystart;
-        var target = event.target, col, row,
+        var target = event.target, col, row;
 
-            col = target.parentElement;
+        col = target.parentElement;
         row = col.parentElement;
         ystart = row.rowIndex;
         xstart = col.cellIndex;
-        console.log("Współrzedne pierwsza metoda w skrypcie" + " " + ystart + " " + xstart + " length" + length);
 
         new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
             if (status >= 200 && status <= 299) {
-                console.log("PRZED RENDROWANIEM STATKÓW");
-                console.log("Rozmiar responseBody: "+ responseBody.length)
                 renderShip(responseBody)
+                document.getElementById("len").value = 1;
+                document.getElementById("orientation").value = "VERTICAL";
+
+                //wymyślić inny warunek dla odblokowania przycisku
                 if(responseBody.length === 2) {
                     document.getElementById("accept").disabled = false;
                 }
-            } else {
-
             }
 
-        }, (status, reposnseBody) => {
+        }, (status, responseBody) => {
             if (status >= 400 && status <= 499) {
                 alert("Błąd " + reposnseBody);
                 location.replace("http://localhost:8080/startGame");
@@ -103,55 +103,69 @@
 
         function renderShip(responseBody) {
             const table = document.createElement("table");
-            table.setAttribute("class", "tableResponse");
+            table.id = "tableRes";
+            table.className = "tableResponse";
             const tbBody = document.createElement("tbody");
 
 
             for (let i = 0; i < 10; i++) {
 
                 const row = document.createElement("tr");
-                row.setAttribute("class", "row");
+                row.className = "row";
 
                 for (let j = 0; j < 10; j++) {
 
                     const cell = document.createElement("td");
-                    cell.setAttribute("class", "cell");
-                    cell.innerHTML = "<button onclick=\"adderShip(event)\" style=\"height:23px;width:23px; background-color: blue\"></button> "
-                    // const button = document.createElement("button");
-                    // button.setAttribute("id", i + "," +j);
-                    // button.onclick = adderShip(even);
-                    if(responseBody != null) {
+                    cell.className = "cell";
+                    // cell.innerHTML = "<button onclick=\"adderShip(event)\" style=\"height:23px;width:23px; background-color: blue\"></button> "
+                    const button = document.createElement("button");
+                    button.className = "button";
+                    button.id = i+","+j
 
+                    button.addEventListener("click", function(event) {
+                        adderShip(event);
+                    }, false);
+                    cell.appendChild(button);
+                    if(responseBody != null) {
                         for(let k = 0; k < responseBody.length; k ++) {
                             if (responseBody[k].position.length === "HORIZONTAL".length) {
 
                                 if (responseBody[k].ystart === i && responseBody[k].xstart >= j
                                     && (responseBody[k].xstart - responseBody[k].length + 1) <= j)
-
+                                   // document.getElementById(i+","+j).style.backgroundColor = "yellow";  // nie działa - po kliknięciu cały board staję się żółty
                                     cell.style.backgroundColor = "yellow";
 
                             } else {
 
                                 if (responseBody[k].xstart === j && responseBody[k].ystart <= i
                                     && (responseBody[k].ystart + responseBody[k].length - 1) >= i)
-
+                                  //  document.getElementById(i+","+j).style.backgroundColor = "yellow";
                                     cell.style.backgroundColor = "yellow";
-
                             }
                         }
                     }
-
                     row.appendChild(cell);
                 }
                 tbBody.appendChild(row);
             }
-
             table.appendChild(tbBody);
             document.getElementById("oldTable").innerHTML = ""; // czyści diva
             document.getElementById("oldTable").appendChild(table);
-
-
         }
+
+        document.getElementById("accept").addEventListener("click", function (event) {
+            renderShip(null);
+
+            let target = event.target;
+            target.setAttribute("value", +target.value.valueOf()+ +1);      //sumowanie stringów gdy są liczbami
+            document.getElementById("accept").disabled = true;
+
+            if(target.value.valueOf() > 2) {
+                window:location.replace("http://localhost:8080/addedShip");
+            }
+
+
+        },false);
 
 
     }
@@ -183,20 +197,17 @@
                         progressUpdate(progress);
                 }
             }, false);
-            console.log("po progresie " + body)
+
             request.onreadystatechange = function () {
                 if (this.readyState === XMLHttpRequest.DONE)
                     if (this.status >= 200 && this.status <= 299) {
-                        console.log(this.responseText + "SUROWE PRZED PARSEM ")
                         let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
                         //let body = this.responseText;
-                        console.log("Body po parsie" + body);
                         success(this.status, body);
                     } else if (error !== undefined)
                         error(this.status, this.responseText);
             };
             request.open(method.toUpperCase(), path, true);
-            console.log("body przed wysłaniem do posta" + body)
             request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');  //'application/json' - dla wysyłania jsona
             // var data = JSON.stringify(body); // zmiana danych na jsona
             request.send(body);

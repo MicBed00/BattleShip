@@ -6,24 +6,12 @@
 </head>
 <body>
     <div align="center">
-        <h1>Added all ships!</h1>
+        <h1>Start game!</h1>
         <a href="/startGame">
             <button class="GFG">
-                Click Here to continue
+                Click here to continue
             </button>
         </a>
-        <br>
-        <br>
-        <table style="background-color: cornflowerblue" id="table" border="1" cellspacing="2" cellpadding="2">
-            <tr height="30"
-                th:each="row, Y : ${#numbers.sequence(1, 10)}">
-                <td th:each="col, X : ${#numbers.sequence(1, 10)}"
-                    width="30"
-                    th:style="${@gameService.shouldRender(X.index, Y.index) ? 'background:yellow' : 'background:blue'}">
-
-               </td>
-            </tr>
-        </table>
     </div>
 
 </body>
