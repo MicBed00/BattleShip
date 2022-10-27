@@ -62,8 +62,8 @@
     <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
 </div>
 
-<script>
 
+<script>
     function adderShip(event) {
         var length = document.getElementById("len").value;
         var position = document.getElementById("orientation").value;
@@ -89,10 +89,10 @@
 
         }, (status, responseBody) => {
             if (status >= 400 && status <= 499) {
-                alert("Błąd użytkownika" + reposnseBody);
+                alert("Błąd użytkownika" + responseBody);
                 location.replace("http://localhost:8080/startGame");
             } else if (status >= 500) {
-                alert("Błąd serwera" + reposnseBody);
+                alert("Błąd serwera" + responseBody);
                 location.replace("http://localhost:8080/startGame");
             }
 
@@ -153,7 +153,8 @@
             renderShip(null);
 
             let target = event.target;
-            target.setAttribute("value", +target.value.valueOf()+ +1);      //sumowanie stringów gdy są liczbami
+            target.setAttribute("value", +target.value.valueOf()+ +1);      //sumowanie stringów gdy są liczbami. Zmieniam wartość value po to by w momencie zmiany list
+                                                                            // (gracz1 dodał swoje statki, i serwer zaczyna podsyłać listę gracz2 - zmiana listy następuje w addShipToList() gameservice)
             document.getElementById("accept").disabled = true;
 
             if(target.value.valueOf() > 2) {

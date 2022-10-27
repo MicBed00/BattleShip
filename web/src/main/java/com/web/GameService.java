@@ -63,7 +63,7 @@ public class GameService {
 //        return result.get();
 //    }
 
-    public List<Ship> addShiptoList(Ship ship) {
+    public List<Ship> addShipToList(Ship ship) {
         if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
             boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
                                 ship.getYstart(), ship.getPosition());

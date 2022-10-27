@@ -30,7 +30,7 @@ public class GameController {
     @ResponseBody
     public ResponseEntity<List<Ship>> addShiptoList(@ModelAttribute Ship ship) throws Exception{
         System.out.println(ship);
-        return new ResponseEntity<>(gameService.addShiptoList(ship), HttpStatus.OK);
+        return new ResponseEntity<>(gameService.addShipToList(ship), HttpStatus.OK);
     }
 
     @GetMapping(value = "/gameInProcces", produces = "application/json")
