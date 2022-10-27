@@ -42,28 +42,15 @@
     </select>
     <br>
     <br>
-    <table style="background-color: blue" id="oldTable" border="1" cellspacing="2" cellpadding="2">
-        <tbody>
-        <tr height="30"
-            th:each="row, Y : ${#numbers.sequence(1, 10)}">
-            <td th:each="columne, X : ${#numbers.sequence(1, 10)}"
-                width="30"
-                th:style="${'background:blue'}">
-                <button th:id="|${X.index},${Y.index}|" th:name="coord" th:value="|${X.index},${Y.index}|"
-                        onclick="adderShip(event)"
-                        style="height:23px;width:23px; background-color: blue"></button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div id="renderTable"></div>
     <br>
     <br>
     <br>
     <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
 </div>
 
-
 <script>
+    window.onload = renderShip(null);
     function adderShip(event) {
         var length = document.getElementById("len").value;
         var position = document.getElementById("orientation").value;
@@ -98,57 +85,6 @@
 
         });
 
-        function renderShip(responseBody) {
-            const table = document.createElement("table");
-            table.id = "tableRes";
-            table.className = "tableResponse";
-            const tbBody = document.createElement("tbody");
-
-            for (let i = 0; i < 10; i++) {
-
-                const row = document.createElement("tr");
-                row.className = "row";
-
-                for (let j = 0; j < 10; j++) {
-
-                    const cell = document.createElement("td");
-                    cell.className = "cell";
-                    // cell.innerHTML = "<button onclick=\"adderShip(event)\" style=\"height:23px;width:23px; background-color: blue\"></button> "
-                    const button = document.createElement("button");
-                    button.className = "button";
-                    button.id = i+","+j
-                    button.addEventListener("click", function(event) {
-                        adderShip(event);
-                    }, false);
-                    cell.appendChild(button);
-
-                    if(responseBody != null) {
-                        for(let k = 0; k < responseBody.length; k ++) {
-                            if (responseBody[k].position.length === "HORIZONTAL".length) {
-
-                                if (responseBody[k].ystart === i && responseBody[k].xstart >= j
-                                    && (responseBody[k].xstart - responseBody[k].length + 1) <= j)
-                                   // document.getElementById(i+","+j).style.backgroundColor = "yellow";  // nie działa - po kliknięciu cały board staję się żółty
-                                    cell.style.backgroundColor = "yellow";
-
-                            } else {
-
-                                if (responseBody[k].xstart === j && responseBody[k].ystart <= i
-                                    && (responseBody[k].ystart + responseBody[k].length - 1) >= i)
-                                  //  document.getElementById(i+","+j).style.backgroundColor = "yellow";
-                                    cell.style.backgroundColor = "yellow";
-                            }
-                        }
-                    }
-                    row.appendChild(cell);
-                }
-                tbBody.appendChild(row);
-            }
-            table.appendChild(tbBody);
-            document.getElementById("oldTable").innerHTML = ""; // czyści diva
-            document.getElementById("oldTable").appendChild(table);
-        }
-
         document.getElementById("accept").addEventListener("click", function (event) {
             renderShip(null);
 
@@ -163,6 +99,56 @@
         },false);
     }
 
+    function renderShip(responseBody) {
+        const table = document.createElement("table");
+        table.id = "tableRes";
+        table.className = "tableResponse";
+        const tbBody = document.createElement("tbody");
+
+        for (let i = 0; i < 10; i++) {
+
+            const row = document.createElement("tr");
+            row.className = "row";
+
+            for (let j = 0; j < 10; j++) {
+
+                const cell = document.createElement("td");
+                cell.className = "cell";
+                // cell.innerHTML = "<button onclick=\"adderShip(event)\" style=\"height:23px;width:23px; background-color: blue\"></button> "
+                const button = document.createElement("button");
+                button.className = "button";
+                button.id = i+","+j
+                button.addEventListener("click", function(event) {
+                    adderShip(event);
+                }, false);
+                cell.appendChild(button);
+
+                if(responseBody != null) {
+                    for(let k = 0; k < responseBody.length; k ++) {
+                        if (responseBody[k].position.length === "HORIZONTAL".length) {
+
+                            if (responseBody[k].ystart === i && responseBody[k].xstart >= j
+                                && (responseBody[k].xstart - responseBody[k].length + 1) <= j)
+                                // document.getElementById(i+","+j).style.backgroundColor = "yellow";  // nie działa - po kliknięciu cały board staję się żółty
+                                cell.style.backgroundColor = "yellow";
+
+                        } else {
+
+                            if (responseBody[k].xstart === j && responseBody[k].ystart <= i
+                                && (responseBody[k].ystart + responseBody[k].length - 1) >= i)
+                                //  document.getElementById(i+","+j).style.backgroundColor = "yellow";
+                                cell.style.backgroundColor = "yellow";
+                        }
+                    }
+                }
+                row.appendChild(cell);
+            }
+            tbBody.appendChild(row);
+        }
+        table.appendChild(tbBody);
+        document.getElementById("renderTable").innerHTML = ""; // czyści diva
+        document.getElementById("renderTable").appendChild(table);
+    }
 
     class BattleShipClient {
 
