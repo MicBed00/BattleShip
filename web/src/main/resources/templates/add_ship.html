@@ -63,6 +63,7 @@
         xstart = col.cellIndex;
 
         new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
+            console.log("Rozmiar listy ze statkami: "+ responseBody.length)
             if (status >= 200 && status <= 299) {
                 renderShip(responseBody)
                 document.getElementById("len").value = 1;
@@ -74,15 +75,17 @@
                 }
             }
 
+            // if(stauts >=400 && status <= 499) {
+            //
+            //     alert("Błąd! " + responseBody)
+            // }
+
         }, (status, responseBody) => {
             if (status >= 400 && status <= 499) {
-                alert("Błąd użytkownika" + responseBody);
-                location.replace("http://localhost:8080/startGame");
-            } else if (status >= 500) {
-                alert("Błąd serwera" + responseBody);
-                location.replace("http://localhost:8080/startGame");
+                alert(responseBody);
+                // location.replace("http://localhost:8080/startGame");
+                //Uwaga: sprawdź czy po wyrzuceniu błędu statek mimo to nie jest dodawny do listy!
             }
-
         });
 
         document.getElementById("accept").addEventListener("click", function (event) {

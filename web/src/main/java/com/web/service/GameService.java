@@ -1,4 +1,4 @@
-package com.web;
+package com.web.service;
 
 import DataConfig.ShipLimits;
 import board.Board;
@@ -14,7 +14,7 @@ public class GameService {
     List<String> positionList;
     Board boardPlayer1;
     Board boardPlayer2;
-    RenderBoard renderBoard;
+
 //    Map<String, Integer> shipLimits = new TreeMap<>()
     GameService() {
         shipSize = new ArrayList<>();
@@ -30,7 +30,6 @@ public class GameService {
         boardPlayer2 = new Board();
         boardList.add(boardPlayer1);
         boardList.add(boardPlayer2);
-        renderBoard = new RenderBoard();
     }
 
     public boolean checkIsOverTheLimitShip(int size){
@@ -48,20 +47,6 @@ public class GameService {
     public List<Board> getBoardList() {
         return boardList;
     }
-
-//    public boolean shouldRender(int x, int y) {
-//        AtomicBoolean result = new AtomicBoolean(false);
-//        List<Ship> list;
-//        list =  boardPlayer1.getShips().size() < ShipLimits.SHIP_LIMIT.getQty() ?
-//            boardPlayer1.getShips() : boardPlayer2.getShips();
-//
-//        list.forEach(s -> {
-//            if(s.checkIfShipIsPresent(x, y)) {
-//                result.set(true);
-//            }
-//        });
-//        return result.get();
-//    }
 
     public List<Ship> addShipToList(Ship ship) {
         if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
