@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main game</title>
+</head>
+<body>
+<div id="boardPlayer1"></div>
+<div id="boardPlayer2"></div>
+
+<script>
+
+    const battleShipClient = new BattleShipClient();
+
+    function shipShot(event) {
+        var target = event.target, col, row, shotX, shotY;
+        col = target.parentElement;
+        row = col.parentElement;
+        shotY = row.rowIndex;
+        shotX = col.cellIndex;
+      battleShipClient.shooterShip(shotX, shotY, (status, responseBody) => {
+      //    co robię z moją odpowiedzą z serwera - czyli z validacją mojego strzału i muszę
+      //    to zwrócić do funkcji renderowania tablicy by na tej podstawie wyrenderować wynik strzału
+
+
+      }, (status, responseBody) => {
+         // obsługa wyjątków
+
+      });
+    }
+
+  battleShipClient.getBoards((status, responseBody) => {
+      function renderBoard(responseBody) {
+          const table = document.createElement("table");
+          table.id = "tableBoard";
+          table.className = "table";
+          const tbody = document.createElement("tbody");
+
+          for(var i = 0; i < 10; i++) {
+
+              const row = document.createElement("tr");
+              row.className = "row";
+
+              for(var j = 0; j < 10; j ++) {
+
+                  const cell = document.createElement("td");
+                  cell.className = "cell";
+                  cell.id = i+","+j;
+                  const button = document.createElement("button");
+                  button.id = i+","+j;
+                  button.addEventListener("click", function(event) {
+                      shipShot(event);
+                  }, false);
+                  cell.appendChild(button);
+              }
+              row.appendChild(cell);
+          }
+          tbody.appendChild(row);
+          table.appendChild(tbody);
+      }
+
+
+
+      if(status >= 200 && status <= 299) {
+          console.log("odpowiedź serwera z metody get " + responseBody[0].ships[0].length)
+          renderBoard(responseBody)
+      }
+  }, (status, responseBody) => {
+
+  });
+
+
+
+
+
+</script>
+</body>
+</html>

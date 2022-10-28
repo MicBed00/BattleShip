@@ -37,8 +37,12 @@ public class GameController {
         return new ResponseEntity<>(gameService.addShipToList(ship), HttpStatus.OK);
     }
 
+    @GetMapping("/added_Ship")
+    public String addedShip() {
+        return "addShip_success";
+    }
 
-    @GetMapping(value = "/gameInProcces", produces = "application/json")
+    @GetMapping(value = "/game", produces = "application/json")
     @ResponseBody
     public ResponseEntity<List<Board>> getList() {
         return new ResponseEntity<>(gameService.getBoardList(), HttpStatus.OK);
