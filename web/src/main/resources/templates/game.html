@@ -3,73 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <title>Main game</title>
+    <style>
+        .tableShot
+        {
+            border: 2px solid;
+            background-color: blue;
+            width: 400px;
+        }
+        .rowShot
+        {
+            width: 50px;
+            height: 30px;
+            border: 1px solid;
+        }
+        .cellShot
+        {
+            width: 50px;
+            height: 30px;
+            border: 1px solid;
+        }
+        .buttonShot
+        {
+            height:23px;
+            width:23px;
+            background-color: blue;
+        }
+        #container
+        {
+            width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #boardPlayer1
+        {
+            float: left;
+            width: 600px;
+        }
+        #boardPlayer2
+        {
+            float: left;
+            width: 600px;
+        }
+    </style>
 </head>
 <body>
-<div id="boardPlayer1"></div>
-<div id="boardPlayer2"></div>
+
+<div id="container">
+    <div id="boardPlayer1" >
+        <h3>Board's Player 1</h3>
+    </div>
+    <div id="boardPlayer2" >
+        <h3>Board's Player 2</h3>
+    </div>
+
+    <div style="clear:both;"></div>
+</div>
+
 
 <script>
+    var ply1, ply2;
+    ply1 = "ply1";
+    ply2 = "ply2";
 
-    const battleShipClient = new BattleShipClient();
+   onload = renderBoard(ply1);
 
-    function shipShot(event) {
+   onload = renderBoard(ply2);
+    // let battleShipClient = new BattleShipClient();
+    function shotAtShip(event) {
         var target = event.target, col, row, shotX, shotY;
         col = target.parentElement;
         row = col.parentElement;
         shotY = row.rowIndex;
         shotX = col.cellIndex;
-      battleShipClient.shooterShip(shotX, shotY, (status, responseBody) => {
-      //    co robię z moją odpowiedzą z serwera - czyli z validacją mojego strzału i muszę
-      //    to zwrócić do funkcji renderowania tablicy by na tej podstawie wyrenderować wynik strzału
+        console.log("W metodzie shotAtShip, wywołanej z addEven")
 
+        new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
+            if(status >= 200 && status <= 299) {
 
-      }, (status, responseBody) => {
-         // obsługa wyjątków
-
-      });
+                renderShot(responseBody[0], ply1)
+                renderShot(responseBody[1], ply2)
+            }
+        }, (status, responseBody) => {
+            alert("Błąd " + responseBody)
+        });
     }
 
-  battleShipClient.getBoards((status, responseBody) => {
-      function renderBoard(responseBody) {
-          const table = document.createElement("table");
-          table.id = "tableBoard";
-          table.className = "table";
-          const tbody = document.createElement("tbody");
 
-          for(var i = 0; i < 10; i++) {
+    function renderBoard(diff) {
+        const tableShot = document.createElement("table");
+        tableShot.id = "tableBoard";
+        tableShot.className = "tableShot";
+        const tbodyShot = document.createElement("tbody");
 
-              const row = document.createElement("tr");
-              row.className = "row";
+        for(let i = 0; i < 10; i++) {
 
-              for(var j = 0; j < 10; j ++) {
+            const rowShot = document.createElement("tr");
+            rowShot.className = "row";
 
-                  const cell = document.createElement("td");
-                  cell.className = "cell";
-                  cell.id = i+","+j;
-                  const button = document.createElement("button");
-                  button.id = i+","+j;
-                  button.addEventListener("click", function(event) {
-                      shipShot(event);
-                  }, false);
-                  cell.appendChild(button);
-              }
-              row.appendChild(cell);
-          }
-          tbody.appendChild(row);
-          table.appendChild(tbody);
-      }
+            for(let j = 0; j < 10; j ++) {
+
+                const cellShot = document.createElement("td");
+                cellShot.className = "cellShot";
+                cellShot.id =diff + j+","+i;
+                const buttonShot = document.createElement("button");
+                buttonShot.className = "buttonShot";
+                buttonShot.addEventListener("click", function(event) {
+                    shotAtShip(event);
+                }, false);
+                cellShot.appendChild(buttonShot);
+
+                rowShot.appendChild(cellShot);
+            }
+            tbodyShot.appendChild(rowShot);
+        }
+        tableShot.appendChild(tbodyShot);
+        // document.getElementById("boardPlayer1").innerHTML = "";
+        document.getElementById("boardPlayer2").appendChild(tableShot);
+        document.getElementById("boardPlayer1").appendChild(tableShot);
+
+    }
+
+    function renderShot(responseBody, diff) {
+        if(responseBody != null) {
+            for(const shot of responseBody) {
+                // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
+                if(shot.state === "HIT") {
+                    document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black"
+
+                } else if(shot.state === "MISSED") {
+                    document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black";
+                }
+            }
+        }
+    }
+
+
+    class BattleShipClient {
+
+        addShip(length, xstart, ystart, position, onSuccess, onError) {
+            this.post("/addShip", "length=" + length + "&xstart=" + xstart + "&ystart=" + ystart + "&position=" + position, null, onSuccess, onError);
+        }
+
+        shooterShip(x, y, onSuccess, onError) {
+            this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
+        }
+
+        delete(path, body, progressUpdate, success, error) {
+            this.call("delete", path, body, progressUpdate, success, error);
+        }
+
+        post(path, body, progressUpdate, success, error) {
+
+            this.call("post", path, body, progressUpdate, success, error);
+        }
+        call(method, path, body, progressUpdate, success, error) {
+            let request = new XMLHttpRequest();
+            request.upload.addEventListener('progress', function (event) {
+                if (event.lengthComputable) {
+                    let progress = event.loaded / event.total;
+                    if (progressUpdate != null)
+                        progressUpdate(progress);
+                }
+            }, false);
+
+            request.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE)
+                    if (this.status >= 200 && this.status <= 299) {
+                        let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
+                        //let body = this.responseText;
+                        success(this.status, body);
+                    } else if (error !== undefined)
+                        error(this.status, this.responseText);
+            };
+            request.open(method.toUpperCase(), path, true);
+            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');  //'application/json' - dla wysyłania jsona
+            // var data = JSON.stringify(body); // zmiana danych na jsona
+            request.send(body);
+        }
 
 
 
-      if(status >= 200 && status <= 299) {
-          console.log("odpowiedź serwera z metody get " + responseBody[0].ships[0].length)
-          renderBoard(responseBody)
-      }
-  }, (status, responseBody) => {
-
-  });
-
-
+    }
 
 
 

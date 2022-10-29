@@ -1,6 +1,7 @@
 package com.web.controller;
 
 import board.Board;
+import board.Shot;
 import com.web.service.GameService;
 import com.web.ShipFacade;
 import exceptions.BattleShipException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import ship.Ship;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class GameController {
@@ -26,7 +28,7 @@ public class GameController {
         model.addAttribute("ship", shipFacade);
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
-//        model.addAttribute("ships", gameService.boardPlayer1.getShips());
+
         return "add_ship";
     }
 
@@ -34,7 +36,7 @@ public class GameController {
 //    @ResponseBody // nie musimy używać tej adnotacji bo ResponseEntity zwraca jsona. Gdybym chciał zwrócić np pojo wtedy muszę użyć adnotacji @ResponseBody by zwracać josna
     public ResponseEntity<List<Ship>> addShiptoList(@ModelAttribute Ship ship) throws BattleShipException {
         System.out.println(ship);
-        return new ResponseEntity<>(gameService.addShipToList(ship), HttpStatus.OK);
+        return ResponseEntity.ok(gameService.addShipToList(ship));
     }
 
     @GetMapping("/added_Ship")
@@ -42,11 +44,21 @@ public class GameController {
         return "addShip_success";
     }
 
-    @GetMapping(value = "/game", produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<List<Board>> getList() {
-        return new ResponseEntity<>(gameService.getBoardList(), HttpStatus.OK);
+    @GetMapping(value = "/game")
+    public String getBoards() {
+        return "game";
     }
+
+//    @GetMapping(value = "/game/boards", produces = "application/json")
+//    public ResponseEntity<List<Board>> getList() {
+//        return new ResponseEntity<>(gameService.getBoardList(), HttpStatus.OK);
+//    }
+
+    @PostMapping(value="/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Set<Shot>>> addShot(@ModelAttribute Shot shot) {
+        return ResponseEntity.ok(gameService.addShotatShip(shot));
+    }
+
 
 
 

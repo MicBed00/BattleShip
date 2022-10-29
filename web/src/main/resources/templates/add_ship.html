@@ -65,6 +65,8 @@
         new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
             console.log("Rozmiar listy ze statkami: "+ responseBody.length)
             if (status >= 200 && status <= 299) {
+                document.getElementById("len").value = 1;
+                document.getElementById("orientation").value = "VERTICAL";
                 renderShip(responseBody)
 
                 //wymyślić inny warunek dla odblokowania przycisku
@@ -154,7 +156,7 @@
         }
 
         getBoards(onSuccess, onError) {
-            this.get("/game", null, onSuccess, onError);
+            this.get("/game/boards", null, onSuccess, onError);
         }
 
         shooterShip(x, y, onSuccess, onError) {

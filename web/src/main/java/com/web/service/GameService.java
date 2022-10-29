@@ -2,6 +2,7 @@ package com.web.service;
 
 import DataConfig.ShipLimits;
 import board.Board;
+import board.Shot;
 import org.springframework.stereotype.Service;
 import ship.Ship;
 
@@ -9,12 +10,13 @@ import java.util.*;
 
 @Service
 public class GameService {
-    List<String> shipSize;
-    List<Board> boardList;
-    List<String> positionList;
-    Board boardPlayer1;
-    Board boardPlayer2;
-
+    private List<String> shipSize;
+    private List<Board> boardList;
+    private List<String> positionList;
+    private Board boardPlayer1;
+    private Board boardPlayer2;
+    private List<Set<Shot>> listSets;
+    private Shot shot;
 //    Map<String, Integer> shipLimits = new TreeMap<>()
     GameService() {
         shipSize = new ArrayList<>();
@@ -30,9 +32,13 @@ public class GameService {
         boardPlayer2 = new Board();
         boardList.add(boardPlayer1);
         boardList.add(boardPlayer2);
+        listSets = new ArrayList<>();
+        listSets.add(boardPlayer1.getOpponentShots());
+        listSets.add(boardPlayer2.getOpponentShots());
+        shot = new Shot();
     }
 
-    public boolean checkIsOverTheLimitShip(int size){
+    private boolean checkIsOverTheLimitShip(int size){
         return size < ShipLimits.SHIP_LIMIT.getQty();
     }
 
@@ -43,6 +49,7 @@ public class GameService {
     public List<String> getOrientation() {
         return positionList;
     }
+
 
     public List<Board> getBoardList() {
         return boardList;
@@ -59,6 +66,16 @@ public class GameService {
             return boardPlayer2.getShips();
         }
         return null;
+    }
+
+    public List<Set<Shot>> addShotatShip(Shot shot) {
+
+        if(boardPlayer1.getOpponentShots().size() == boardPlayer2.getOpponentShots().size()) {
+            boardPlayer2.shoot(shot);
+        } else {
+            boardPlayer1.shoot(shot);
+        }
+        return listSets;
     }
 
 }

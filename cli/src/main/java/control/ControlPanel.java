@@ -163,7 +163,7 @@ public class ControlPanel {
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
 
             System.out.printf(user.messageBundle("information",activePlayer ) + "\n" + user.messageBundle("boardInfo") + "\n");
-            Render.renderShots(opponentBoard.getOpponetShots());
+            Render.renderShots(opponentBoard.getOpponentShots());
 
             try {
                 System.out.printf(user.messageBundle("coordX", activePlayer) + "\n");

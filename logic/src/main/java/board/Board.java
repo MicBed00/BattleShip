@@ -18,7 +18,7 @@ public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private final UI user = new UI();
     private List<Ship> ships = new ArrayList<>();
-    private Set<Shot> opponetShots = new HashSet<>();
+    private Set<Shot> opponentShots = new HashSet<>();
     public List<Ship> hittedShip = new ArrayList<>();
     @JsonIgnore
     private Boolean registerHit;
@@ -27,8 +27,8 @@ public class Board {
         return ships;
     }
 
-    public Set<Shot> getOpponetShots() {
-        return opponetShots;
+    public Set<Shot> getOpponentShots() {
+        return opponentShots;
     }
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
@@ -142,8 +142,8 @@ public class Board {
         } else {
             shot.setState(Shot.State.INVALID);
         }
-        opponetShots.add(shot);
-        return opponetShots;
+        opponentShots.add(shot);
+        return opponentShots;
     }
 
     private boolean correctShot(Shot shot) {
@@ -155,7 +155,7 @@ public class Board {
     }
 
     private boolean shotSamePlace(Shot shot) {
-        return opponetShots.contains(shot);
+        return opponentShots.contains(shot);
     }
 
     @JsonIgnore
@@ -173,17 +173,17 @@ public class Board {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
-        return Objects.equals(ships, board.ships) && Objects.equals(opponetShots, board.opponetShots);
+        return Objects.equals(ships, board.ships) && Objects.equals(opponentShots, board.opponentShots);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ships, opponetShots);
+        return Objects.hash(ships, opponentShots);
     }
 
     public int[] statisticsShot() {
-        int numberOfshots = this.opponetShots.size();
-        int numberShotsHit = numberOfShotsHit(this.opponetShots);
+        int numberOfshots = this.opponentShots.size();
+        int numberShotsHit = numberOfShotsHit(this.opponentShots);
         return new int[]{numberOfshots, numberShotsHit};
     }
 
