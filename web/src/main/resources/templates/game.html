@@ -88,6 +88,19 @@
         });
     }
 
+    function checkIfIsFinished() {
+        new BattleShipClient().getterStatusGame((status, responseBody) => {
+            if(responseBody === true) {
+                alert("Koooooooooooooooniec");
+                window.location.href = "http://google.com";
+            }
+
+
+        }, (status, responseBody) => {
+
+
+        })
+    }
 
     function renderBoard(diff) {
         const tableShot = document.createElement("table");
@@ -125,10 +138,16 @@
 
     function renderShot(responseBody, diff) {
         if(responseBody != null) {
-            for(const shot of responseBody) {
+            // responseBody.opponentShots.every(function (element, index)) {
+            //
+            //
+            // }
+            for(const shot of responseBody.opponentShots) {
                 // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                 if(shot.state === "HIT") {
-                    document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black"
+                    document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "red"
+                    //muszę zrobić call do servera odpytując o wynik metody isFinished()
+                    checkIfIsFinished()
 
                 } else if(shot.state === "MISSED") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black";
@@ -147,13 +166,19 @@
         shooterShip(x, y, onSuccess, onError) {
             this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
         }
+        getterStatusGame(onSuccess, onError) {
+            this.get("/game/boards/isFinished", null, null, onSuccess, onError)
+        }
 
         delete(path, body, progressUpdate, success, error) {
             this.call("delete", path, body, progressUpdate, success, error);
         }
 
-        post(path, body, progressUpdate, success, error) {
+        get(path, body, progressUpdate, success, error) {
+            this.call("get", path, null, progressUpdate, success, error)
+        }
 
+        post(path, body, progressUpdate, success, error) {
             this.call("post", path, body, progressUpdate, success, error);
         }
         call(method, path, body, progressUpdate, success, error) {
@@ -165,7 +190,6 @@
                         progressUpdate(progress);
                 }
             }, false);
-
             request.onreadystatechange = function () {
                 if (this.readyState === XMLHttpRequest.DONE)
                     if (this.status >= 200 && this.status <= 299) {
@@ -184,9 +208,6 @@
 
 
     }
-
-
-
 </script>
 </body>
 </html>

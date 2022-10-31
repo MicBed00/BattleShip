@@ -28,25 +28,33 @@
 
 </head>
 <body>
-<div align="center">
-    <h1>Add Ship</h1>
+<div align="center" id="container">
+    <div id="board">
+        <h1>Add Ship</h1>
 
-    <label>Wielkość statku: </label>
-    <select id="len" th:name="length">
-        <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
-    </select>
+        <label>Wielkość statku: </label>
+        <select id="len" th:name="length">
+            <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
+        </select>
 
-    <label>Orientacja: </label>
-    <select id="orientation" th:name="position">
-        <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
-    </select>
-    <br>
-    <br>
-    <div id="renderTable"></div>
-    <br>
-    <br>
-    <br>
-    <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
+        <label>Orientacja: </label>
+        <select id="orientation" th:name="position">
+            <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
+        </select>
+        <br>
+        <br>
+        <div id="renderTable"></div>
+        <br>
+        <br>
+        <br>
+        <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
+    </div>
+<!--    <div id="numberShip">-->
+<!--        <label>Liczba statków na planszy: </label>-->
+<!--        <select id="shipLimit" th:name=""-->
+
+<!--    </div>-->
+
 </div>
 
 <script>
@@ -67,11 +75,17 @@
             if (status >= 200 && status <= 299) {
                 document.getElementById("len").value = 1;
                 document.getElementById("orientation").value = "VERTICAL";
-                renderShip(responseBody)
 
                 //wymyślić inny warunek dla odblokowania przycisku
-                if(responseBody.length === 2) {
-                    document.getElementById("accept").disabled = false;
+                if(responseBody[0].ships.length <= 2 && responseBody[1].ships.length === 0) {
+                    renderShip(responseBody[0])
+                        if(responseBody[0].ships.length === 2)
+                            document.getElementById("accept").disabled = false;
+
+                } else if(responseBody[0].ships.length === 2 && responseBody[1].ships.length <= 2) {
+                    renderShip(responseBody[1])
+                        if(responseBody[1].ships.length === 2)
+                            document.getElementById("accept").disabled = false;
                 }
             }
 
@@ -98,6 +112,7 @@
     }
 
     function renderShip(responseBody) {
+
         const table = document.createElement("table");
         table.id = "tableRes";
         table.className = "tableResponse";
@@ -122,18 +137,18 @@
                 cell.appendChild(button);
 
                 if(responseBody != null) {
-                    for(let k = 0; k < responseBody.length; k ++) {
-                        if (responseBody[k].position.length === "HORIZONTAL".length) {
+                    for(let k = 0; k < responseBody.ships.length; k ++) {
+                        if (responseBody.ships[k].position.length === "HORIZONTAL".length) {
 
-                            if (responseBody[k].ystart === i && responseBody[k].xstart >= j
-                                && (responseBody[k].xstart - responseBody[k].length + 1) <= j)
+                            if (responseBody.ships[k].ystart === i && responseBody.ships[k].xstart >= j
+                                && (responseBody.ships[k].xstart - responseBody.ships[k].length + 1) <= j)
                                 // document.getElementById(i+","+j).style.backgroundColor = "yellow";  // nie działa - po kliknięciu cały board staję się żółty
                                 cell.style.backgroundColor = "yellow";
 
                         } else {
 
-                            if (responseBody[k].xstart === j && responseBody[k].ystart <= i
-                                && (responseBody[k].ystart + responseBody[k].length - 1) >= i)
+                            if (responseBody.ships[k].xstart === j && responseBody.ships[k].ystart <= i
+                                && (responseBody.ships[k].ystart + responseBody.ships[k].length - 1) >= i)
                                 //  document.getElementById(i+","+j).style.backgroundColor = "yellow";
                                 cell.style.backgroundColor = "yellow";
                         }
@@ -167,12 +182,11 @@
             this.call("delete", path, body, progressUpdate, success, error);
         }
 
-        get(path, progressUpdate, success, error) {
-            this.callGet("get", path, progressUpdate, success, error)
+        get(path, body, progressUpdate, success, error) {
+            this.call(path, null, progressUpdate, success, error)
         }
 
         post(path, body, progressUpdate, success, error) {
-
             this.call("post", path, body, progressUpdate, success, error);
         }
 

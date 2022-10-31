@@ -17,6 +17,8 @@ public class GameService {
     private Board boardPlayer2;
     private List<Set<Shot>> listSets;
     private Shot shot;
+
+    private ShipLimits shipLimits;
 //    Map<String, Integer> shipLimits = new TreeMap<>()
     GameService() {
         shipSize = new ArrayList<>();
@@ -38,6 +40,9 @@ public class GameService {
         shot = new Shot();
     }
 
+    public ShipLimits getShipLimits() {
+        return shipLimits;
+    }
     private boolean checkIsOverTheLimitShip(int size){
         return size < ShipLimits.SHIP_LIMIT.getQty();
     }
@@ -55,27 +60,33 @@ public class GameService {
         return boardList;
     }
 
-    public List<Ship> addShipToList(Ship ship) {
-        if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
-            boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
-                                ship.getYstart(), ship.getPosition());
-            return boardPlayer1.getShips();
-        }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
-            boardPlayer2.addShip(ship.getLength(), ship.getXstart(),
-                                ship.getYstart(), ship.getPosition());
-            return boardPlayer2.getShips();
+    public List<Board> addShipToList(Ship ship) {
+        if(ship.getLength() > 0 && ship.getPosition() != null) {
+            if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
+                boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
+                        ship.getYstart(), ship.getPosition());
+            }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
+                boardPlayer2.addShip(ship.getLength(), ship.getXstart(),
+                        ship.getYstart(), ship.getPosition());
+            }
         }
-        return null;
+        return getBoardList();
     }
 
-    public List<Set<Shot>> addShotatShip(Shot shot) {
+    public List<Board> addShotatShip(Shot shot) {
 
         if(boardPlayer1.getOpponentShots().size() == boardPlayer2.getOpponentShots().size()) {
             boardPlayer2.shoot(shot);
         } else {
             boardPlayer1.shoot(shot);
         }
-        return listSets;
+        return getBoardList();
     }
+
+    public Boolean returnStatusGame() {
+        return boardPlayer1.getIsFinished().get() || boardPlayer2.getIsFinished().get();
+    }
+
+
 
 }

@@ -158,9 +158,11 @@ public class Board {
         return opponentShots.contains(shot);
     }
 
-    @JsonIgnore
+//    @JsonIgnore
     public AtomicBoolean getIsFinished() {
         AtomicBoolean isFinished = new AtomicBoolean(true);
+        if(ships.isEmpty())
+            isFinished.set(false);
         ships.forEach(ship -> {
             if (!ship.checkIfDead())
                 isFinished.set(false);

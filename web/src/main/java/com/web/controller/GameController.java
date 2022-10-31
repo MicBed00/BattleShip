@@ -28,15 +28,16 @@ public class GameController {
         model.addAttribute("ship", shipFacade);
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
+        model.addAttribute("shipLimit", gameService.getShipLimits());
 
         return "add_ship";
     }
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
 //    @ResponseBody // nie musimy używać tej adnotacji bo ResponseEntity zwraca jsona. Gdybym chciał zwrócić np pojo wtedy muszę użyć adnotacji @ResponseBody by zwracać josna
-    public ResponseEntity<List<Ship>> addShiptoList(@ModelAttribute Ship ship) throws BattleShipException {
+    public ResponseEntity<List<Board>> addShiptoList(@ModelAttribute Ship ship) throws BattleShipException {
         System.out.println(ship);
-        return ResponseEntity.ok(gameService.addShipToList(ship));
+    return ResponseEntity.ok(gameService.addShipToList(ship));
     }
 
     @GetMapping("/added_Ship")
@@ -49,13 +50,13 @@ public class GameController {
         return "game";
     }
 
-//    @GetMapping(value = "/game/boards", produces = "application/json")
-//    public ResponseEntity<List<Board>> getList() {
-//        return new ResponseEntity<>(gameService.getBoardList(), HttpStatus.OK);
-//    }
+    @GetMapping(value = "/game/boards/isFinished", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> getList() {
+        return ResponseEntity.ok(gameService.returnStatusGame());
+    }
 
     @PostMapping(value="/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Set<Shot>>> addShot(@ModelAttribute Shot shot) {
+    public ResponseEntity<List<Board>> addShot(@ModelAttribute Shot shot) {
         return ResponseEntity.ok(gameService.addShotatShip(shot));
     }
 
