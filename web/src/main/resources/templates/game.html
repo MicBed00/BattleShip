@@ -51,9 +51,13 @@
 <div id="container">
     <div id="boardPlayer1" >
         <h3>Board's Player 1</h3>
+
     </div>
     <div id="boardPlayer2" >
+        <div id="boardPlayer1" >
         <h3>Board's Player 2</h3>
+    </div>
+
     </div>
 
     <div style="clear:both;"></div>
@@ -92,12 +96,10 @@
         new BattleShipClient().getterStatusGame((status, responseBody) => {
             if(responseBody === true) {
                 alert("Koooooooooooooooniec");
-                window.location.href = "http://google.com";
+
+                window.location.href = "/statistics";
             }
-
-
         }, (status, responseBody) => {
-
 
         })
     }
@@ -131,17 +133,14 @@
         }
         tableShot.appendChild(tbodyShot);
         // document.getElementById("boardPlayer1").innerHTML = "";
-        document.getElementById("boardPlayer2").appendChild(tableShot);
         document.getElementById("boardPlayer1").appendChild(tableShot);
+        document.getElementById("boardPlayer2").appendChild(tableShot);
 
     }
 
     function renderShot(responseBody, diff) {
         if(responseBody != null) {
-            // responseBody.opponentShots.every(function (element, index)) {
-            //
-            //
-            // }
+
             for(const shot of responseBody.opponentShots) {
                 // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                 if(shot.state === "HIT") {
@@ -155,7 +154,6 @@
             }
         }
     }
-
 
     class BattleShipClient {
 

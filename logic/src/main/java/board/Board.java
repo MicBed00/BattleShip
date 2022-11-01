@@ -94,7 +94,7 @@ public class Board {
         }
         if (position == Position.HORIZONTAL) {
             if (ship.getYstart() == y) {
-                if (x - length < 0) {
+                if ((x+1) - length < 0) {
                     return true;
                 }
                 return ship.getXstart() < x ? ship.getXstart() >= x - length : ship.getXstart() - ship.getLength() <= x;

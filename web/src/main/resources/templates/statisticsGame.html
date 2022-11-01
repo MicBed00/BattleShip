@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:https="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Player's statistics</title>
+    <style>
+        #container
+        {
+            width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats
+        {
+            float: left;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div class="stats" id="player1">
+        <h3>Stats Player 1</h3>
+        <p>Number shots:   <span th:text="${player1numberShots}"></span></p>
+        <p>Hitted shots:    <span th:text="${player1HittedShots}"></span></p>
+        <p>Accuracy:    <span th:text="${accuracyPly1}"></span> %</p>
+    </div>
+
+    <div class="stats" id="player2">
+        <h3>Stats Player 2</h3>
+        <p>Number shots:   <span th:text="${player2numberShots}"></span></p>
+        <p>Hitted shots:   <span th:text="${player2HittedShots}"></span></p>
+        <p>Accuracy:    <span th:text="${accuracyPly2}"></span> %</p>
+    </div>
+
+    <div style="clear:both;"></div>
+</div>
+
+
+</body>
+</html>

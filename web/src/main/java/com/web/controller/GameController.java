@@ -6,7 +6,6 @@ import com.web.service.GameService;
 import com.web.ShipFacade;
 import exceptions.BattleShipException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import ship.Ship;
 
 import java.util.List;
-import java.util.Set;
 
 @Controller
 public class GameController {
@@ -57,9 +55,23 @@ public class GameController {
 
     @PostMapping(value="/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShot(@ModelAttribute Shot shot) {
-        return ResponseEntity.ok(gameService.addShotatShip(shot));
+        return ResponseEntity.ok(gameService.addShotAtShip(shot));
     }
 
+    @GetMapping(value="/statistics")
+    public String printStatistics(Model model) {
+        model.addAttribute("player1numberShots", gameService.statisticsGame(gameService.getBoardList().get(0))[0]);
+        model.addAttribute("player1HittedShots", gameService.statisticsGame(gameService.getBoardList().get(0))[1]);
+        model.addAttribute("player2numberShots", gameService.statisticsGame(gameService.getBoardList().get(1))[0]);
+        model.addAttribute("player2HittedShots", gameService.statisticsGame(gameService.getBoardList().get(1))[1]);
+        double accuracyPly1 = ((double) gameService.statisticsGame(gameService.getBoardList().get(0))[1]
+                /gameService.statisticsGame(gameService.getBoardList().get(0))[0] * 100);
+        double accuracyPly2 = ((double) gameService.statisticsGame(gameService.getBoardList().get(1))[1]
+                /gameService.statisticsGame(gameService.getBoardList().get(1))[0] * 100);
+        model.addAttribute("accuracyPly1", accuracyPly1);
+        model.addAttribute("accuracyPly2", accuracyPly2);
+        return "/statisticsGame";
+    }
 
 
 

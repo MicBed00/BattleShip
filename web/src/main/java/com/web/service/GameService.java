@@ -73,7 +73,7 @@ public class GameService {
         return getBoardList();
     }
 
-    public List<Board> addShotatShip(Shot shot) {
+    public List<Board> addShotAtShip(Shot shot) {
 
         if(boardPlayer1.getOpponentShots().size() == boardPlayer2.getOpponentShots().size()) {
             boardPlayer2.shoot(shot);
@@ -87,6 +87,10 @@ public class GameService {
         return boardPlayer1.getIsFinished().get() || boardPlayer2.getIsFinished().get();
     }
 
+    public int[] statisticsGame(Board board) {
+        return board.statisticsShot();
+
+    }
 
 
 }

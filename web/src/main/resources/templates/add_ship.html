@@ -71,44 +71,44 @@
         xstart = col.cellIndex;
 
         new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
-            console.log("Rozmiar listy ze statkami: "+ responseBody.length)
+            //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
             if (status >= 200 && status <= 299) {
+                //reset parametrów do domyślnych
                 document.getElementById("len").value = 1;
                 document.getElementById("orientation").value = "VERTICAL";
 
                 //wymyślić inny warunek dla odblokowania przycisku
                 if(responseBody[0].ships.length <= 2 && responseBody[1].ships.length === 0) {
                     renderShip(responseBody[0])
-                        if(responseBody[0].ships.length === 2)
-                            document.getElementById("accept").disabled = false;
 
+                    if(responseBody[0].ships.length === 2) {
+                        document.getElementById("accept").disabled = false;
+
+                        document.getElementById("accept").addEventListener("click", function () {
+                            renderShip(null);
+                            document.getElementById("accept").disabled = true;
+                        },false);
+                    }
                 } else if(responseBody[0].ships.length === 2 && responseBody[1].ships.length <= 2) {
                     renderShip(responseBody[1])
-                        if(responseBody[1].ships.length === 2)
+
+                        if(responseBody[1].ships.length === 2) {
                             document.getElementById("accept").disabled = false;
+
+                            document.getElementById("accept").addEventListener("click", function () {
+                                document.getElementById("accept").disabled = true;
+                                window:location.replace("http://localhost:8080/added_Ship");
+                            },false);
+                        }
                 }
             }
 
         }, (status, responseBody) => {
             if (status >= 400 && status <= 499) {
                 alert(responseBody);
-                // location.replace("http://localhost:8080/startGame");
                 //Uwaga: sprawdź czy po wyrzuceniu błędu statek mimo to nie jest dodawny do listy!
             }
         });
-
-        document.getElementById("accept").addEventListener("click", function (event) {
-            renderShip(null);
-
-            let target = event.target;
-            target.setAttribute("value", +target.value.valueOf()+ +1);      //sumowanie stringów gdy są liczbami. Zmieniam wartość value po to by w momencie zmiany list
-                                                                            // (gracz1 dodał swoje statki, i serwer zaczyna podsyłać listę gracz2 - zmiana listy następuje w addShipToList() gameservice)
-            document.getElementById("accept").disabled = true;
-
-            if(target.value.valueOf() > 2) {
-                window:location.replace("http://localhost:8080/added_Ship");
-            }
-        },false);
     }
 
     function renderShip(responseBody) {
@@ -188,32 +188,6 @@
 
         post(path, body, progressUpdate, success, error) {
             this.call("post", path, body, progressUpdate, success, error);
-        }
-
-        callGet(method, path, progressUpdate, success, error) {
-            let request = new XMLHttpRequest();
-            request.upload.addEventListener('progress', function (event) {
-                if(event.lengthComputable) {
-                    let progress = event.loaded / event.total;
-                    if(progressUpdate != null)
-                        progressUpdate(progress);
-                }
-            }, false);
-
-            request.onreadystatechange = function () {
-                if(this.readyState === XMLHttpRequest.DONE) {
-                    if(this.status >= 200 && this.status <= 299) {
-                        let responseBody = this.responseText !=null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null;
-                        success(this.status, responseBody);
-                    } else {
-                        error(this.status, this.response);
-                    }
-                };
-                request.open(method.toUpperCase(), path, true);
-                request.send();
-            }
-
-
         }
 
         call(method, path, body, progressUpdate, success, error) {
