@@ -54,7 +54,6 @@
 
     </div>
     <div id="boardPlayer2" >
-        <div id="boardPlayer1" >
         <h3>Board's Player 2</h3>
     </div>
 
@@ -121,6 +120,7 @@
                 cellShot.className = "cellShot";
                 cellShot.id =diff + j+","+i;
                 const buttonShot = document.createElement("button");
+                buttonShot.id = j+"."+i + diff;
                 buttonShot.className = "buttonShot";
                 buttonShot.addEventListener("click", function(event) {
                     shotAtShip(event);
@@ -145,11 +145,13 @@
                 // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                 if(shot.state === "HIT") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "red"
+                    document.getElementById(shot.x+"."+shot.y + diff).style.backgroundColor = "red"
                     //muszę zrobić call do servera odpytując o wynik metody isFinished()
                     checkIfIsFinished()
 
                 } else if(shot.state === "MISSED") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black";
+                    document.getElementById(shot.x+"."+shot.y + diff).style.backgroundColor = "black";
                 }
             }
         }
