@@ -24,9 +24,12 @@
         }
         .buttonShot
         {
-            height:23px;
-            width:23px;
-            background-color: blue;
+            background-color: transparent;
+            border: none;
+            height:32px;
+            width:32px;
+            margin: auto;
+            display: block;
         }
         #container
         {
@@ -94,7 +97,7 @@
     function checkIfIsFinished() {
         new BattleShipClient().getterStatusGame((status, responseBody) => {
             if(responseBody === true) {
-                alert("Koooooooooooooooniec");
+                alert("Koooniec");
 
                 window.location.href = "/statistics";
             }
@@ -133,9 +136,17 @@
         }
         tableShot.appendChild(tbodyShot);
         // document.getElementById("boardPlayer1").innerHTML = "";
-        document.getElementById("boardPlayer1").appendChild(tableShot);
-        document.getElementById("boardPlayer2").appendChild(tableShot);
 
+        addTableToDiv1(tableShot);
+        addTableToDiv2(tableShot);
+    }
+
+    function addTableToDiv1(tableShot) {
+        return document.getElementById("boardPlayer1").appendChild(tableShot);
+
+    }
+    function addTableToDiv2(tableShot) {
+        return document.getElementById("boardPlayer2").appendChild(tableShot);
     }
 
     function renderShot(responseBody, diff) {
@@ -145,13 +156,10 @@
                 // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                 if(shot.state === "HIT") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "red"
-                    document.getElementById(shot.x+"."+shot.y + diff).style.backgroundColor = "red"
-                    //muszę zrobić call do servera odpytując o wynik metody isFinished()
                     checkIfIsFinished()
 
                 } else if(shot.state === "MISSED") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black";
-                    document.getElementById(shot.x+"."+shot.y + diff).style.backgroundColor = "black";
                 }
             }
         }

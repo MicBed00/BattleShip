@@ -19,7 +19,7 @@ public class GameService {
     private Shot shot;
 
     private ShipLimits shipLimits;
-//    Map<String, Integer> shipLimits = new TreeMap<>()
+
     GameService() {
         shipSize = new ArrayList<>();
         boardList = new ArrayList<>();
@@ -91,6 +91,5 @@ public class GameService {
         return board.statisticsShot();
 
     }
-
 
 }

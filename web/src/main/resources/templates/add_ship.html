@@ -20,9 +20,12 @@
             border: 1px solid;
         }
         .button {
-            height:23px;
-            width:23px;
-            background-color: blue;
+            background-color: transparent;
+            border: none;
+            height:32px;
+            width:32px;
+            margin: auto;
+            display: block;
         }
     </style>
 
@@ -127,10 +130,9 @@
 
                 const cell = document.createElement("td");
                 cell.className = "cell";
-                // cell.innerHTML = "<button onclick=\"adderShip(event)\" style=\"height:23px;width:23px; background-color: blue\"></button> "
                 const button = document.createElement("button");
                 button.className = "button";
-                button.id = i+","+j
+                button.id = j+"&"+i
                 button.addEventListener("click", function(event) {
                     adderShip(event);
                 }, false);
@@ -142,15 +144,14 @@
 
                             if (responseBody.ships[k].ystart === i && responseBody.ships[k].xstart >= j
                                 && (responseBody.ships[k].xstart - responseBody.ships[k].length + 1) <= j)
-                                // document.getElementById(i+","+j).style.backgroundColor = "yellow";  // nie działa - po kliknięciu cały board staję się żółty
-                                cell.style.backgroundColor = "yellow";
-
+                                // changeColorCellAndButton(cell, button);
+                                cell.style.backgroundColor = "yellow"
                         } else {
 
                             if (responseBody.ships[k].xstart === j && responseBody.ships[k].ystart <= i
                                 && (responseBody.ships[k].ystart + responseBody.ships[k].length - 1) >= i)
-                                //  document.getElementById(i+","+j).style.backgroundColor = "yellow";
-                                cell.style.backgroundColor = "yellow";
+                                // changeColorCellAndButton(cell, button);
+                                cell.style.backgroundColor = "yellow"
                         }
                     }
                 }
@@ -162,7 +163,11 @@
         document.getElementById("renderTable").innerHTML = ""; // czyści diva
         document.getElementById("renderTable").appendChild(table);
     }
-
+    //
+    // function changeColorCellAndButton(cell, button) {
+    //     cell.style.backgroundColor = "yellow"
+    //     return button.style.backgroundColor = "yellow";
+    // }
 
     class BattleShipClient {
 
