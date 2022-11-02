@@ -92,4 +92,9 @@ public class GameService {
 
     }
 
+    public double getAccuracyShot(int totalShots, int hitShot) {
+        return ((double) hitShot/totalShots) * 100;
+
+    }
+
 }

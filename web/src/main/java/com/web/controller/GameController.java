@@ -2,10 +2,11 @@ package com.web.controller;
 
 import board.Board;
 import board.Shot;
+import com.web.WebDriverLibrary;
 import com.web.service.GameService;
 import com.web.ShipFacade;
 import exceptions.BattleShipException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openqa.selenium.WebDriver;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,11 +18,13 @@ import java.util.List;
 
 @Controller
 public class GameController {
-
+//    private WebDriver webDriver;
     private final GameService gameService;
 
    GameController(GameService gameService) {
        this.gameService = gameService;
+//       this.webDriver = webDriver;
+//       webDriver.get("http://localhost:8080");
     }
 
     @GetMapping(value = "/startGame")
@@ -36,7 +39,6 @@ public class GameController {
     }
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseBody // nie musimy używać tej adnotacji bo ResponseEntity zwraca jsona. Gdybym chciał zwrócić np pojo wtedy muszę użyć adnotacji @ResponseBody by zwracać josna
     public ResponseEntity<List<Board>> addShiptoList(@ModelAttribute Ship ship) throws BattleShipException {
         System.out.println(ship);
     return ResponseEntity.ok(gameService.addShipToList(ship));
@@ -68,10 +70,10 @@ public class GameController {
         model.addAttribute("player1HittedShots", gameService.statisticsGame(gameService.getBoardList().get(0))[1]);
         model.addAttribute("player2numberShots", gameService.statisticsGame(gameService.getBoardList().get(1))[0]);
         model.addAttribute("player2HittedShots", gameService.statisticsGame(gameService.getBoardList().get(1))[1]);
-        double accuracyPly1 = ((double) gameService.statisticsGame(gameService.getBoardList().get(0))[1]
-                /gameService.statisticsGame(gameService.getBoardList().get(0))[0] * 100);
-        double accuracyPly2 = ((double) gameService.statisticsGame(gameService.getBoardList().get(1))[1]
-                /gameService.statisticsGame(gameService.getBoardList().get(1))[0] * 100);
+        double accuracyPly1 = gameService.getAccuracyShot(gameService.statisticsGame(gameService.getBoardList().get(0))[0],
+                                                        gameService.statisticsGame(gameService.getBoardList().get(0))[1]);
+        double accuracyPly2 = gameService.getAccuracyShot(gameService.statisticsGame(gameService.getBoardList().get(1))[0],
+                                                        gameService.statisticsGame(gameService.getBoardList().get(1))[1]);
         model.addAttribute("accuracyPly1", accuracyPly1);
         model.addAttribute("accuracyPly2", accuracyPly2);
         return "/statisticsGame";
