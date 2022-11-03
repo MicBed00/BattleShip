@@ -65,8 +65,8 @@
     <div style="clear:both;"></div>
 </div>
 
-
-<script>
+<!--src="/static/BattleShipClient.js"-->
+<script >
     var ply1, ply2;
     ply1 = "ply1";
     ply2 = "ply2";
@@ -135,8 +135,6 @@
             tbodyShot.appendChild(rowShot);
         }
         tableShot.appendChild(tbodyShot);
-        // document.getElementById("boardPlayer1").innerHTML = "";
-
         addTableToDiv1(tableShot);
         addTableToDiv2(tableShot);
     }
@@ -212,9 +210,6 @@
             // var data = JSON.stringify(body); // zmiana danych na jsona
             request.send(body);
         }
-
-
-
     }
 </script>
 </body>

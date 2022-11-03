@@ -18,7 +18,6 @@ public class GameService {
     private List<Set<Shot>> listSets;
     private Shot shot;
 
-    private ShipLimits shipLimits;
 
     GameService() {
         shipSize = new ArrayList<>();
@@ -40,8 +39,8 @@ public class GameService {
         shot = new Shot();
     }
 
-    public ShipLimits getShipLimits() {
-        return shipLimits;
+    public int getShipLimits() {
+        return ShipLimits.SHIP_LIMIT.getQty();
     }
     private boolean checkIsOverTheLimitShip(int size){
         return size < ShipLimits.SHIP_LIMIT.getQty();
@@ -61,6 +60,7 @@ public class GameService {
     }
 
     public List<Board> addShipToList(Ship ship) {
+
         if(ship.getLength() > 0 && ship.getPosition() != null) {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
                 boardPlayer1.addShip(ship.getLength(), ship.getXstart(),

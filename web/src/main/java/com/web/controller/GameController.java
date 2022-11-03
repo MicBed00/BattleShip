@@ -29,8 +29,6 @@ public class GameController {
 
     @GetMapping(value = "/startGame")
     public String startGame(Model model) {
-        ShipFacade shipFacade = new ShipFacade();
-        model.addAttribute("ship", shipFacade);
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());

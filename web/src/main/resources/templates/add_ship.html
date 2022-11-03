@@ -27,25 +27,33 @@
             margin: auto;
             display: block;
         }
+        .board
+        {
+            float: left;
+        }
     </style>
 
 </head>
 <body>
+
 <div align="center" id="container">
     <div id="board">
         <h1>Add Ship</h1>
 
         <label>Wielkość statku: </label>
+
         <select id="len" th:name="length">
             <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
         </select>
 
         <label>Orientacja: </label>
+
         <select id="orientation" th:name="position">
             <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
         </select>
         <br>
         <br>
+
         <div id="renderTable"></div>
         <br>
         <br>
@@ -53,61 +61,62 @@
         <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
     </div>
 <!--    <div id="numberShip">-->
-<!--        <label>Liczba statków na planszy: </label>-->
-<!--        <select id="shipLimit" th:name=""-->
+<!--       <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" th:value="${shipLimit}"></span></p>-->
 
 <!--    </div>-->
 
 </div>
-
+<!--src="/templates/BattleShipClient.js"-->
 <script>
-    window.onload = renderShip(null);
-    function adderShip(event) {
-        var length = document.getElementById("len").value;
-        var position = document.getElementById("orientation").value;
-        var xstart, ystart;
-        var target = event.target, col, row;
 
-        col = target.parentElement;
-        row = col.parentElement;
-        ystart = row.rowIndex;
-        xstart = col.cellIndex;
+   window.onload = renderShip(null);
+   function adderShip(event) {
+       var length = document.getElementById("len").value;
+       var position = document.getElementById("orientation").value;
+       var shipNumber = document.getElementById("shipNumber");
+       var xstart, ystart;
+       var target = event.target, col, row;
 
-        new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
-            //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
-            if (status >= 200 && status <= 299) {
-                //reset parametrów do domyślnych
-                document.getElementById("len").value = 1;
-                document.getElementById("orientation").value = "VERTICAL";
+       col = target.parentElement;
+       row = col.parentElement;
+       ystart = row.rowIndex;
+       xstart = col.cellIndex;
 
-                //wymyślić inny warunek dla odblokowania przycisku
-                if(responseBody[0].ships.length <= 2 && responseBody[1].ships.length === 0) {
-                    renderShip(responseBody[0])
+       new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
+           //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
+           if (status >= 200 && status <= 299) {
+               //reset parametrów do domyślnych
+               document.getElementById("len").value = 1;
+               document.getElementById("orientation").value = "VERTICAL";
 
-                    if(responseBody[0].ships.length === 2) {
-                        document.getElementById("accept").disabled = false;
+               //wymyślić inny warunek dla odblokowania przycisku
+               if(responseBody[0].ships.length <= 2 && responseBody[1].ships.length === 0) {
+                   renderShip(responseBody[0])
 
-                        document.getElementById("accept").addEventListener("click", function () {
-                            renderShip(null);
-                            document.getElementById("accept").disabled = true;
-                        },false);
-                    }
-                } else if(responseBody[0].ships.length === 2 && responseBody[1].ships.length <= 2) {
-                    renderShip(responseBody[1])
+                   if(responseBody[0].ships.length === 2) {
+                       document.getElementById("accept").disabled = false;
+                       document.getElementById("accept").addEventListener("click", function () {
+                           renderShip(null);
+                           document.getElementsByClassName("button").disabled = false;
+                           document.getElementById("accept").disabled = true;
+                       },false);
+                   }
+               } else if(responseBody[0].ships.length === 2 && responseBody[1].ships.length <= 2) {
+                   renderShip(responseBody[1])
 
-                        if(responseBody[1].ships.length === 2) {
-                            document.getElementById("accept").disabled = false;
+                       if(responseBody[1].ships.length === 2) {
+                           document.getElementById("accept").disabled = false;
 
-                            document.getElementById("accept").addEventListener("click", function () {
-                                document.getElementById("accept").disabled = true;
-                                window:location.replace("http://localhost:8080/added_Ship");
-                            },false);
-                        }
-                }
-            }
+                           document.getElementById("accept").addEventListener("click", function () {
+                               document.getElementById("accept").disabled = true;
+                               window:location.replace("http://localhost:8080/added_Ship");
+                           },false);
+                       }
+               }
+           }
 
-        }, (status, responseBody) => {
-            if (status >= 400 && status <= 499) {
+       }, (status, responseBody) => {
+           if (status >= 400 && status <= 499) {
                 alert(responseBody);
                 //Uwaga: sprawdź czy po wyrzuceniu błędu statek mimo to nie jest dodawny do listy!
             }
@@ -144,13 +153,11 @@
 
                             if (responseBody.ships[k].ystart === i && responseBody.ships[k].xstart >= j
                                 && (responseBody.ships[k].xstart - responseBody.ships[k].length + 1) <= j)
-                                // changeColorCellAndButton(cell, button);
                                 cell.style.backgroundColor = "yellow"
                         } else {
 
                             if (responseBody.ships[k].xstart === j && responseBody.ships[k].ystart <= i
                                 && (responseBody.ships[k].ystart + responseBody.ships[k].length - 1) >= i)
-                                // changeColorCellAndButton(cell, button);
                                 cell.style.backgroundColor = "yellow"
                         }
                     }
@@ -163,11 +170,6 @@
         document.getElementById("renderTable").innerHTML = ""; // czyści diva
         document.getElementById("renderTable").appendChild(table);
     }
-    //
-    // function changeColorCellAndButton(cell, button) {
-    //     cell.style.backgroundColor = "yellow"
-    //     return button.style.backgroundColor = "yellow";
-    // }
 
     class BattleShipClient {
 
@@ -175,13 +177,12 @@
             this.post("/addShip", "length=" + length + "&xstart=" + xstart + "&ystart=" + ystart + "&position=" + position, null, onSuccess, onError);
         }
 
-        getBoards(onSuccess, onError) {
-            this.get("/game/boards", null, onSuccess, onError);
-        }
-
         shooterShip(x, y, onSuccess, onError) {
-            this.post("/sciezka do ep POST", "x="+ x + "$y="+ y, null, onSuccess, onError)
-    }
+            this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
+        }
+        getterStatusGame(onSuccess, onError) {
+            this.get("/game/boards/isFinished", null, null, onSuccess, onError)
+        }
 
         delete(path, body, progressUpdate, success, error) {
             this.call("delete", path, body, progressUpdate, success, error);
@@ -219,9 +220,6 @@
             // var data = JSON.stringify(body); // zmiana danych na jsona
             request.send(body);
         }
-
-
-
     }
 </script>
 </body>
