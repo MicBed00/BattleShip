@@ -94,16 +94,16 @@
         });
     }
 
+
     function checkIfIsFinished() {
-        new BattleShipClient().getterStatusGame((status, responseBody) => {
-            if(responseBody === true) {
-                alert("Koooniec");
+            new BattleShipClient().getterStatusGame((status, responseBody) => {
+               if(responseBody === true) {
+                   alert("Koooniec");
+                   window.location.href = "/statistics";
+               }
+            }, (status, responseBody) => {
 
-                window.location.href = "/statistics";
-            }
-        }, (status, responseBody) => {
-
-        })
+            })
     }
 
     function renderBoard(diff) {
@@ -154,7 +154,7 @@
                 // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                 if(shot.state === "HIT") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "red"
-                    checkIfIsFinished()
+                  checkIfIsFinished();
 
                 } else if(shot.state === "MISSED") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black";

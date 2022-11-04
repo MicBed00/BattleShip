@@ -1,5 +1,6 @@
 package com.web.service;
 
+import DataConfig.Position;
 import DataConfig.ShipLimits;
 import board.Board;
 import board.Shot;
@@ -12,7 +13,7 @@ import java.util.*;
 public class GameService {
     private List<String> shipSize;
     private List<Board> boardList;
-    private List<String> positionList;
+    private List<Position> positionList;
     private Board boardPlayer1;
     private Board boardPlayer2;
     private List<Set<Shot>> listSets;
@@ -23,8 +24,8 @@ public class GameService {
         shipSize = new ArrayList<>();
         boardList = new ArrayList<>();
         positionList = new ArrayList<>();
-        positionList.add("VERTICAL");
-        positionList.add("HORIZONTAL");
+        positionList.add(Position.VERTICAL);
+        positionList.add(Position.HORIZONTAL);
         shipSize.add("1");
         shipSize.add("2");
         shipSize.add("3");
@@ -50,7 +51,7 @@ public class GameService {
         return shipSize;
     }
 
-    public List<String> getOrientation() {
+    public List<Position> getOrientation() {
         return positionList;
     }
 
@@ -63,13 +64,16 @@ public class GameService {
 
         if(ship.getLength() > 0 && ship.getPosition() != null) {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
+
                 boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
                         ship.getYstart(), ship.getPosition());
+
             }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
                 boardPlayer2.addShip(ship.getLength(), ship.getXstart(),
                         ship.getYstart(), ship.getPosition());
             }
         }
+
         return getBoardList();
     }
 

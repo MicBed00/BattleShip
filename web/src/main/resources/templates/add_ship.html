@@ -60,21 +60,22 @@
         <br>
         <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
     </div>
-<!--    <div id="numberShip">-->
-<!--       <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" th:value="${shipLimit}"></span></p>-->
+    <div id="numberShip">
+       <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" ></span></p>
 
-<!--    </div>-->
+    </div>
 
 </div>
-<!--src="/templates/BattleShipClient.js"-->
-<script>
+<!--type="text/javascript" src="/templates/js/BattleShipClient.js"-->
+<script th:inline="javascript" >
+
 
    window.onload = renderShip(null);
    function adderShip(event) {
        var length = document.getElementById("len").value;
        var position = document.getElementById("orientation").value;
-       var shipNumber = document.getElementById("shipNumber");
-       var xstart, ystart;
+       var shipNumber =[[${shipLimit}]];
+       var xstart;
        var target = event.target, col, row;
 
        col = target.parentElement;
@@ -90,10 +91,10 @@
                document.getElementById("orientation").value = "VERTICAL";
 
                //wymyślić inny warunek dla odblokowania przycisku
-               if(responseBody[0].ships.length <= 2 && responseBody[1].ships.length === 0) {
+               if(responseBody[0].ships.length <= shipNumber && responseBody[1].ships.length === 0) {
                    renderShip(responseBody[0])
 
-                   if(responseBody[0].ships.length === 2) {
+                   if(responseBody[0].ships.length === shipNumber) {
                        document.getElementById("accept").disabled = false;
                        document.getElementById("accept").addEventListener("click", function () {
                            renderShip(null);
@@ -101,10 +102,10 @@
                            document.getElementById("accept").disabled = true;
                        },false);
                    }
-               } else if(responseBody[0].ships.length === 2 && responseBody[1].ships.length <= 2) {
+               } else if(responseBody[0].ships.length === shipNumber && responseBody[1].ships.length <= shipNumber) {
                    renderShip(responseBody[1])
 
-                       if(responseBody[1].ships.length === 2) {
+                       if(responseBody[1].ships.length === shipNumber) {
                            document.getElementById("accept").disabled = false;
 
                            document.getElementById("accept").addEventListener("click", function () {
@@ -124,7 +125,7 @@
     }
 
     function renderShip(responseBody) {
-
+        var horizontalOrientation = [[${orientList}]][1];
         const table = document.createElement("table");
         table.id = "tableRes";
         table.className = "tableResponse";
@@ -149,7 +150,7 @@
 
                 if(responseBody != null) {
                     for(let k = 0; k < responseBody.ships.length; k ++) {
-                        if (responseBody.ships[k].position.length === "HORIZONTAL".length) {
+                        if (responseBody.ships[k].position === horizontalOrientation) {
 
                             if (responseBody.ships[k].ystart === i && responseBody.ships[k].xstart >= j
                                 && (responseBody.ships[k].xstart - responseBody.ships[k].length + 1) <= j)

@@ -48,13 +48,12 @@ public class Board {
                 log.warn("The ship limit has reached");
                 throw new ShipLimitExceedException(user.messageBundle("shipLimitExceed", length));
             }
-            if (!isColliding(s, length, x, y, position)) {
-                copyList.add(new Ship(length, x, y, position));
-            } else {
+            if (isColliding(s, length, x, y, position)) {
                 log.debug("Collision length: {}, x: {}, y: {}, position: {}", length, x, y, position);
                 throw new CollidingException(user.messageBundle("collidingException", s.toString()));
             }
         });
+        copyList.add(new Ship(length, x, y, position));
         ships.addAll(copyList);
         copyList.clear();
         int afterAddShip = ships.size();
@@ -73,19 +72,19 @@ public class Board {
                 .filter(s -> s.getLength() == length)
                 .toList();
 
-        if (length == ShipSize.FOUR.getSize() && list.size() < ShipLimits.SHIP4SAIL.getQty()) {
+        if (length == ShipSize.FOUR.getSize() && list.size() < ShipLimits.SHIP4SAIL.getQty())
             return false;
-        }
-        if (length == ShipSize.THREE.getSize() && list.size() < ShipLimits.SHIP3SAIL.getQty()) {
+
+        if (length == ShipSize.THREE.getSize() && list.size() < ShipLimits.SHIP3SAIL.getQty())
             return false;
-        }
-        if (length == ShipSize.TWO.getSize() && list.size() < ShipLimits.SHIP2SAIL.getQty()) {
+
+        if (length == ShipSize.TWO.getSize() && list.size() < ShipLimits.SHIP2SAIL.getQty())
             return false;
-        }
-        if (length == ShipSize.ONE.getSize() && list.size() < ShipLimits.SHIP1SAIL.getQty()) {
+
+        if (length == ShipSize.ONE.getSize() && list.size() < ShipLimits.SHIP1SAIL.getQty())
             return false;
-        }
-        return true;
+
+        return listShip.size() <= ShipLimits.SHIP_LIMIT.getQty();
     }
 
     private boolean isColliding(Ship ship, int length, int x, int y, Position position) {
@@ -161,8 +160,10 @@ public class Board {
 //    @JsonIgnore
     public AtomicBoolean getIsFinished() {
         AtomicBoolean isFinished = new AtomicBoolean(true);
+
         if(ships.isEmpty())
             isFinished.set(false);
+
         ships.forEach(ship -> {
             if (!ship.checkIfDead())
                 isFinished.set(false);
