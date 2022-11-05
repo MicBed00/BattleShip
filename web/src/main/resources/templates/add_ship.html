@@ -31,6 +31,11 @@
         {
             float: left;
         }
+
+        #renderTable
+        {
+            /*pointer-events:none;*/
+        }
     </style>
 
 </head>
@@ -95,9 +100,11 @@
                    renderShip(responseBody[0])
 
                    if(responseBody[0].ships.length === shipNumber) {
+                       document.getElementById("renderTable").style.pointerEvents = "none";
                        document.getElementById("accept").disabled = false;
                        document.getElementById("accept").addEventListener("click", function () {
                            renderShip(null);
+                           document.getElementById("renderTable").style.pointerEvents = "auto";
                            document.getElementsByClassName("button").disabled = false;
                            document.getElementById("accept").disabled = true;
                        },false);
@@ -106,6 +113,7 @@
                    renderShip(responseBody[1])
 
                        if(responseBody[1].ships.length === shipNumber) {
+                           document.getElementById("renderTable").style.pointerEvents = "none";
                            document.getElementById("accept").disabled = false;
 
                            document.getElementById("accept").addEventListener("click", function () {

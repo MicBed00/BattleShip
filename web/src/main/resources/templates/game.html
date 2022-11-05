@@ -10,7 +10,19 @@
             background-color: blue;
             width: 400px;
         }
+        .tableShotPly2
+        {
+            border: 2px solid;
+            background-color: blue;
+            width: 400px;
+        }
         .rowShot
+        {
+            width: 50px;
+            height: 30px;
+            border: 1px solid;
+        }
+        .rowShotPly2
         {
             width: 50px;
             height: 30px;
@@ -22,7 +34,22 @@
             height: 30px;
             border: 1px solid;
         }
+        .cellShotPly2
+        {
+            width: 50px;
+            height: 30px;
+            border: 1px solid;
+        }
         .buttonShot
+        {
+            background-color: transparent;
+            border: none;
+            height:32px;
+            width:32px;
+            margin: auto;
+            display: block;
+        }
+        .buttonShotPly2
         {
             background-color: transparent;
             border: none;
@@ -41,11 +68,13 @@
         {
             float: left;
             width: 600px;
+            /*pointer-events: none;*/
         }
         #boardPlayer2
         {
             float: left;
             width: 600px;
+            /*pointer-events: auto;*/
         }
     </style>
 </head>
@@ -67,13 +96,14 @@
 
 <!--src="/static/BattleShipClient.js"-->
 <script >
+    //zmienne wykorzystuję w deklaracji id komórek tabeli. Są konieczne przy renderowaniu strzałów w celu odróżnienia id komórek między tabelami
     var ply1, ply2;
     ply1 = "ply1";
     ply2 = "ply2";
 
-   onload = renderBoard(ply1);
+   onload = renderBoardPly1(ply1);
 
-   onload = renderBoard(ply2);
+   onload = renderBoardPly2(ply2);
     // let battleShipClient = new BattleShipClient();
     function shotAtShip(event) {
         var target = event.target, col, row, shotX, shotY;
@@ -81,7 +111,6 @@
         row = col.parentElement;
         shotY = row.rowIndex;
         shotX = col.cellIndex;
-        console.log("W metodzie shotAtShip, wywołanej z addEven")
 
         new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
             if(status >= 200 && status <= 299) {
@@ -96,17 +125,17 @@
 
 
     function checkIfIsFinished() {
-            new BattleShipClient().getterStatusGame((status, responseBody) => {
-               if(responseBody === true) {
-                   alert("Koooniec");
-                   window.location.href = "/statistics";
-               }
-            }, (status, responseBody) => {
+              new BattleShipClient().getterStatusGame((status, responseBody) => {
+                 if(responseBody === true) {
+                          alert("Koooniec");
+                          window.location.href = "/statistics";
+                      }
+              }, (status, responseBody) => {
 
-            })
+              })
     }
 
-    function renderBoard(diff) {
+    function renderBoardPly1(diff) {
         const tableShot = document.createElement("table");
         tableShot.id = "tableBoard";
         tableShot.className = "tableShot";
@@ -123,7 +152,6 @@
                 cellShot.className = "cellShot";
                 cellShot.id =diff + j+","+i;
                 const buttonShot = document.createElement("button");
-                buttonShot.id = j+"."+i + diff;
                 buttonShot.className = "buttonShot";
                 buttonShot.addEventListener("click", function(event) {
                     shotAtShip(event);
@@ -135,17 +163,51 @@
             tbodyShot.appendChild(rowShot);
         }
         tableShot.appendChild(tbodyShot);
-        addTableToDiv1(tableShot);
-        addTableToDiv2(tableShot);
+        //nie kopiuje tabeli
+        // const tblCopy = tableShot.cloneNode(true);
+        // tblCopy.id = "tableBoardCopy";
+        // tblCopy.className = "tableShotCopy"
+        // let tbodyCopy = tblCopy.parentElement;
+        // let rowCopy = tbodyCopy.parentElement;
+        // rowCopy.className = "rowCopy";
+        // let cellCopy = rowCopy.parentElement;
+        // cellCopy.className = "cellShotCopy";
+        // cellCopy.id = i+","+j;
+         document.getElementById("boardPlayer1").appendChild(tableShot)
     }
 
-    function addTableToDiv1(tableShot) {
-        return document.getElementById("boardPlayer1").appendChild(tableShot);
+    function renderBoardPly2(diff) {
+        const tableShot = document.createElement("table");
+        tableShot.id = "tableBoardPly2";
+        tableShot.className = "tableShotPly2";
+        const tbodyShot = document.createElement("tbody");
 
+        for(let i = 0; i < 10; i++) {
+
+            const rowShot = document.createElement("tr");
+            rowShot.className = "rowPly2";
+
+            for(let j = 0; j < 10; j ++) {
+
+                const cellShot = document.createElement("td");
+                cellShot.className = "cellShotPly2";
+                cellShot.id =diff + j+","+i;
+                const buttonShot = document.createElement("button");
+                buttonShot.className = "buttonShotPly2";
+                buttonShot.addEventListener("click", function(event) {
+                    shotAtShip(event);
+
+                }, false);
+                cellShot.appendChild(buttonShot);
+
+                rowShot.appendChild(cellShot);
+            }
+            tbodyShot.appendChild(rowShot);
+        }
+        tableShot.appendChild(tbodyShot);
+        document.getElementById("boardPlayer2").appendChild(tableShot);
     }
-    function addTableToDiv2(tableShot) {
-        return document.getElementById("boardPlayer2").appendChild(tableShot);
-    }
+
 
     function renderShot(responseBody, diff) {
         if(responseBody != null) {
@@ -154,8 +216,7 @@
                 // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                 if(shot.state === "HIT") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "red"
-                  checkIfIsFinished();
-
+                   checkIfIsFinished();
                 } else if(shot.state === "MISSED") {
                     document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black";
                 }
