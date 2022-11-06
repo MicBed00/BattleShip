@@ -44,8 +44,8 @@
         {
             background-color: transparent;
             border: none;
-            height:32px;
-            width:32px;
+            height:35px;
+            width:35px;
             margin: auto;
             display: block;
         }
@@ -53,8 +53,8 @@
         {
             background-color: transparent;
             border: none;
-            height:32px;
-            width:32px;
+            height:35px;
+            width:35px;
             margin: auto;
             display: block;
         }
@@ -100,27 +100,32 @@
     var ply1, ply2;
     ply1 = "ply1";
     ply2 = "ply2";
-
    onload = renderBoardPly1(ply1);
 
    onload = renderBoardPly2(ply2);
-    // let battleShipClient = new BattleShipClient();
+    let lastIdTable = "tableBoardPly1";
     function shotAtShip(event) {
         var target = event.target, col, row, shotX, shotY;
         col = target.parentElement;
         row = col.parentElement;
         shotY = row.rowIndex;
         shotX = col.cellIndex;
+        const tbody = row.parentElement;
+        const table = tbody.parentElement;
+        console.log("Id tbody albo table  " + table.getAttribute("id"));
+        if(table.getAttribute("id") !== lastIdTable) {
+            new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
+                if(status >= 200 && status <= 299) {
+                    renderShot(responseBody, target);
+                    lastIdTable = table.getAttribute("id");
+                }
+            }, (status, responseBody) => {
+                alert("Błąd " + responseBody)
+            });
+        } else {
+            alert("Invalid board")
+        }
 
-        new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
-            if(status >= 200 && status <= 299) {
-
-                renderShot(responseBody[0], ply1)
-                renderShot(responseBody[1], ply2)
-            }
-        }, (status, responseBody) => {
-            alert("Błąd " + responseBody)
-        });
     }
 
 
@@ -140,19 +145,18 @@
         tableShot.id = "tableBoard";
         tableShot.className = "tableShot";
         const tbodyShot = document.createElement("tbody");
-
         for(let i = 0; i < 10; i++) {
 
             const rowShot = document.createElement("tr");
             rowShot.className = "row";
-
             for(let j = 0; j < 10; j ++) {
 
                 const cellShot = document.createElement("td");
                 cellShot.className = "cellShot";
-                cellShot.id =diff + j+","+i;
+                // cellShot.id =diff + j+","+i;
                 const buttonShot = document.createElement("button");
                 buttonShot.className = "buttonShot";
+                buttonShot.id =diff + j+","+i;
                 buttonShot.addEventListener("click", function(event) {
                     shotAtShip(event);
                 }, false);
@@ -186,14 +190,14 @@
 
             const rowShot = document.createElement("tr");
             rowShot.className = "rowPly2";
-
             for(let j = 0; j < 10; j ++) {
 
                 const cellShot = document.createElement("td");
                 cellShot.className = "cellShotPly2";
-                cellShot.id =diff + j+","+i;
+                // cellShot.id =diff + j+","+i;
                 const buttonShot = document.createElement("button");
                 buttonShot.className = "buttonShotPly2";
+                buttonShot.id = diff+j+","+i;
                 buttonShot.addEventListener("click", function(event) {
                     shotAtShip(event);
 
@@ -209,18 +213,30 @@
     }
 
 
-    function renderShot(responseBody, diff) {
+    function renderShot(responseBody, target) {
         if(responseBody != null) {
-
-            for(const shot of responseBody.opponentShots) {
-                // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
-                if(shot.state === "HIT") {
-                    document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "red"
-                   checkIfIsFinished();
-                } else if(shot.state === "MISSED") {
-                    document.getElementById(diff + shot.x+","+shot.y).style.backgroundColor = "black";
+            if(target.getAttribute("id").substring(0,4) === "ply1") {
+                for(const shot of responseBody[0].opponentShots) {
+                    // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
+                    if(shot.state === "HIT") {
+                        document.getElementById(ply1 + shot.x+","+shot.y).style.backgroundColor = "red"
+                    } else if(shot.state === "MISSED") {
+                        document.getElementById(ply1 + shot.x+","+shot.y).style.backgroundColor = "black";
+                    }
                 }
+            } else {
+                for(const shot of responseBody[1].opponentShots) {
+                    // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
+                    if(shot.state === "HIT") {
+                        document.getElementById(ply2 + shot.x+","+shot.y).style.backgroundColor = "red"
+
+                    } else if(shot.state === "MISSED") {
+                        document.getElementById(ply2 + shot.x+","+shot.y).style.backgroundColor = "black";
+                    }
+                }
+
             }
+            checkIfIsFinished();
         }
     }
 

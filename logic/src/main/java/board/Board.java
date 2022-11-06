@@ -91,31 +91,47 @@ public class Board {
         if (ship.getXstart() == x && ship.getYstart() == y) {
             return true;
         }
-        if (position == Position.HORIZONTAL) {
-            if (ship.getYstart() == y) {
-                if ((x+1) - length < 0) {
-                    return true;
-                }
+        if (position == Position.HORIZONTAL && ship.getPosition() == Position.HORIZONTAL) {
+            if (ship.getYstart() == y || ship.getYstart() == y + 1 || ship.getYstart() == y - 1) {
                 return ship.getXstart() < x ? ship.getXstart() >= x - length : ship.getXstart() - ship.getLength() <= x;
             }
         }
 
-        if (position == Position.VERTICAL) {
-            if (ship.getXstart() == x) {
-                if (y + length > SizeBoard.ROW.getSize()) {
-                    return true;
-                }
+        if (position == Position.VERTICAL && ship.getPosition() == Position.VERTICAL) {
+            if (ship.getXstart() == x || ship.getXstart() == x + 1 || ship.getXstart() == x - 1) {
                 return ship.getYstart() < y ? ship.getYstart() + ship.getLength() >= y : ship.getYstart() <= y + length;
             }
         }
 
         if (ship.getPosition() != position) {                                 // sprawdza czy statki się nie przecinają
             if (Position.VERTICAL == ship.getPosition()) {
-                if (ifYoverlapsOnTheShip(ship, x, y))
+
+                if (ifYoverlapsOnTheShip(ship, x, y)) {
+
                     return ship.getXstart() >= x - length;
+
+                } else if ((ship.getYstart() == y || ship.getYstart() + ship.getLength() >= y) && ship.getXstart() != x) {
+
+                    return ship.getXstart() - 1 == x;
+
+                } else if(ship.getXstart() == x) {
+
+                    return ship.getYstart() - 1 == y || ship.getYstart() + ship.getLength() == y;
+                }
+
             } else {
-                if (ifXoverlapOnTheShip(ship, x, y))
+                if (ifXoverlapOnTheShip(ship, x, y)) {
+
                     return ship.getYstart() <= y + length;
+
+                } else if((ship.getXstart() == x || ship.getXstart() - ship.getLength() <= x) && ship.getYstart() != y) {
+
+                    return ship.getYstart() + 1 == y;
+
+                } else if(ship.getYstart() == y) {
+
+                    return ship.getXstart() + 1 == x || ship.getXstart() - ship.getLength() == x;
+                }
             }
         }
         return false;
