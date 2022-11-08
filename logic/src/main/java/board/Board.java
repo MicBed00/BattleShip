@@ -106,29 +106,41 @@ public class Board {
         if (ship.getPosition() != position) {                                 // sprawdza czy statki się nie przecinają
             if (Position.VERTICAL == ship.getPosition()) {
 
-                if (ifYoverlapsOnTheShip(ship, x, y)) {
+                    if (ifYoverlapsOnTheShip(ship, x, y)) {
 
-                    return ship.getXstart() >= x - length;
+                        return ship.getXstart() >= x - length;
 
-                } else if ((ship.getYstart() == y || ship.getYstart() + ship.getLength() >= y) && ship.getXstart() != x) {
+                    } else if ((ship.getYstart() == y || ship.getYstart() + ship.getLength() >= y) && ship.getXstart() != x) {
 
-                    return ship.getXstart() - 1 == x;
+                            if (ship.getXstart() > x) {
+                                return (ship.getXstart() - 1 == x && (ship.getYstart() -1 == y || ship.getYstart() + ship.getLength() == y)) ||
+                                        (ship.getXstart() - 1 == x && (ship.getYstart() <= y && ship.getYstart() + ship.getLength() > y));
+                            } else {
+                                return ship.getXstart() >= x - length && ship.getYstart() - 1 == y;
+                                    }
 
-                } else if(ship.getXstart() == x) {
+                    } else if (ship.getXstart() == x) {
 
-                    return ship.getYstart() - 1 == y || ship.getYstart() + ship.getLength() == y;
-                }
+                        return ship.getYstart() - 1 == y || ship.getYstart() + ship.getLength() == y;
+                    }
 
             } else {
+
                 if (ifXoverlapOnTheShip(ship, x, y)) {
 
                     return ship.getYstart() <= y + length;
 
-                } else if((ship.getXstart() == x || ship.getXstart() - ship.getLength() <= x) && ship.getYstart() != y) {
+                } else if ((ship.getXstart() == x || ship.getXstart() - ship.getLength() <= x) && ship.getYstart() != y) {
 
-                    return ship.getYstart() + 1 == y;
+                        if (ship.getYstart() < y) {
+                            return (ship.getYstart() + 1 == y && (ship.getXstart() + 1 == x || ship.getXstart() - ship.getLength() == x)) ||
+                                    (ship.getYstart() + 1 == y && (ship.getXstart() == x && ship.getXstart() - ship.getLength() < x));
+                        } else {
+                            return ship.getYstart() <= y + length && ship.getXstart() + 1 == x;
+                        }
 
-                } else if(ship.getYstart() == y) {
+
+                } else if (ship.getYstart() == y) {
 
                     return ship.getXstart() + 1 == x || ship.getXstart() - ship.getLength() == x;
                 }
@@ -173,11 +185,11 @@ public class Board {
         return opponentShots.contains(shot);
     }
 
-//    @JsonIgnore
+    //    @JsonIgnore
     public AtomicBoolean getIsFinished() {
         AtomicBoolean isFinished = new AtomicBoolean(true);
 
-        if(ships.isEmpty())
+        if (ships.isEmpty())
             isFinished.set(false);
 
         ships.forEach(ship -> {

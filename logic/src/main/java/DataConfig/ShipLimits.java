@@ -1,7 +1,7 @@
 package DataConfig;
 
 public enum ShipLimits {
-    SHIP_LIMIT(2),
+    SHIP_LIMIT(5),
     SHIP4SAIL(1),
     SHIP3SAIL(2),
     SHIP2SAIL(3),
