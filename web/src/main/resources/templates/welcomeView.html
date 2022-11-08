@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:https="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Battle Ship</title>
+</head>
+<body>
+    <div align="center">
+        <h1 th:text="#{name}"></h1>
+        <a href="/startGame">Click here to start game</a>
+    </div>
+
+<span th:text="#{lang.change}"></span>:
+<select id="locales">
+    <option value=""></option>
+    <option value="en" th:text="#{lang.eng}"></option>
+    <option value="pl" th:text="#{lang.pl}"></option>
+</select>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#locales").change(function () {
+                var selectedOption = $('#locales').val();
+                if (selectedOption != ''){
+                    window.location.replace('welcomeView?lang=' + selectedOption);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

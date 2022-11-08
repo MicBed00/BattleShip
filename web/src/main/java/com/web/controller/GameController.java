@@ -27,6 +27,10 @@ public class GameController {
 //       webDriver.get("http://localhost:8080");
     }
 
+    @GetMapping(value="welcomeView")
+    public String welcome() {
+       return "welcomeView";
+    }
     @GetMapping(value = "/startGame")
     public String startGame(Model model) {
         model.addAttribute("shipSize", gameService.getShipSize());

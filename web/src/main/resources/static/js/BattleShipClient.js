@@ -1,8 +1,11 @@
+
+
 window.onload = renderShip(null);
 function adderShip(event) {
     var length = document.getElementById("len").value;
     var position = document.getElementById("orientation").value;
-    var xstart, ystart;
+    var shipNumber =[[${shipLimit}]];
+    var xstart;
     var target = event.target, col, row;
 
     col = target.parentElement;
@@ -18,22 +21,24 @@ function adderShip(event) {
             document.getElementById("orientation").value = "VERTICAL";
 
             //wymyślić inny warunek dla odblokowania przycisku
-            if(responseBody[0].ships.length <= 2 && responseBody[1].ships.length === 0) {
+            if(responseBody[0].ships.length <= shipNumber && responseBody[1].ships.length === 0) {
                 renderShip(responseBody[0])
 
-                if(responseBody[0].ships.length === 2) {
+                if(responseBody[0].ships.length === shipNumber) {
+                    document.getElementById("renderTable").style.pointerEvents = "none";
                     document.getElementById("accept").disabled = false;
-                    document.getElementsByClassName("button").
                     document.getElementById("accept").addEventListener("click", function () {
                         renderShip(null);
+                        document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementsByClassName("button").disabled = false;
                         document.getElementById("accept").disabled = true;
                     },false);
                 }
-            } else if(responseBody[0].ships.length === 2 && responseBody[1].ships.length <= 2) {
+            } else if(responseBody[0].ships.length === shipNumber && responseBody[1].ships.length <= shipNumber) {
                 renderShip(responseBody[1])
 
-                if(responseBody[1].ships.length === 2) {
+                if(responseBody[1].ships.length === shipNumber) {
+                    document.getElementById("renderTable").style.pointerEvents = "none";
                     document.getElementById("accept").disabled = false;
 
                     document.getElementById("accept").addEventListener("click", function () {
@@ -53,7 +58,7 @@ function adderShip(event) {
 }
 
 function renderShip(responseBody) {
-
+    var horizontalOrientation = [[${orientList}]][1];
     const table = document.createElement("table");
     table.id = "tableRes";
     table.className = "tableResponse";
@@ -78,7 +83,7 @@ function renderShip(responseBody) {
 
             if(responseBody != null) {
                 for(let k = 0; k < responseBody.ships.length; k ++) {
-                    if (responseBody.ships[k].position.length === "HORIZONTAL".length) {
+                    if (responseBody.ships[k].position === horizontalOrientation) {
 
                         if (responseBody.ships[k].ystart === i && responseBody.ships[k].xstart >= j
                             && (responseBody.ships[k].xstart - responseBody.ships[k].length + 1) <= j)
@@ -98,11 +103,6 @@ function renderShip(responseBody) {
     table.appendChild(tbBody);
     document.getElementById("renderTable").innerHTML = ""; // czyści diva
     document.getElementById("renderTable").appendChild(table);
-}
-
-function changeColorCellAndButton(cell, button) {
-    cell.style.backgroundColor = "yellow"
-    return button.style.backgroundColor = "yellow";
 }
 
 class BattleShipClient {
