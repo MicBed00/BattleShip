@@ -10,12 +10,6 @@
             background-color: blue;
             width: 400px;
         }
-        .tableShotPly2
-        {
-            border: 2px solid;
-            background-color: blue;
-            width: 400px;
-        }
         .rowShot
         {
             width: 50px;
@@ -34,30 +28,17 @@
             height: 30px;
             border: 1px solid;
         }
-        .cellShotPly2
-        {
-            width: 50px;
-            height: 30px;
-            border: 1px solid;
-        }
+
         .buttonShot
         {
-            background-color: transparent;
+            /*background-color: transparent;*/
             border: none;
             height:35px;
             width:35px;
             margin: auto;
             display: block;
         }
-        .buttonShotPly2
-        {
-            background-color: transparent;
-            border: none;
-            height:35px;
-            width:35px;
-            margin: auto;
-            display: block;
-        }
+
         #container
         {
             width: 1400px;
@@ -98,13 +79,14 @@
 <script >
     //zmienne wykorzystuję w deklaracji id komórek tabeli. Są konieczne przy renderowaniu strzałów w celu odróżnienia id komórek między tabelami
     var ply1, ply2;
-    let lastIdTable = "tableBoardPly1";
-    ply1 = "ply1";
-    ply2 = "ply2";
+    ply1 = "Ply1";
+    ply2 = "Ply2";
+    var board1;
+    var board2;
+    renderBoards();
+    var currentBoard = board1;
 
-   onload = renderBoardPly1(ply1);
-
-   onload = renderBoardPly2(ply2);
+   // onload = renderBoardPly2(ply2);
 
 
     function shotAtShip(event) {
@@ -116,12 +98,13 @@
         const tbody = row.parentElement;
         const table = tbody.parentElement;
         console.log("Id tbody albo table  " + table.getAttribute("id"));
-        if(table.getAttribute("id") !== lastIdTable) {
-            new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
 
+        if(table !== currentBoard) {
+            new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
+                console.log("zwrotka z serwera " + status);
                 if(status >= 200 && status <= 299) {
                     renderShot(responseBody, target);
-                    lastIdTable = table.getAttribute("id");
+                    currentBoard = currentBoard === board1 ? board2 : board1;
                 }
             }, (status, responseBody) => {
                 alert("Błąd " + responseBody)
@@ -129,7 +112,6 @@
         } else {
             alert("Invalid board")
         }
-
     }
 
 
@@ -137,16 +119,22 @@
               new BattleShipClient().getterStatusGame((status, responseBody) => {
                  if(responseBody === true) {
                           alert("Koooniec");
-                          window.location.href = "/statistics";
+                          window.location.href = "/view/statistics";
                       }
               }, (status, responseBody) => {
-
+                  //do obsługi błąd
               })
     }
+    function renderBoards() {
+       board1 = createBoard(ply1);
+       board2 = createBoard(ply2);
+       document.getElementById("boardPlayer1").appendChild(board1);
+       document.getElementById("boardPlayer2").appendChild(board2);
+    }
 
-    function renderBoardPly1(diff) {
+    function createBoard(diff) {
         const tableShot = document.createElement("table");
-        tableShot.id = "tableBoard";
+        tableShot.id ="tableBoard"+diff;
         tableShot.className = "tableShot";
         const tbodyShot = document.createElement("tbody");
         for(let i = 0; i < 10; i++) {
@@ -156,11 +144,11 @@
             for(let j = 0; j < 10; j ++) {
 
                 const cellShot = document.createElement("td");
-                cellShot.className = "cellShot";
-                // cellShot.id =diff + j+","+i;
+                cellShot.className = "cellShot ";
                 const buttonShot = document.createElement("button");
-                buttonShot.className = "buttonShot";
-                buttonShot.id =diff + j+","+i;
+                buttonShot.className = "buttonShot " + j + "_" +i; //do elementów można przypisać wiele naz klas w tym przypadku buttonShot i j_i. Wystarczy rozdzielić te dwie nazwy spacją
+                buttonShot.style.backgroundColor = "blue";
+                // buttonShot.id =j+","+i+diff;
                 buttonShot.addEventListener("click", function(event) {
                     shotAtShip(event);
                 }, false);
@@ -171,77 +159,26 @@
             tbodyShot.appendChild(rowShot);
         }
         tableShot.appendChild(tbodyShot);
-        //nie kopiuje tabeli
-        // const tblCopy = tableShot.cloneNode(true);
-        // tblCopy.id = "tableBoardCopy";
-        // tblCopy.className = "tableShotCopy"
-        // let tbodyCopy = tblCopy.parentElement;
-        // let rowCopy = tbodyCopy.parentElement;
-        // rowCopy.className = "rowCopy";
-        // let cellCopy = rowCopy.parentElement;
-        // cellCopy.className = "cellShotCopy";
-        // cellCopy.id = i+","+j;
-         document.getElementById("boardPlayer1").appendChild(tableShot)
+        return tableShot;
     }
-
-    function renderBoardPly2(diff) {
-        const tableShot = document.createElement("table");
-        tableShot.id = "tableBoardPly2";
-        tableShot.className = "tableShotPly2";
-        const tbodyShot = document.createElement("tbody");
-
-        for(let i = 0; i < 10; i++) {
-
-            const rowShot = document.createElement("tr");
-            rowShot.className = "rowPly2";
-            for(let j = 0; j < 10; j ++) {
-
-                const cellShot = document.createElement("td");
-                cellShot.className = "cellShotPly2";
-                // cellShot.id =diff + j+","+i;
-                const buttonShot = document.createElement("button");
-                buttonShot.className = "buttonShotPly2";
-                buttonShot.id = diff+j+","+i;
-                buttonShot.addEventListener("click", function(event) {
-                    shotAtShip(event);
-
-                }, false);
-                cellShot.appendChild(buttonShot);
-
-                rowShot.appendChild(cellShot);
-            }
-            tbodyShot.appendChild(rowShot);
-        }
-        tableShot.appendChild(tbodyShot);
-        document.getElementById("boardPlayer2").appendChild(tableShot);
-    }
-
 
     function renderShot(responseBody, target) {
+        console.log("ResponseBody po oddaniu strzału:  "+responseBody[0]);
         if(responseBody != null) {
-            if(target.getAttribute("id").substring(0,4) === "ply1") {
-                for(const shot of responseBody[0].opponentShots) {
+            var boardShot = currentBoard === board1 ? board2 : board1;
+            var index = currentBoard === board1 ? 1 : 0;
+                for(const shot of responseBody[index].opponentShots) {
                     // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                     if(shot.state === "HIT") {
-                        document.getElementById(ply1 + shot.x+","+shot.y).style.backgroundColor = "red"
+                        boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0).style.backgroundColor = "red";
+                        // document.getElementById(shot.x+","+shot.y + ply1).style.backgroundColor = "red"
                     } else if(shot.state === "MISSED") {
-                        document.getElementById(ply1 + shot.x+","+shot.y).style.backgroundColor = "black";
+                       var ox = boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0);// boardShot.getElementsByClassName(shot.x + "_" +shot.y) - zwraca kolekcję htmlcollection
+                        ox.style.backgroundColor = "black";
                     }
                 }
-            } else {
-                for(const shot of responseBody[1].opponentShots) {
-                    // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
-                    if(shot.state === "HIT") {
-                        document.getElementById(ply2 + shot.x+","+shot.y).style.backgroundColor = "red"
-
-                    } else if(shot.state === "MISSED") {
-                        document.getElementById(ply2 + shot.x+","+shot.y).style.backgroundColor = "black";
-                    }
-                }
-
-            }
+             }
             checkIfIsFinished();
-        }
     }
 
     class BattleShipClient {
@@ -251,10 +188,14 @@
         }
 
         shooterShip(x, y, onSuccess, onError) {
-            this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
+            var shootObject = {
+                x: x,
+                y: y,
+            }
+            this.post("/json/game/boards", shootObject, null, onSuccess, onError)
         }
         getterStatusGame(onSuccess, onError) {
-            this.get("/game/boards/isFinished", null, null, onSuccess, onError)
+            this.get("/json/game/boards/isFinished", null, null, onSuccess, onError)
         }
 
         delete(path, body, progressUpdate, success, error) {
@@ -281,15 +222,14 @@
                 if (this.readyState === XMLHttpRequest.DONE)
                     if (this.status >= 200 && this.status <= 299) {
                         let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
-                        //let body = this.responseText;
                         success(this.status, body);
                     } else if (error !== undefined)
                         error(this.status, this.responseText);
             };
             request.open(method.toUpperCase(), path, true);
-            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');  //'application/json' - dla wysyłania jsona
-            // var data = JSON.stringify(body); // zmiana danych na jsona
-            request.send(body);
+            request.setRequestHeader('Content-type', 'application/json');
+            var jsonBody = JSON.stringify(body); // zmiana danych na jsona
+            request.send(jsonBody);
         }
     }
 </script>

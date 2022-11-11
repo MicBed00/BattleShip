@@ -71,15 +71,14 @@
     </div>
 
 </div>
-<!--type="text/javascript" src="/templates/js/BattleShipClient.js"-->
+
+<!--type="text/javascript" src="/js/BattleShipClient.js"-->
 <script th:inline="javascript" >
 
 
-   window.onload = renderShip(null);
-   function adderShip(event) {
+    function adderShip(event) {
        var length = document.getElementById("len").value;
        var position = document.getElementById("orientation").value;
-       var shipNumber =[[${shipLimit}]];
        var xstart;
        var target = event.target, col, row;
 
@@ -118,7 +117,7 @@
 
                            document.getElementById("accept").addEventListener("click", function () {
                                document.getElementById("accept").disabled = true;
-                               window:location.replace("http://localhost:8080/added_Ship");
+                               window:location.replace("http://localhost:8080/view/added_Ship");
                            },false);
                        }
                }
@@ -162,12 +161,12 @@
 
                             if (responseBody.ships[k].ystart === i && responseBody.ships[k].xstart >= j
                                 && (responseBody.ships[k].xstart - responseBody.ships[k].length + 1) <= j)
-                                cell.style.backgroundColor = "yellow"
+                                cell.style.backgroundColor = "yellow";
                         } else {
 
                             if (responseBody.ships[k].xstart === j && responseBody.ships[k].ystart <= i
                                 && (responseBody.ships[k].ystart + responseBody.ships[k].length - 1) >= i)
-                                cell.style.backgroundColor = "yellow"
+                                cell.style.backgroundColor = "yellow";
                         }
                     }
                 }
@@ -178,12 +177,23 @@
         table.appendChild(tbBody);
         document.getElementById("renderTable").innerHTML = ""; // czyści diva
         document.getElementById("renderTable").appendChild(table);
+
+        return table;
     }
 
     class BattleShipClient {
-
         addShip(length, xstart, ystart, position, onSuccess, onError) {
-            this.post("/addShip", "length=" + length + "&xstart=" + xstart + "&ystart=" + ystart + "&position=" + position, null, onSuccess, onError);
+            var shipObject = {
+                length: length,
+                xstart: xstart,
+                ystart: ystart,
+                position: position
+            };
+            this.post("/json/addShip", JSON.stringify(shipObject), null, onSuccess, onError);
+        }
+
+        getSetupsBoard(onSuccess, onError) {
+            this.get("/json/setup", null, null, onSuccess, onError);
         }
 
         shooterShip(x, y, onSuccess, onError) {
@@ -198,7 +208,7 @@
         }
 
         get(path, body, progressUpdate, success, error) {
-            this.call(path, null, progressUpdate, success, error)
+            this.call("get", path, null, progressUpdate, success, error)
         }
 
         post(path, body, progressUpdate, success, error) {
@@ -225,10 +235,27 @@
                         error(this.status, this.responseText);
             };
             request.open(method.toUpperCase(), path, true);
-            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');  //'application/json' - dla wysyłania jsona
-            // var data = JSON.stringify(body); // zmiana danych na jsona
+            request.setRequestHeader('Content-type', 'application/json');
             request.send(body);
         }
+    }
+
+</script>
+<script>
+    // var shipNumber =[[${shipLimit}]];
+    var shipNumber;
+    window.onload = setup();
+    function setup() {
+        var table;
+        //zwracamy shipLimit, rozmiar planszy itp.
+        // robię metode w kliencie pobierania tych danych i w tej funkcji będę miał je zwracane
+        new BattleShipClient().getSetupsBoard((status, responseBody) => {
+            shipNumber = responseBody;
+        }, (status, responseBody) => {
+            alert("Błąd przy pobieraniu ustawień boarda " + responseBody)
+        });
+        table = renderShip(null);
+        return  table;
     }
 </script>
 </body>
