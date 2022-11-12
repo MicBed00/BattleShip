@@ -46,7 +46,7 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameService.getShips());
     }
 
-    @GetMapping("/setup")
+    @GetMapping(value = "/setup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Integer> getSetpu() {
         return ResponseEntity.ok(gameService.getShipLimits());
     }

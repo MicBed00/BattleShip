@@ -78,15 +78,11 @@ public class GameService {
     }
 
     public List<Board> addShotAtShip(Shot shot) {
-        System.out.println("rozmiar setów przed dodaniem strzałów: "+ boardPlayer1.getOpponentShots().size() + "  drugi " +
-                boardPlayer2.getOpponentShots().size());
         if(boardPlayer1.getOpponentShots().size() == boardPlayer2.getOpponentShots().size()) {
             boardPlayer2.shoot(shot);
         } else {
             boardPlayer1.shoot(shot);
         }
-        System.out.println("rozmiar setów POOOOO dodaniem strzałów: "+ boardPlayer1.getOpponentShots().size() + "  drugi " +
-                boardPlayer2.getOpponentShots().size());
         return getBoardList();
     }
 
