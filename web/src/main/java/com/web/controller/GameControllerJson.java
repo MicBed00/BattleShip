@@ -4,6 +4,7 @@ import board.Board;
 import board.Shot;
 import com.web.service.GameService;
 import exceptions.BattleShipException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("json")
 public class GameControllerJson {
 //    private WebDriver webDriver;
+    @Autowired
     private final GameService gameService;
 
    GameControllerJson(GameService gameService) {

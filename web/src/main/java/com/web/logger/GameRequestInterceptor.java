@@ -19,7 +19,7 @@ public class GameRequestInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         LOGGER.debug("preHandle invoked.."+request.getRequestURL().toString());
-        System.out.println("Jestem w preHandle!!!!");
+        System.out.println("Jestem w preHandle");
         return true;
     }
 

@@ -7,7 +7,12 @@
 <body>
     <div align="center">
         <h1 th:text="#{name}"></h1>
-        <a href="/view/startGame">Click here to start game</a>
+
+        <a id=start href="/view/startGame">
+            <button id="startButton">
+                Click here to start game
+            </button>
+            </a>
     </div>
 
 <span th:text="#{lang.change}"></span>:
