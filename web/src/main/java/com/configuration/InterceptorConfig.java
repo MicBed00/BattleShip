@@ -20,13 +20,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
         return new GameRequestInterceptor();
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        LOGGER.debug("Wiadomość z configuracji");
-        System.out.println("intercepridf ");
-        registry.addInterceptor(gameRequestInterceptor());
-        registry.addInterceptor(gameRequestInterceptor())
-                .addPathPatterns("/view/**");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        LOGGER.debug("Wiadomość z configuracji");
+//        System.out.println("intercepridf ");
+//        registry.addInterceptor(gameRequestInterceptor());
+//        registry.addInterceptor(gameRequestInterceptor())
+//                .addPathPatterns("/view/**");
+//    }
 
 }
