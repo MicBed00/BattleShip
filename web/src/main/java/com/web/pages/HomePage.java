@@ -7,11 +7,9 @@ import org.openqa.selenium.support.FindBy;
 
 public class HomePage extends BasePage{
 
-
     public HomePage(WebDriver webDriver) {
         super(webDriver);
     }
-
 
     @FindBy(id = "startButton")
     public WebElement startClickHereGameButton;

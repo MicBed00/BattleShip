@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 //import static com.web.webDriver.WebDriverLibrary.getChromeDriver;
 
@@ -23,7 +23,6 @@ public class WebApplication {
 		WebDriverLibrary webDriverLibrary = new WebDriverLibrary();
 		WebDriver webDriver = webDriverLibrary.getChromeDriver();
 		webDriver.manage().window().maximize();
-        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		webDriver.get("http://localhost:8080/view/welcomeView");
 
 		HomePage homePage = new HomePage(webDriver);
@@ -32,18 +31,11 @@ public class WebApplication {
 
 		StartGamePage startGamePage = addShipPage2.addShipBoard2(webDriver);
 		ShootingPage shootingPage = startGamePage.startGame(webDriver);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-		shootingPage.missShot();
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-		shootingPage.hitShot();
+//
+//		webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(3));
+//		shootingPage.missShot();
+
+		shootingPage.shots();
 
 
 	}

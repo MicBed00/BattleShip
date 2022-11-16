@@ -1,17 +1,23 @@
 package com.web.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.util.List;
 
 public class AddShipPage extends  BasePage {
 
 
     public AddShipPage(WebDriver webDriver) {
         super(webDriver);
-    }
 
+    }
     @FindBy(id = "len")
     private WebElement lengthSelect;
 
@@ -40,8 +46,15 @@ public class AddShipPage extends  BasePage {
 
     public AddShipPage addShipBoard1(WebDriver webDriver) {
         buttonOnBoard1.click();
+        new Select(orientationSelect).selectByValue("VERTICAL");
         new Select(lengthSelect).selectByValue("4");
-        buttonOnBoard2.click();
+        try {
+            buttonOnBoard2.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            buttonOnBoard2.click();
+        }
         new Select(lengthSelect).selectByValue("3");
         new Select(orientationSelect).selectByValue("HORIZONTAL");
         buttonOnBoard3.click();

@@ -15,19 +15,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class InterceptorConfig implements WebMvcConfigurer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameRequestInterceptor.class);
-//    @Bean
-//    public GameRequestInterceptor gameRequestInterceptor() {
-//        return new GameRequestInterceptor();
-//    }
+    @Bean
+    public GameRequestInterceptor gameRequestInterceptor() {
+        return new GameRequestInterceptor();
+    }
 
-
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        LOGGER.debug("Wiadomość z configuracji");
-//        System.out.println("intercepridf ");
-//        registry.addInterceptor(gameRequestInterceptor());
-//        registry.addInterceptor(gameRequestInterceptor())
-//                .addPathPatterns("/view/**");
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        LOGGER.debug("Wiadomość z configuracji");
+        System.out.println("intercepridf ");
+        registry.addInterceptor(gameRequestInterceptor());
+        registry.addInterceptor(gameRequestInterceptor())
+                .addPathPatterns("/view/**");
+    }
 
 }

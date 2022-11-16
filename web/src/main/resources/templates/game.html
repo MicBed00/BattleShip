@@ -148,7 +148,7 @@
                 const buttonShot = document.createElement("button");
                 buttonShot.className = "buttonShot " + j + "_" +i; //do elementów można przypisać wiele naz klas w tym przypadku buttonShot i j_i. Wystarczy rozdzielić te dwie nazwy spacją
                 buttonShot.style.backgroundColor = "blue";
-                // buttonShot.id =j+","+i+diff;
+                buttonShot.id = "button"+diff;
                 buttonShot.addEventListener("click", function(event) {
                     shotAtShip(event);
                 }, false);
@@ -171,7 +171,7 @@
                     // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                     if(shot.state === "HIT") {
                         boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0).style.backgroundColor = "red";
-                        // document.getElementById(shot.x+","+shot.y + ply1).style.backgroundColor = "red"
+
                     } else if(shot.state === "MISSED") {
                        var ox = boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0);// boardShot.getElementsByClassName(shot.x + "_" +shot.y) - zwraca kolekcję htmlcollection
                         ox.style.backgroundColor = "black";
