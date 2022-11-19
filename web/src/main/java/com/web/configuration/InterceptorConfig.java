@@ -1,4 +1,4 @@
-package com.configuration;
+package com.web.configuration;
 
 import com.web.logger.GameRequestInterceptor;
 import org.slf4j.Logger;
@@ -11,22 +11,15 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-//@Configuration
+@Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameRequestInterceptor.class);
-    @Bean
-    public GameRequestInterceptor gameRequestInterceptor() {
-        return new GameRequestInterceptor();
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new GameRequestInterceptor());
+        registry.addInterceptor(new GameRequestInterceptor())
+                .addPathPatterns("/view/**");
     }
-
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        LOGGER.debug("Wiadomość z configuracji");
-//        System.out.println("intercepridf ");
-//        registry.addInterceptor(gameRequestInterceptor());
-//        registry.addInterceptor(gameRequestInterceptor())
-//                .addPathPatterns("/view/**");
-//    }
 
 }

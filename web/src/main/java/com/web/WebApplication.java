@@ -31,9 +31,6 @@ public class WebApplication {
 
 		StartGamePage startGamePage = addShipPage2.addShipBoard2(webDriver);
 		ShootingPage shootingPage = startGamePage.startGame(webDriver);
-//
-//		webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(3));
-//		shootingPage.missShot();
 
 		shootingPage.shots();
 
