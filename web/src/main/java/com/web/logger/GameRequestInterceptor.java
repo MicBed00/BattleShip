@@ -15,14 +15,14 @@ public class GameRequestInterceptor implements HandlerInterceptor {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameRequestInterceptor.class);
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        LOGGER.debug("preHandler invoked.. {}:{}" + request.getRequestURL().toString(), request.getMethod());
+        LOGGER.debug("preHandler invoked.. {}: " + request.getRequestURL().toString(), request.getMethod());
 
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        LOGGER.info("postHandle invoked...{}:{}"+request.getRequestURI(),request.getMethod());
+        LOGGER.info("postHandle invoked...{},{}: "+request.getRequestURI(),request.getMethod(),response.getStatus());
 
     }
 

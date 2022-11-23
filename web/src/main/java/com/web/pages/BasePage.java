@@ -7,8 +7,6 @@ public class BasePage {
 
     public BasePage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
-//        waitForVisibilityOfElement(pageContent);
-
     }
 
 }

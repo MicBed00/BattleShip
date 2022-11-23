@@ -1,15 +1,14 @@
 package com.web;
 
-import com.web.libraries.WebDriverLibrary;
+import com.web.configuration.WebDriverConfig;
 import com.web.pages.AddShipPage;
 import com.web.pages.HomePage;
 import com.web.pages.ShootingPage;
 import com.web.pages.StartGamePage;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.time.Duration;
 
 //import static com.web.webDriver.WebDriverLibrary.getChromeDriver;
 
@@ -17,11 +16,22 @@ import java.time.Duration;
 @SpringBootApplication
 public class WebApplication {
 
+//	@Autowired
+//	static WebDriver webDriver;
+
+
+//	@Autowired
+//	static WebDriverConfig webDriverConfig;
+//
+//	@Autowired
+//	static HomePage homePage;
+
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
 
-		WebDriverLibrary webDriverLibrary = new WebDriverLibrary();
-		WebDriver webDriver = webDriverLibrary.getChromeDriver();
+		WebDriverConfig webDriverConfig = new WebDriverConfig();
+		WebDriver webDriver = webDriverConfig.getChromeDriver();
+
 		webDriver.manage().window().maximize();
 		webDriver.get("http://localhost:8080/view/welcomeView");
 

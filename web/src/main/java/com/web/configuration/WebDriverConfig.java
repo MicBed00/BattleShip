@@ -1,4 +1,4 @@
-package com.web.libraries;
+package com.web.configuration;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class WebDriverLibrary {
+public class WebDriverConfig {
 
     @Bean
     public WebDriver getChromeDriver() {
