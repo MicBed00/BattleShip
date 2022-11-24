@@ -43,15 +43,15 @@
 
 <div align="center" id="container">
     <div id="board">
-        <h1>Add Ship</h1>
+        <h1 th:text="#{addShip}">Add Ship</h1>
 
-        <label>Wielkość statku: </label>
+        <label th:text="#{sizeShip}">Wielkość statku:</label>
 
         <select id="len" th:name="length">
             <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
         </select>
 
-        <label>Orientacja: </label>
+        <label th:text="#{orient}">Orientacja:</label>
 
         <select id="orientation" th:name="position">
             <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>

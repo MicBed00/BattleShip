@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("json")
 public class GameControllerJson {
-//    private WebDriver webDriver;
+
     @Autowired
     private final GameService gameService;
 

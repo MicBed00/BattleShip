@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -14,11 +15,9 @@ public class GameControllerView {
 
     GameControllerView(GameService gameService) {
         this.gameService = gameService;
-//       this.webDriver = webDriver;
-//       webDriver.get("http://localhost:8080");
     }
 
-    @GetMapping(value="welcomeView")
+    @GetMapping(value= "welcomeView")
     public String welcome() {
         return "welcomeView";
     }
