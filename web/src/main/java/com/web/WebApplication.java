@@ -6,25 +6,12 @@ import com.web.pages.HomePage;
 import com.web.pages.ShootingPage;
 import com.web.pages.StartGamePage;
 import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-//import static com.web.webDriver.WebDriverLibrary.getChromeDriver;
 
 
 @SpringBootApplication
 public class WebApplication {
-
-//	@Autowired
-//	static WebDriver webDriver;
-
-
-//	@Autowired
-//	static WebDriverConfig webDriverConfig;
-//
-//	@Autowired
-//	static HomePage homePage;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
