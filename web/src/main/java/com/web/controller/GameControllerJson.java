@@ -15,10 +15,8 @@ import java.util.List;
 @RestController
 @RequestMapping("json")
 public class GameControllerJson {
-
-    @Autowired
     private final GameService gameService;
-
+    @Autowired
    GameControllerJson(GameService gameService) {
        this.gameService = gameService;
     }

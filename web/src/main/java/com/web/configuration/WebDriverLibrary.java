@@ -1,4 +1,4 @@
-package com.web.libraries;
+package com.web.configuration;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
