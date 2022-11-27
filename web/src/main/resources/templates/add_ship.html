@@ -44,7 +44,8 @@
 <div align="center" id="container">
     <div id="board">
         <h1 th:text="|#{addShip}|">Add Ship</h1>
-        <h3 id="ownerBoard">Board's player 1</h3>
+        <h3 id="ownerBoard" th:text="|#{boardPlayer1}|">Board's player 1</h3>
+
         <label th:text="#{sizeShip}">Wielkość statku:</label>
 
         <select id="len" th:name="length">
@@ -108,7 +109,7 @@
                           document.getElementById("renderTable").style.pointerEvents = "auto";
                           document.getElementsByClassName("button").disabled = false;
                           document.getElementById("accept").disabled = true;
-                          document.getElementById("ownerBoard").innerText = "Board's player2";
+                          document.getElementById("ownerBoard").innerText = "Board's player 2";
                       },false);
                   }
               } else if(responseBody[0].ships.length === shipNumber && responseBody[1].ships.length <= shipNumber) {
@@ -137,8 +138,8 @@
         console.log("Addlistener backAction");
        let owner = document.getElementById("ownerBoard").textContent;
 
-       if(owner === "Board's player 1") {
-           console.log("PRzed klientem  plus pokaż onwera " + owner);
+       if(owner.endsWith("1")) {
+           console.log("Przed klientem  plus pokaż onwera " + owner);
            new BattleShipClient().deleteLastAddedShip(0, (status, responseBody) =>  {
                if (status >= 200 && status <= 299) {
                    alert("Usunięto ostatnio dodany statek!");
