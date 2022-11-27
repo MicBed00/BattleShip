@@ -15,7 +15,7 @@ public class BattleShipExceptionAdvice {
     @ExceptionHandler(BattleShipException.class)
     public ResponseEntity<String> battleShipExceptionHandler(BattleShipException ex) {
         if(ex instanceof CollidingException || ex instanceof ShotSamePlaceException || ex instanceof ShipLimitExceedException)
-            return new ResponseEntity<>(ex.toString(), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(ex.toString(), HttpStatus.BAD_REQUEST);
         if(ex instanceof NullObject)
             return new ResponseEntity<>(ex.toString(), HttpStatus.NO_CONTENT);
         if(ex instanceof OutOfBoundsException)

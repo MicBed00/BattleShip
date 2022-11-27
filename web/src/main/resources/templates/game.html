@@ -86,9 +86,6 @@
     renderBoards();
     var currentBoard = board1;
 
-   // onload = renderBoardPly2(ply2);
-
-
     function shotAtShip(event) {
         var target = event.target, col, row, shotX, shotY;
         col = target.parentElement;
@@ -122,7 +119,7 @@
                           window.location.href = "/view/statistics";
                       }
               }, (status, responseBody) => {
-                  //do obsługi błąd
+                  alert("Błąd "+ responseBody)
               })
     }
     function renderBoards() {
@@ -162,8 +159,7 @@
         return tableShot;
     }
 
-    function renderShot(responseBody, target) {
-        console.log("ResponseBody po oddaniu strzału:  "+responseBody[0]);
+    function renderShot(responseBody) {
         if(responseBody != null) {
             var boardShot = currentBoard === board1 ? board2 : board1;
             var index = currentBoard === board1 ? 1 : 0;
@@ -171,7 +167,6 @@
                     // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
                     if(shot.state === "HIT") {
                         boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0).style.backgroundColor = "red";
-
                     } else if(shot.state === "MISSED") {
                        var ox = boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0);// boardShot.getElementsByClassName(shot.x + "_" +shot.y) - zwraca kolekcję htmlcollection
                         ox.style.backgroundColor = "black";

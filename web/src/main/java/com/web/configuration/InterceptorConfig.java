@@ -13,12 +13,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
+    @Autowired
+    GameRequestInterceptor gameRequestInterceptor;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameRequestInterceptor.class);
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new GameRequestInterceptor());
-        registry.addInterceptor(new GameRequestInterceptor())
+        registry.addInterceptor(gameRequestInterceptor);
+        registry.addInterceptor(gameRequestInterceptor)
                 .addPathPatterns("/view/**");
     }
 

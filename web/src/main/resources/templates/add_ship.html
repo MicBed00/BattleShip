@@ -43,8 +43,8 @@
 
 <div align="center" id="container">
     <div id="board">
-        <h1 th:text="#{addShip}">Add Ship</h1>
-
+        <h1 th:text="|#{addShip}|">Add Ship</h1>
+        <h3 id="ownerBoard">Board's player 1</h3>
         <label th:text="#{sizeShip}">Wielkość statku:</label>
 
         <select id="len" th:name="length">
@@ -64,6 +64,7 @@
         <br>
         <br>
         <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
+        <button id="backAction" style="height: 50px; width: 100px" value="0" disabled>Back</button>
     </div>
     <div id="numberShip">
        <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" ></span></p>
@@ -92,6 +93,7 @@
               //reset parametrów do domyślnych
               document.getElementById("len").value = 1;
               document.getElementById("orientation").value = "VERTICAL";
+              document.getElementById("backAction").disabled = false;
 
               //wymyślić inny warunek dla odblokowania przycisku
               if(responseBody[0].ships.length <= shipNumber && responseBody[1].ships.length === 0) {
@@ -100,11 +102,13 @@
                   if(responseBody[0].ships.length === shipNumber) {
                       document.getElementById("renderTable").style.pointerEvents = "none";
                       document.getElementById("accept").disabled = false;
+
                       document.getElementById("accept").addEventListener("click", function () {
                           renderShip(null);
                           document.getElementById("renderTable").style.pointerEvents = "auto";
                           document.getElementsByClassName("button").disabled = false;
                           document.getElementById("accept").disabled = true;
+                          document.getElementById("ownerBoard").innerText = "Board's player2";
                       },false);
                   }
               } else if(responseBody[0].ships.length === shipNumber && responseBody[1].ships.length <= shipNumber) {
@@ -129,6 +133,31 @@
            }
        });
    }
+   document.getElementById("backAction").addEventListener("click", function() {
+        console.log("Addlistener backAction");
+       let owner = document.getElementById("ownerBoard").textContent;
+
+       if(owner === "Board's player 1") {
+           console.log("PRzed klientem  plus pokaż onwera " + owner);
+           new BattleShipClient().deleteLastAddedShip(0, (status, responseBody) =>  {
+               if (status >= 200 && status <= 299) {
+                   alert("Usunięto ostatnio dodany statek!");
+                   renderShip(responseBody[0]);
+               }
+           }, (status, responseBody) => {
+               alert("Błąd " + status);
+           })
+       } else {
+           new BattleShipClient().deleteLastAddedShip(1, (status, responseBody) =>  {
+               if (status >= 200 && status <= 299) {
+                   alert("Usunięto ostatnio dodany statek!");
+                   renderShip(responseBody[1]);
+               }
+           }, (status, responseBody) => {
+               alert("Błąd " + status);
+           })
+       }
+   }, false);
 
    function renderShip(responseBody) {
        var horizontalOrientation = [[${orientList}]][1];
@@ -195,6 +224,15 @@
            this.get("/json/setup", null, null, onSuccess, onError);
        }
 
+       getShips(onSuccess, onError) {
+           this.get("/json/game/boards", null, null, onSuccess, onError);
+       }
+
+       deleteLastAddedShip(idBoard, onSuccess, onError) {
+         this.delete("/json/deleteShip/"+idBoard, null, null, onSuccess, onError);
+       }
+
+
        shooterShip(x, y, onSuccess, onError) {
            this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
        }
@@ -203,8 +241,9 @@
        }
 
        delete(path, body, progressUpdate, success, error) {
-           this.call("delete", path, body, progressUpdate, success, error);
+           this.call("delete", path, null, progressUpdate, success, error);
        }
+
 
        get(path, body, progressUpdate, success, error) {
            this.call("get", path, null, progressUpdate, success, error)
@@ -237,6 +276,8 @@
            request.setRequestHeader('Content-type', 'application/json');
            request.send(body);
        }
+
+
    }
 
 </script>
@@ -252,7 +293,7 @@
         new BattleShipClient().getSetupsBoard((status, responseBody) => {
             shipNumber = responseBody;
         }, (status, responseBody) => {
-            alert("Błąd przy pobieraniu ustawień boarda " + responseBody)
+            alert("Błąd przy pobieraniu ustawień " + responseBody)
         });
         table = renderShip(null);
         return  table;
