@@ -16,9 +16,8 @@ public class WebApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
 
-		WebDriverConfig webDriverConfig = new WebDriverConfig();
-		WebDriver webDriver = webDriverConfig.getChromeDriver();
-
+		WebDriverConfig driver = new WebDriverConfig();
+		WebDriver webDriver = driver.getChromeDriver();
 		webDriver.manage().window().maximize();
 		webDriver.get("http://localhost:8080/view/welcomeView");
 
