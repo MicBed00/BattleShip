@@ -74,12 +74,13 @@
 
 <!--type="text/javascript" src="/static/scriptAppAdd_Ship.js"-->
 <script th:inline="javascript">
+   let boardslist;
 
    function adderShip(event) {
       var length = document.getElementById("len").value;
       var position = document.getElementById("orientation").value;
-      var xstart;
       var target = event.target, col, row;
+      var xstart, ystart;
 
       col = target.parentElement;
       row = col.parentElement;
@@ -93,8 +94,10 @@
               document.getElementById("len").value = 1;
               document.getElementById("orientation").value = "VERTICAL";
 
+              boardslist = responseBody;
+
               //wymyślić inny warunek dla odblokowania przycisku
-              if(responseBody[0].ships.length <= shipNumber && responseBody[1].ships.length === 0) {
+              if(checkIfStillBoardPlayerOne(boardslist)) {
                   renderShip(responseBody[0])
 
                   if(responseBody[0].ships.length === shipNumber) {
@@ -107,6 +110,7 @@
                           document.getElementById("accept").disabled = true;
                       },false);
                   }
+
               } else if(responseBody[0].ships.length === shipNumber && responseBody[1].ships.length <= shipNumber) {
                   renderShip(responseBody[1])
 
@@ -128,6 +132,10 @@
                //Uwaga: sprawdź czy po wyrzuceniu błędu statek mimo to nie jest dodawny do listy!
            }
        });
+   }
+
+   function checkIfStillBoardPlayerOne(boardslist) {
+       return boardslist[0].ships.length <= shipNumber && boardslist[1].ships.length === 0;
    }
 
    function renderShip(responseBody) {
