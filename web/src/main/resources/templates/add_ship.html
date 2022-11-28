@@ -145,7 +145,6 @@
    }
 
    document.getElementById("backAction").addEventListener("click", function() {
-       // let owner = document.getElementById("ownerBoard").textContent;
 
        if(checkIfStillBoardPlayerOne(boardsList)) {
            new BattleShipClient().deleteLastAddedShip(0, (status, responseBody) =>  {
@@ -279,7 +278,7 @@
            request.onreadystatechange = function () {
                if (this.readyState === XMLHttpRequest.DONE)
                    if (this.status >= 200 && this.status <= 299) {
-                       let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
+                       let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null;
                        //let body = this.responseText;
                        success(this.status, body);
                    } else if (error !== undefined)
