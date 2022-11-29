@@ -45,27 +45,25 @@
     <div id="board">
         <h1 th:text="|#{addShip}|">Add Ship</h1>
         <h3 id="ownerBoard" th:text="|#{boardPlayer1}|">Board's player 1</h3>
+        <div>
+            <label th:text="#{sizeShip}">Wielkość statku:</label>
 
-        <label th:text="#{sizeShip}">Wielkość statku:</label>
+            <select id="len" th:name="length">
+                <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
+            </select>
 
-        <select id="len" th:name="length">
-            <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
-        </select>
+            <label th:text="#{orient}">Orientacja:</label>
 
-        <label th:text="#{orient}">Orientacja:</label>
-
-        <select id="orientation" th:name="position">
-            <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
-        </select>
-        <br>
-        <br>
-
+            <select id="orientation" th:name="position">
+                <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
+            </select>
+        </div>
         <div id="renderTable"></div>
-        <br>
-        <br>
-        <br>
-        <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
-        <button id="backAction" style="height: 50px; width: 100px" value="0" disabled>Back</button>
+        <div>
+            <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
+            <button id="backAction" style="height: 50px; width: 100px" value="0" disabled>Back</button>
+        </div>
+
     </div>
     <div id="numberShip">
        <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" ></span></p>
@@ -101,7 +99,7 @@
               if(checkIfStillBoardPlayerOne(boardsList)) {
                   renderShip(responseBody[0])
 
-                  if(responseBody[0].ships.length === shipNumber) {
+                  if (responseBody[0].ships.length === shipNumber) {
                       document.getElementById("renderTable").style.pointerEvents = "none";
                       document.getElementById("accept").disabled = false;
 
@@ -111,20 +109,20 @@
                           document.getElementsByClassName("button").disabled = false;
                           document.getElementById("accept").disabled = true;
                           document.getElementById("ownerBoard").innerText = "Board's player 2";
-                      },false);
+                      }, false);
                   }
-              } else if(checkIfBoardPlayerTwoIsFull(boardsList)) {
+              } else if (checkIfBoardPlayerTwoIsFull(boardsList)) {
                   renderShip(responseBody[1])
 
-                      if(responseBody[1].ships.length === shipNumber) {
-                          document.getElementById("renderTable").style.pointerEvents = "none";
-                          document.getElementById("accept").disabled = false;
+                  if (responseBody[1].ships.length === shipNumber) {
+                      document.getElementById("renderTable").style.pointerEvents = "none";
+                      document.getElementById("accept").disabled = false;
 
-                          document.getElementById("accept").addEventListener("click", function () {
-                              document.getElementById("accept").disabled = true;
-                              window:location.replace("http://localhost:8080/view/added_Ship");
-                          },false);
-                      }
+                      document.getElementById("accept").addEventListener("click", function () {
+                          document.getElementById("accept").disabled = true;
+                          location.replace("http://localhost:8080/view/added_Ship");
+                      }, false);
+                  }
               }
           }
 
@@ -248,6 +246,7 @@
        shooterShip(x, y, onSuccess, onError) {
            this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
        }
+
        getterStatusGame(onSuccess, onError) {
            this.get("/game/boards/isFinished", null, null, onSuccess, onError)
        }

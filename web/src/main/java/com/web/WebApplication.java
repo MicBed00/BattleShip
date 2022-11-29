@@ -16,19 +16,19 @@ public class WebApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
 
-//		WebDriverConfig driver = new WebDriverConfig();
-//		WebDriver webDriver = driver.getChromeDriver();
-//		webDriver.manage().window().maximize();
-//		webDriver.get("http://localhost:8080/view/welcomeView");
-//
-//		HomePage homePage = new HomePage(webDriver);
-//		AddShipPage addShipPage = homePage.enterToGame(webDriver);
-//		AddShipPage addShipPage2 = addShipPage.addShipBoard1(webDriver);
-//
-//		StartGamePage startGamePage = addShipPage2.addShipBoard2(webDriver);
-//		ShootingPage shootingPage = startGamePage.startGame(webDriver);
-//
-//		shootingPage.shots();
+		WebDriverConfig driver = new WebDriverConfig();
+		WebDriver webDriver = driver.getChromeDriver();
+		webDriver.manage().window().maximize();
+		webDriver.get("http://localhost:8080/view/welcomeView");
+		
+		HomePage homePage = new HomePage(webDriver);
+		AddShipPage addShipPage = homePage.enterToGame(webDriver);
+		AddShipPage addShipPage2 = addShipPage.addShipBoard1(webDriver);
+
+		StartGamePage startGamePage = addShipPage2.addShipBoard2(webDriver);
+		ShootingPage shootingPage = startGamePage.startGame(webDriver);
+
+		shootingPage.shots();
 
 
 	}
