@@ -75,16 +75,17 @@
 <!--type="text/javascript" src="/static/scriptAppAdd_Ship.js"-->
 <script th:inline="javascript">
     var boardsList;
-   function adderShip(event) {
-      var length = document.getElementById("len").value;
-      var position = document.getElementById("orientation").value;
-      var xstart;
-      var target = event.target, col, row;
 
-      col = target.parentElement;
-      row = col.parentElement;
-      ystart = row.rowIndex;
-      xstart = col.cellIndex;
+    function adderShip(event) {
+        var length = document.getElementById("len").value;
+        var position = document.getElementById("orientation").value;
+        var xstart;
+        var target = event.target, col, row;
+
+        col = target.parentElement;
+        row = col.parentElement;
+        ystart = row.rowIndex;
+        xstart = col.cellIndex;
 
       new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
           //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call

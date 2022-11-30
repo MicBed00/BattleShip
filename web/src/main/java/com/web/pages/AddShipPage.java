@@ -46,8 +46,8 @@ public class AddShipPage extends  BasePage {
 
     public AddShipPage addShipBoard1(WebDriver webDriver) {
         buttonOnBoard1.click();
-        new Select(orientationSelect).selectByValue("VERTICAL");
         new Select(lengthSelect).selectByValue("4");
+        new Select(orientationSelect).selectByValue("VERTICAL");
         try {
             buttonOnBoard2.click();
         }
