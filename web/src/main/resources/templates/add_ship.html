@@ -45,27 +45,25 @@
     <div id="board">
         <h1 th:text="|#{addShip}|">Add Ship</h1>
         <h3 id="ownerBoard" th:text="|#{boardPlayer1}|">Board's player 1</h3>
+        <div>
+            <label th:text="#{sizeShip}">Wielkość statku:</label>
 
-        <label th:text="#{sizeShip}">Wielkość statku:</label>
+            <select id="len" th:name="length">
+                <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
+            </select>
 
-        <select id="len" th:name="length">
-            <option th:each="length :${shipSize}" th:value="${length}" th:text="${length}"></option>
-        </select>
+            <label th:text="#{orient}">Orientacja:</label>
 
-        <label th:text="#{orient}">Orientacja:</label>
-
-        <select id="orientation" th:name="position">
-            <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
-        </select>
-        <br>
-        <br>
-
+            <select id="orientation" th:name="position">
+                <option th:each="o :${orientList}" th:value="${o}" th:text="${o}"></option>
+            </select>
+        </div>
         <div id="renderTable"></div>
-        <br>
-        <br>
-        <br>
-        <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
-        <button id="backAction" style="height: 50px; width: 100px" value="0" disabled>Back</button>
+        <div>
+            <button id="accept" style="height: 50px; width: 100px" value="0" disabled>Accept</button>
+            <button id="backAction" style="height: 50px; width: 100px" value="0" disabled>Back</button>
+        </div>
+
     </div>
     <div id="numberShip">
        <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" ></span></p>
@@ -76,17 +74,17 @@
 
 <!--type="text/javascript" src="/static/scriptAppAdd_Ship.js"-->
 <script th:inline="javascript">
-    var boardsList;
+
    function adderShip(event) {
       var length = document.getElementById("len").value;
       var position = document.getElementById("orientation").value;
       var xstart;
       var target = event.target, col, row;
 
-      col = target.parentElement;
-      row = col.parentElement;
-      ystart = row.rowIndex;
-      xstart = col.cellIndex;
+        col = target.parentElement;
+        row = col.parentElement;
+        ystart = row.rowIndex;
+        xstart = col.cellIndex;
 
       new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
           //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
@@ -101,7 +99,7 @@
               if(checkIfStillBoardPlayerOne(boardsList)) {
                   renderShip(responseBody[0])
 
-                  if(responseBody[0].ships.length === shipNumber) {
+                  if (responseBody[0].ships.length === shipNumber) {
                       document.getElementById("renderTable").style.pointerEvents = "none";
                       document.getElementById("accept").disabled = false;
 
@@ -111,20 +109,20 @@
                           document.getElementsByClassName("button").disabled = false;
                           document.getElementById("accept").disabled = true;
                           document.getElementById("ownerBoard").innerText = "Board's player 2";
-                      },false);
+                      }, false);
                   }
-              } else if(checkIfBoardPlayerTwoIsFull(boardsList)) {
+              } else if (checkIfBoardPlayerTwoIsFull(boardsList)) {
                   renderShip(responseBody[1])
 
-                      if(responseBody[1].ships.length === shipNumber) {
-                          document.getElementById("renderTable").style.pointerEvents = "none";
-                          document.getElementById("accept").disabled = false;
+                  if (responseBody[1].ships.length === shipNumber) {
+                      document.getElementById("renderTable").style.pointerEvents = "none";
+                      document.getElementById("accept").disabled = false;
 
-                          document.getElementById("accept").addEventListener("click", function () {
-                              document.getElementById("accept").disabled = true;
-                              window:location.replace("http://localhost:8080/view/added_Ship");
-                          },false);
-                      }
+                      document.getElementById("accept").addEventListener("click", function () {
+                          document.getElementById("accept").disabled = true;
+                          location.replace("http://localhost:8080/view/added_Ship");
+                      }, false);
+                  }
               }
           }
 
@@ -145,7 +143,6 @@
    }
 
    document.getElementById("backAction").addEventListener("click", function() {
-       // let owner = document.getElementById("ownerBoard").textContent;
 
        if(checkIfStillBoardPlayerOne(boardsList)) {
            new BattleShipClient().deleteLastAddedShip(0, (status, responseBody) =>  {
@@ -249,6 +246,7 @@
        shooterShip(x, y, onSuccess, onError) {
            this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
        }
+
        getterStatusGame(onSuccess, onError) {
            this.get("/game/boards/isFinished", null, null, onSuccess, onError)
        }
@@ -279,7 +277,7 @@
            request.onreadystatechange = function () {
                if (this.readyState === XMLHttpRequest.DONE)
                    if (this.status >= 200 && this.status <= 299) {
-                       let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
+                       let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null;
                        //let body = this.responseText;
                        success(this.status, body);
                    } else if (error !== undefined)

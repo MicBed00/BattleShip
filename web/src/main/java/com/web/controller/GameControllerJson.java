@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("json")
 public class GameControllerJson {
     private final GameService gameService;
-
     @Autowired
    GameControllerJson(GameService gameService) {
        this.gameService = gameService;
@@ -47,6 +46,11 @@ public class GameControllerJson {
     @GetMapping(value = "/setup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Integer> getSetpu() {
         return ResponseEntity.ok(gameService.getShipLimits());
+    }
+
+    @DeleteMapping(value= "/deleteShip/{idBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard) {
+       return ResponseEntity.ok(gameService.deleteShip(idBoard));
     }
 
 

@@ -10,7 +10,7 @@ public class BasePage {
 
     public BasePage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
-//        waitForVisibilityOfElement(pageContent);
+        webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(15));
 
     }
 

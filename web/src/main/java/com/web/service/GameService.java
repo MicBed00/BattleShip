@@ -104,4 +104,10 @@ public class GameService {
 
     }
 
+    public List<Board> deleteShip(int idBoard) {
+        Board board  = boardList.get(idBoard);
+        int lastIndex = board.getShips().size() - 1;
+        board.getShips().remove(lastIndex);
+        return boardList;
+    }
 }
