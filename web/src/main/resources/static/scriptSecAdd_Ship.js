@@ -1,10 +1,3 @@
-// var shipNumber =[[${shipLimit}]];
-
-const express = require('express');
-const app = express();
-
-app.set('view engine', 'ejs');
-app.use(express.static('./static'));
 
 var shipNumber;
 window.onload = setup();
@@ -15,7 +8,7 @@ function setup() {
     new BattleShipClient().getSetupsBoard((status, responseBody) => {
         shipNumber = responseBody;
     }, (status, responseBody) => {
-        alert("Błąd przy pobieraniu ustawień boarda " + responseBody)
+        alert("Błąd przy pobieraniu ustawień " + responseBody)
     });
     table = renderShip(null);
     return  table;

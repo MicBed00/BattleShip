@@ -1,7 +1,6 @@
-
+var boardsList;
 
 function adderShip(event) {
-
     var length = document.getElementById("len").value;
     var position = document.getElementById("orientation").value;
     var xstart;
@@ -18,32 +17,36 @@ function adderShip(event) {
             //reset parametrów do domyślnych
             document.getElementById("len").value = 1;
             document.getElementById("orientation").value = "VERTICAL";
+            document.getElementById("backAction").disabled = false;
 
+            boardsList = responseBody;
             //wymyślić inny warunek dla odblokowania przycisku
-            if(responseBody[0].ships.length <= shipNumber && responseBody[1].ships.length === 0) {
+            if(checkIfStillBoardPlayerOne(boardsList)) {
                 renderShip(responseBody[0])
 
-                if(responseBody[0].ships.length === shipNumber) {
+                if (responseBody[0].ships.length === shipNumber) {
                     document.getElementById("renderTable").style.pointerEvents = "none";
                     document.getElementById("accept").disabled = false;
+
                     document.getElementById("accept").addEventListener("click", function () {
                         renderShip(null);
                         document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementsByClassName("button").disabled = false;
                         document.getElementById("accept").disabled = true;
-                    },false);
+                        document.getElementById("ownerBoard").innerText = "Board's player 2";
+                    }, false);
                 }
-            } else if(responseBody[0].ships.length === shipNumber && responseBody[1].ships.length <= shipNumber) {
+            } else if (checkIfBoardPlayerTwoIsFull(boardsList)) {
                 renderShip(responseBody[1])
 
-                if(responseBody[1].ships.length === shipNumber) {
+                if (responseBody[1].ships.length === shipNumber) {
                     document.getElementById("renderTable").style.pointerEvents = "none";
                     document.getElementById("accept").disabled = false;
 
                     document.getElementById("accept").addEventListener("click", function () {
                         document.getElementById("accept").disabled = true;
-                        window:location.replace("http://localhost:8080/view/added_Ship");
-                    },false);
+                        location.replace("http://localhost:8080/view/added_Ship");
+                    }, false);
                 }
             }
         }
@@ -55,6 +58,41 @@ function adderShip(event) {
         }
     });
 }
+
+function checkIfBoardPlayerTwoIsFull(boardsList) {
+    return boardsList[0].ships.length === shipNumber && boardsList[1].ships.length <= shipNumber
+}
+
+function checkIfStillBoardPlayerOne(boardslist) {
+    return boardslist[0].ships.length <= shipNumber && boardslist[1].ships.length === 0;
+}
+
+document.getElementById("backAction").addEventListener("click", function() {
+
+    if(checkIfStillBoardPlayerOne(boardsList)) {
+        new BattleShipClient().deleteLastAddedShip(0, (status, responseBody) =>  {
+
+            if (status >= 200 && status <= 299) {
+                document.getElementById("renderTable").style.pointerEvents = "auto";
+                document.getElementById("accept").disabled = true;
+                renderShip(responseBody[0]);
+            }
+        }, (status, responseBody) => {
+            alert("Błąd " + status);
+        })
+
+    } else {
+        new BattleShipClient().deleteLastAddedShip(1, (status, responseBody) =>  {
+            if (status >= 200 && status <= 299) {
+                document.getElementById("renderTable").style.pointerEvents = "auto";
+                document.getElementById("accept").disabled = true;
+                renderShip(responseBody[1]);
+            }
+        }, (status, responseBody) => {
+            alert("Błąd " + status);
+        })
+    }
+}, false);
 
 function renderShip(responseBody) {
     var horizontalOrientation = [[${orientList}]][1];
@@ -105,62 +143,3 @@ function renderShip(responseBody) {
 
     return table;
 }
-//
-// class BattleShipClient {
-//     addShip(length, xstart, ystart, position, onSuccess, onError) {
-//         var shipObject = {
-//             length: length,
-//             xstart: xstart,
-//             ystart: ystart,
-//             position: position
-//         };
-//         this.post("/json/addShip", JSON.stringify(shipObject), null, onSuccess, onError);
-//     }
-//
-//     getSetupsBoard(onSuccess, onError) {
-//         this.get("/json/setup", null, null, onSuccess, onError);
-//     }
-//
-//     shooterShip(x, y, onSuccess, onError) {
-//         this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
-//     }
-//     getterStatusGame(onSuccess, onError) {
-//         this.get("/game/boards/isFinished", null, null, onSuccess, onError)
-//     }
-//
-//     delete(path, body, progressUpdate, success, error) {
-//         this.call("delete", path, body, progressUpdate, success, error);
-//     }
-//
-//     get(path, body, progressUpdate, success, error) {
-//         this.call("get", path, null, progressUpdate, success, error)
-//     }
-//
-//     post(path, body, progressUpdate, success, error) {
-//         this.call("post", path, body, progressUpdate, success, error);
-//     }
-//
-//     call(method, path, body, progressUpdate, success, error) {
-//         let request = new XMLHttpRequest();
-//         request.upload.addEventListener('progress', function (event) {
-//             if (event.lengthComputable) {
-//                 let progress = event.loaded / event.total;
-//                 if (progressUpdate != null)
-//                     progressUpdate(progress);
-//             }
-//         }, false);
-//
-//         request.onreadystatechange = function () {
-//             if (this.readyState === XMLHttpRequest.DONE)
-//                 if (this.status >= 200 && this.status <= 299) {
-//                     let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null; //tutaj dostaję odpowiedź z serwera tylko zamiast Json jest to html i muszę go jakos przetworzyć i podać do metody success
-//                     //let body = this.responseText;
-//                     success(this.status, body);
-//                 } else if (error !== undefined)
-//                     error(this.status, this.responseText);
-//         };
-//         request.open(method.toUpperCase(), path, true);
-//         request.setRequestHeader('Content-type', 'application/json');
-//         request.send(body);
-//     }
-// }
