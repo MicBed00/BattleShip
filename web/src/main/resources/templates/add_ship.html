@@ -3,41 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Battle Ship add ship</title>
-    <style>
-        .tableResponse {
-            border: 2px solid;
-            background-color: blue;
-            width: 400px;
-        }
-        .row {
-            width: 50px;
-            height: 30px;
-            border: 1px solid;
-        }
-        .cell {
-            width: 50px;
-            height: 30px;
-            border: 1px solid;
-        }
-        .button {
-            background-color: transparent;
-            border: none;
-            height:32px;
-            width:32px;
-            margin: auto;
-            display: block;
-        }
-        .board
-        {
-            float: left;
-        }
-
-        #renderTable
-        {
-            /*pointer-events:none;*/
-        }
-    </style>
-
+    <link rel="stylesheet" href="/addShip.css">
 </head>
 <body>
 
@@ -66,17 +32,11 @@
 
     </div>
     <div id="numberShip">
-       <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" ></span></p>
-
+<!--       <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" ></span></p>-->
     </div>
-
 </div>
-
-
-<script th:inline="javascript" th:src="@{/BattleShipClient.js}"></script>
-<script th:inline="javascript" th:src="@{/scriptAppAdd_Ship.js}"></script>
-<script type="text/javascript" th:src="@{/scriptSecAdd_Ship.js}"></script>
-
+<script th:src="@{/battleShipClient.js}"></script>
+<script th:src="@{/addShip_renderTable.js}"></script>
 
 </body>
 </html>

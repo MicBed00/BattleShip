@@ -22,13 +22,16 @@ class BattleShipClient {
         this.delete("/json/deleteShip/"+idBoard, null, null, onSuccess, onError);
     }
 
-
     shooterShip(x, y, onSuccess, onError) {
-        this.post("/game/boards", "x=" + x + "&y="+ y, null, onSuccess, onError)
+            var shootObject = {
+                x: x,
+                y: y,
+            }
+            this.post("/json/game/boards", JSON.stringify(shootObject), null, onSuccess, onError)
     }
 
     getterStatusGame(onSuccess, onError) {
-        this.get("/game/boards/isFinished", null, null, onSuccess, onError)
+        this.get("/json/game/boards/isFinished", null, null, onSuccess, onError)
     }
 
     delete(path, body, progressUpdate, success, error) {
@@ -68,3 +71,4 @@ class BattleShipClient {
         request.send(body);
     }
 }
+

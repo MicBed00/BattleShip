@@ -1,0 +1,53 @@
+.tableShot
+{
+    border: 2px solid;
+    background-color: blue;
+    width: 400px;
+}
+.rowShot
+{
+    width: 50px;
+    height: 30px;
+    border: 1px solid;
+}
+.rowShotPly2
+{
+    width: 50px;
+    height: 30px;
+    border: 1px solid;
+}
+.cellShot
+{
+    width: 50px;
+    height: 30px;
+    border: 1px solid;
+}
+
+.buttonShot
+{
+    /*background-color: transparent;*/
+    border: none;
+    height:35px;
+    width:35px;
+    margin: auto;
+    display: block;
+}
+
+#container
+{
+    width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#boardPlayer1
+{
+    float: left;
+    width: 600px;
+    /*pointer-events: none;*/
+}
+#boardPlayer2
+{
+    float: left;
+    width: 600px;
+    /*pointer-events: auto;*/
+}

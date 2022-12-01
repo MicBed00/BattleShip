@@ -95,7 +95,7 @@ document.getElementById("backAction").addEventListener("click", function() {
 }, false);
 
 function renderShip(responseBody) {
-    var horizontalOrientation = [[${orientList}]][1];
+    // var horizontalOrientation = [[${orientList}]][1];
     const table = document.createElement("table");
     table.id = "tableRes";
     table.className = "tableResponse";
@@ -120,7 +120,8 @@ function renderShip(responseBody) {
 
             if(responseBody != null) {
                 for(let k = 0; k < responseBody.ships.length; k ++) {
-                    if (responseBody.ships[k].position === horizontalOrientation) {
+                    // if (responseBody.ships[k].position === horizontalOrientation)
+                    if (responseBody.ships[k].position === "HORIZONTAL") {
 
                         if (responseBody.ships[k].ystart === i && responseBody.ships[k].xstart >= j
                             && (responseBody.ships[k].xstart - responseBody.ships[k].length + 1) <= j)
@@ -142,4 +143,20 @@ function renderShip(responseBody) {
     document.getElementById("renderTable").appendChild(table);
 
     return table;
+}
+
+
+var shipNumber;
+window.onload = setup();
+function setup() {
+    var table;
+    //zwracamy shipLimit, rozmiar planszy itp.
+    // robię metode w kliencie pobierania tych danych i w tej funkcji będę miał je zwracane
+    new BattleShipClient().getSetupsBoard((status, responseBody) => {
+        shipNumber = responseBody;
+    }, (status, responseBody) => {
+        alert("Błąd przy pobieraniu ustawień " + responseBody)
+    });
+    table = renderShip(null);
+    return  table;
 }

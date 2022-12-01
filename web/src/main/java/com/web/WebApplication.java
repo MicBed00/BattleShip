@@ -30,7 +30,6 @@ public class WebApplication {
 
 		shootingPage.shots();
 
-
 	}
 
 }
