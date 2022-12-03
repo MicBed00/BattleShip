@@ -1,26 +1,25 @@
-package com.web.pages;
+package com.web.springTest.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StartGamePage extends BasePage {
 
 
-    public StartGamePage(WebDriver webDriver) {
-        super(webDriver);
+    public StartGamePage() {
+        super();
     }
 
     @FindBy(id = "startGame")
     private WebElement startGameButton;
 
 
-    public ShootingPage startGame(WebDriver webDriver) {
+    public ShootingPage startGame() {
         startGameButton.click();
 
-        return new ShootingPage(webDriver);
+        return new ShootingPage();
     }
 }

@@ -1,21 +1,18 @@
-package com.web.pages;
+package com.web.springTest.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.List;
 
 @Component
 public class ShootingPage extends BasePage {
 
 
-    public ShootingPage(WebDriver webDriver) {
-        super(webDriver);
+    public ShootingPage( ) {
+        super();
     }
 
     @FindBy(id = "buttonPly1")

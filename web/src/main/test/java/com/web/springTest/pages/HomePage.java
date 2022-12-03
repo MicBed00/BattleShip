@@ -1,4 +1,4 @@
-package com.web.pages;
+package com.web.springTest.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,18 +8,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class HomePage extends BasePage{
 
-    public HomePage(WebDriver webDriver) {
-        super(webDriver);
+    public HomePage() {
+        super();
     }
 
     @FindBy(id = "startButton")
-    public WebElement startClickHereGameButton;
+    private WebElement startClickHereGameButton;
 
 
-    public AddShipPage enterToGame(WebDriver webDriver) {
+    public AddShipPage enterToGame() {
       startClickHereGameButton.click();
 
-      return new AddShipPage(webDriver);
+      return new AddShipPage();
     }
 
 }

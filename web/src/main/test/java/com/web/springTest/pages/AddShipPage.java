@@ -1,24 +1,17 @@
-package com.web.pages;
+package com.web.springTest.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.time.Duration;
-import java.util.List;
 
 @Component
 public class AddShipPage extends  BasePage {
 
 
-    public AddShipPage(WebDriver webDriver) {
-        super(webDriver);
+    public AddShipPage() {
+        super();
 
     }
     @FindBy(id = "len")
@@ -47,8 +40,14 @@ public class AddShipPage extends  BasePage {
 
 
 
-    public AddShipPage addShipBoard1(WebDriver webDriver) {
-        buttonOnBoard1.click();
+    public AddShipPage addShipBoard1() {
+        try {
+            buttonOnBoard1.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            buttonOnBoard1.click();
+        }
         new Select(lengthSelect).selectByValue("4");
         new Select(orientationSelect).selectByValue("VERTICAL");
         try {
@@ -60,17 +59,35 @@ public class AddShipPage extends  BasePage {
         }
         new Select(lengthSelect).selectByValue("3");
         new Select(orientationSelect).selectByValue("HORIZONTAL");
-        buttonOnBoard3.click();
+        try {
+            buttonOnBoard3.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            buttonOnBoard3.click();
+        }
         new Select(lengthSelect).selectByValue("2");
         new Select(orientationSelect).selectByValue("HORIZONTAL");
-        buttonOnBoard4.click();
-        buttonOnBoard5.click();
+        try {
+            buttonOnBoard4.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            buttonOnBoard4.click();
+        }
+        try {
+            buttonOnBoard5.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            buttonOnBoard5.click();
+        }
         acceptButton.click();
 
-        return new AddShipPage(webDriver);
+        return new AddShipPage();
     }
 
-    public StartGamePage addShipBoard2(WebDriver webDriver) {
+    public StartGamePage addShipBoard2() {
         new Select(orientationSelect).selectByValue("HORIZONTAL");
         new Select(lengthSelect).selectByValue("4");
         buttonOnBoard1.click();
@@ -84,7 +101,7 @@ public class AddShipPage extends  BasePage {
         buttonOnBoard5.click();
         acceptButton.click();
 
-        return new StartGamePage(webDriver);
+        return new StartGamePage();
     }
 
 }
