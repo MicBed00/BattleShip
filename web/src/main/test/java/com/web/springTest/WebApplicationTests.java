@@ -1,5 +1,6 @@
 package com.web.springTest;
 
+import com.web.springTest.config.TestConfig;
 import com.web.springTest.pages.AddShipPage;
 import com.web.springTest.pages.HomePage;
 import com.web.springTest.pages.ShootingPage;
@@ -8,6 +9,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -22,37 +24,27 @@ import static com.web.springTest.config.WebDriverSingleton.getDriver;
 //(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebApplicationTests {
-
-
 	private static String baseURL = "http://localhost:8080/view/welcomeView";
 	private static WebDriver webDriver;
 	@BeforeAll
 	public static void setUp() {
 		WebDriverManager.chromedriver().setup();
-//		webDriver = new ChromeDriver();
 		webDriver = getDriver();
 		webDriver.manage().window().maximize();
 		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		webDriver.get(baseURL);
-
-
 	}
-//	@AfterAll
-//	public static void tearDown() {
-//		webDriver.quit();
-//	}
-
-
+	@AfterAll
+	public static void tearDown() {
+		webDriver.quit();
+	}
 	@Test
 	void scenerioTestGame() {
-		HomePage homePage = new HomePage();
-		AddShipPage addShipPage = homePage.enterToGame();
-		AddShipPage addShipPage2 = addShipPage.addShipBoard1();
-
-		StartGamePage startGamePage = addShipPage2.addShipBoard2();
-		ShootingPage shootingPage = startGamePage.startGame();
-
-		shootingPage.shots();
+		new HomePage().enterToGame()
+				.addShipBoard1()
+				.addShipBoard2()
+				.startGame()
+				.shots();
 	}
 
 

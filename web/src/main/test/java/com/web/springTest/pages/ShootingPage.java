@@ -22,7 +22,7 @@ public class ShootingPage extends BasePage {
     private List<WebElement> buttonsBoards2;
 
     //zamiast try catch mogę skorzystać z metody WebWaiter i poczekaż az element się pojawi i dopiero klikac.
-    public void shots() {
+    public GameOver shots() {
 
         for(int i = 0; i < buttonsBoards2.size(); i ++) {
             try {
@@ -39,6 +39,8 @@ public class ShootingPage extends BasePage {
             {    buttonsBoards1.get(i).click();
             }
         }
+
+        return new GameOver();
     }
 
 }

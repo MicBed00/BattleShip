@@ -18,7 +18,6 @@ public class HomePage extends BasePage{
 
     public AddShipPage enterToGame() {
       startClickHereGameButton.click();
-
       return new AddShipPage();
     }
 

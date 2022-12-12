@@ -88,17 +88,49 @@ public class AddShipPage extends  BasePage {
     }
 
     public StartGamePage addShipBoard2() {
-        new Select(orientationSelect).selectByValue("HORIZONTAL");
-        new Select(lengthSelect).selectByValue("4");
-        buttonOnBoard1.click();
-        buttonOnBoard2.click();
-        new Select(lengthSelect).selectByValue("2");
-        new Select(orientationSelect).selectByValue("HORIZONTAL");
-        buttonOnBoard3.click();
-        buttonOnBoard4.click();
-        new Select(lengthSelect).selectByValue("3");
-        new Select(orientationSelect).selectByValue("HORIZONTAL");
-        buttonOnBoard5.click();
+        try {
+            new Select(orientationSelect).selectByValue("HORIZONTAL");
+            new Select(lengthSelect).selectByValue("4");
+            buttonOnBoard1.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            new Select(orientationSelect).selectByValue("HORIZONTAL");
+            new Select(lengthSelect).selectByValue("4");
+            buttonOnBoard1.click();
+        }
+        try {
+            buttonOnBoard2.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            buttonOnBoard2.click();
+        }
+        try {
+            new Select(lengthSelect).selectByValue("2");
+            new Select(orientationSelect).selectByValue("HORIZONTAL");
+            buttonOnBoard3.click();
+        }
+        catch(org.openqa.selenium.StaleElementReferenceException ex)
+        {
+            new Select(lengthSelect).selectByValue("2");
+            new Select(orientationSelect).selectByValue("HORIZONTAL");
+            buttonOnBoard3.click();
+        }
+        try {
+            buttonOnBoard4.click();
+        }catch(org.openqa.selenium.StaleElementReferenceException ex) {
+            buttonOnBoard4.click();
+        }
+        try {
+            new Select(lengthSelect).selectByValue("3");
+            new Select(orientationSelect).selectByValue("HORIZONTAL");
+            buttonOnBoard5.click();
+        }catch(org.openqa.selenium.StaleElementReferenceException ex) {
+            new Select(lengthSelect).selectByValue("3");
+            new Select(orientationSelect).selectByValue("HORIZONTAL");
+            buttonOnBoard5.click();
+        }
         acceptButton.click();
 
         return new StartGamePage();

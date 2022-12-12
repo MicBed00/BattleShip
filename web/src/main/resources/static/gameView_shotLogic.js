@@ -24,7 +24,11 @@ function shotAtShip(event) {
                 currentBoard = currentBoard === board1 ? board2 : board1;
             }
         }, (status, responseBody) => {
-            alert("Błąd " + responseBody)
+            if(status === 400) {
+                alert("SDDSDs");
+            }
+            // throw responseBody
+            // alert("Błąd " + responseBody)
         });
     } else {
         alert("Invalid board")

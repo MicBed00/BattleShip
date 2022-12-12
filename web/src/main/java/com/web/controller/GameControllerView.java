@@ -53,7 +53,7 @@ public class GameControllerView {
                 gameService.statisticsGame(gameService.getBoardList().get(1))[1]);
         model.addAttribute("accuracyPly1", accuracyPly1);
         model.addAttribute("accuracyPly2", accuracyPly2);
-        return "/statisticsGame";
+        return "gameOver";
     }
 
 
