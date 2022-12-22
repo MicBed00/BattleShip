@@ -12,18 +12,18 @@ services:
       - POSTGRES_DB=battlebase
     ports:
       - 5001:5432
-
-  appweb:
-      build:
-        dockerfile: Dockerfile
-        context: .
-      container_name: webmodule
-      environment:
-       SPRING_DATASOURCE_URL: jdbc:postgresql://dbShip:5432/battlebase
-      ports:
-        - 8080:8080
-      depends_on:
-        - dbShip
+#
+#  appweb:
+#      build:
+#        dockerfile: Dockerfile
+#        context: .
+#      container_name: webmodule
+#      environment:
+#       SPRING_DATASOURCE_URL: jdbc:postgresql://dbShip:5432/battlebase
+#      ports:
+#        - 8080:8080
+#      depends_on:
+#        - dbShip
 
 volumes:
   db:

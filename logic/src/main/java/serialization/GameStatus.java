@@ -8,11 +8,10 @@ import java.util.Objects;
 
 public class GameStatus {
     private List<Board> boardsStatus;
-    private int curretnPlayer;
     private StatePreperationGame state;
+    private int curretnPlayer;
 
-    public GameStatus() {
-    }
+    public GameStatus() {}
 
     public GameStatus(List<Board> boardsStatus, int curretnPlayer, StatePreperationGame state ) {
         this.boardsStatus = boardsStatus;
@@ -23,7 +22,6 @@ public class GameStatus {
     public List<Board> getBoardsStatus() {
         return boardsStatus;
     }
-
 
     public int getCurretnPlayer() {
         return curretnPlayer;

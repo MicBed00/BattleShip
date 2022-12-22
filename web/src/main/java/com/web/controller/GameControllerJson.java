@@ -21,7 +21,6 @@ public class GameControllerJson {
        this.gameService = gameService;
     }
 
-
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
         System.out.println(ship);

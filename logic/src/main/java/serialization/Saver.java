@@ -21,7 +21,6 @@ public class Saver {
         objectMapper.writerWithDefaultPrettyPrinter();
     }
 
-
     public void saveToFile(Board board1, Board board2, int currentPlayer, StatePreperationGame state) throws IOException, NullObject{
         List<Board> boardList = creatBoardsList(board1, board2);
         GameStatus gameStatus = new GameStatus(boardList, currentPlayer, state);

@@ -27,6 +27,8 @@ public class GameControllerView {
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());
+        //TODO stworzyć isntację GameStatus(w serwisie), encji StartGame (id, kolumna typu: jsonB -> do bazy danych)
+        //
 
         return "add_ship";
     }
