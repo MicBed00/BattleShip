@@ -1,21 +1,35 @@
 package com.web.controller;
 
+import board.StatePreperationGame;
+import com.web.RepoStartGame;
+import com.web.StartGame;
 import com.web.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.testcontainers.shaded.org.bouncycastle.util.Times;
+import serialization.GameStatus;
+import serialization.Saver;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("view")
 public class GameControllerView {
     private final GameService gameService;
+    private final RepoStartGame repoStartGame;
 
     @Autowired
-    GameControllerView(GameService gameService) {
+    GameControllerView(GameService gameService, RepoStartGame repoStartGame) {
         this.gameService = gameService;
+        this.repoStartGame = repoStartGame;
     }
+
 
     @GetMapping(value= "welcomeView")
     public String welcome() {
@@ -28,8 +42,9 @@ public class GameControllerView {
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());
         //TODO stworzyć isntację GameStatus(w serwisie), encji StartGame (id, kolumna typu: jsonB -> do bazy danych)
-        //
-
+//        repoStartGame.save(new StartGame());
+//        repoStartGame.save(new StartGame(1, Timestamp.valueOf(LocalDateTime.now()),
+//                            new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS)));
         return "add_ship";
     }
 

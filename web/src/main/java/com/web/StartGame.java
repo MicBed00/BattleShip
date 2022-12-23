@@ -15,12 +15,19 @@ import java.sql.Timestamp;
 public class StartGame {
     public StartGame() {}
 
+    public StartGame(Integer id, Timestamp date, GameStatus gameStatus) {
+        this.id = id;
+        this.date = date;
+        this.gameStatus = gameStatus;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column
     private Timestamp date;
+
     @Column
     @JdbcTypeCode(SqlTypes.JSON)
     private transient GameStatus gameStatus;

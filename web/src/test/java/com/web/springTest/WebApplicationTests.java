@@ -18,34 +18,36 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.web.springTest.config.WebDriverSingleton.getDriver;
+//import static com.web.springTest.config.WebDriverSingleton.getDriver;
 
 //import static com.web.springTest.config.WebDriverSingleton.getDriver;
 //(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 class WebApplicationTests {
-	private static String baseURL = "http://localhost:8080/view/welcomeView";
-	private static WebDriver webDriver;
-	@BeforeAll
-	public static void setUp() {
-		WebDriverManager.chromedriver().setup();
-		webDriver = getDriver();
-		webDriver.manage().window().maximize();
-		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		webDriver.get(baseURL);
-	}
-	@AfterAll
-	public static void tearDown() {
-		webDriver.quit();
-	}
-	@Test
-	void scenerioTestGame() {
-		new HomePage().enterToGame()
-				.addShipBoard1()
-				.addShipBoard2()
-				.startGame()
-				.shots();
-	}
+
+//	private static String baseURL = "http://localhost:8080/view/welcomeView";
+//	private static WebDriver webDriver;
+//	@BeforeAll
+//	public static void setUp() {
+//		WebDriverManager.chromedriver().setup();
+//		webDriver = getDriver();
+//		webDriver.manage().window().maximize();
+//		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//		webDriver.get(baseURL);
+//	}
+//	@AfterAll
+//	public static void tearDown() {
+//		webDriver.quit();
+//	}
+//	@Test
+//	void scenerioTestGame() {
+//		new HomePage().enterToGame()
+//				.addShipBoard1()
+//				.addShipBoard2()
+//				.startGame()
+//				.shots();
+//	}
 
 
 

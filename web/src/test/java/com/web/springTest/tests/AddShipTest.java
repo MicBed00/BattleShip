@@ -17,22 +17,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.web.springTest.config.WebDriverSingleton.getDriver;
+//import static com.web.springTest.config.WebDriverSingleton.getDriver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AddShipTest {
 
-    public static WebDriver webDriver;
-
-    @BeforeAll
-    public static void setUp() {
-        String baseURL = "http://localhost:8080/view/startGame";
-        webDriver = getDriver();
-        webDriver.manage().window().maximize();
-        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        webDriver.get(baseURL);
-    }
+//    public static WebDriver webDriver;
+//
+//    @BeforeAll
+//    public static void setUp() {
+//        String baseURL = "http://localhost:8080/view/startGame";
+//        webDriver = getDriver();
+//        webDriver.manage().window().maximize();
+//        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//        webDriver.get(baseURL);
+//    }
 //    @AfterAll
 //    public static void tearDown() {
 //        webDriver.quit();

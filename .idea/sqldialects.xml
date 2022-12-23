@@ -3,5 +3,6 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/web/src/main/resources/db/changelog/changeset/01_create_table.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/web/src/main/resources/db/changelog/changeset/02_add_jsonB_column.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/web/src/main/resources/db/changelog/changeset/03_test_dodwania_danych_do_tabeli.sql" dialect="PostgreSQL" />
   </component>
 </project>
