@@ -19,15 +19,16 @@ import java.util.List;
 @RequestMapping("json")
 public class GameControllerJson {
     private final GameService gameService;
+
     @Autowired
-   GameControllerJson(GameService gameService) {
-       this.gameService = gameService;
+    GameControllerJson(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
         System.out.println(ship);
-        //poniższy kod jest w ramach testu i uzyskanie statusu gry w formacie json
+        //poniższy kod jest w ramach testu, uzyskanie statusu gry w formacie json zapisanego do pliku
         Saver saver = new Saver();
         try {
             saver.saveToFile(gameService.getBoardList().get(0),
@@ -38,7 +39,7 @@ public class GameControllerJson {
             throw new RuntimeException(e);
         }
 
-    return ResponseEntity.ok(gameService.addShipToList(ship));
+        return ResponseEntity.ok(gameService.addShipToList(ship));
     }
 
     @GetMapping(value = "/game/boards/isFinished", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,12 +47,12 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameService.returnStatusGame());
     }
 
-    @PostMapping(value="/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShot(@RequestBody Shot shot) {
         return ResponseEntity.ok(gameService.addShotAtShip(shot));
     }
 
-    @GetMapping(value="/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> getBoardsShots() {
         return ResponseEntity.ok(gameService.getShips());
     }
@@ -61,9 +62,9 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameService.getShipLimits());
     }
 
-    @DeleteMapping(value= "/deleteShip/{idBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteShip/{idBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard) {
-       return ResponseEntity.ok(gameService.deleteShip(idBoard));
+        return ResponseEntity.ok(gameService.deleteShip(idBoard));
     }
 
 

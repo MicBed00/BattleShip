@@ -4,7 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-//@ComponentScan(basePackages = "com.web")
+
+//@ComponentScan("com.web.service.GameService")
 @SpringBootApplication
 public class WebApplication {
 

@@ -6,48 +6,34 @@ import com.web.StartGame;
 import com.web.service.GameService;
 import org.junit.jupiter.api.Test;
 
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import serialization.GameStatus;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
-//@ExtendWith(SpringExtension.class)
-//@DataJpaTest
-@Testcontainers
-@SpringBootTest(classes = {RepoStartGame.class})
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RespoStartGameTest {
-
-
-    public static PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:15-alpine"))
-            .withUsername("userTest")
-            .withPassword("1234")
-            .withDatabaseName("dbtest");
-
-    // > spring 2.2.6
-    @DynamicPropertySource
-    static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
-    }
-
     @Autowired
-    private GameService gameService;
+    GameService gameService;
     @Autowired
     RepoStartGame repository;
 
     @Test
     public void nonFind() {
+        List<StartGame> status = repository.findAll();
+        assertThat(status, empty());
+
+
 //        repository.save(new StartGame(1, Timestamp.valueOf(LocalDateTime.now()),
 //                            new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS)));
         System.out.println("Test");
