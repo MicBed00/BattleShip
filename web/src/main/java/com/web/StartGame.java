@@ -1,22 +1,22 @@
 package com.web;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.springframework.beans.factory.annotation.Configurable;
+
+
+import org.hibernate.annotations.Type;
+
 import serialization.GameStatus;
 
 import java.sql.Timestamp;
 
 
 @Entity
-@Configurable
 @Table(name="start_game")
 public class StartGame {
     public StartGame() {}
 
-    public StartGame(Integer id, Timestamp date, GameStatus gameStatus) {
-        this.id = id;
+    public StartGame(Timestamp date, GameStatus gameStatus) {
         this.date = date;
         this.gameStatus = gameStatus;
     }
@@ -28,9 +28,18 @@ public class StartGame {
     @Column
     private Timestamp date;
 
-    @Column
-    @JdbcTypeCode(SqlTypes.JSON)
-    private transient GameStatus gameStatus;
+    @Column(name="gamestatus")
+    @Type(JsonType.class)
+    private GameStatus gameStatus;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
     public GameStatus getGameStatus() {
         return gameStatus;
     }
@@ -43,6 +52,7 @@ public class StartGame {
         this.date = date;
     }
 
+
     @Override
     public String toString() {
         return "StartGame{" +
@@ -50,4 +60,6 @@ public class StartGame {
                 ", date=" + date +
                 '}';
     }
+
+
 }

@@ -11,5 +11,6 @@
 
         <include file="changeset/01_create_table.sql" relativeToChangelogFile="true"/>
         <include file="changeset/02_add_jsonB_column.sql" relativeToChangelogFile="true"/>
-        <include file="changeset/03_test_dodwania_danych_do_tabeli.sql" relativeToChangelogFile="true"/>
+        <include file="changeset/03_edit_type_primarykey.sql" relativeToChangelogFile="true"/>
+        <include file="changeset/04_edit_type_primarykey_integer_into_serial.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
