@@ -8,18 +8,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class StartGamePage extends BasePage {
 
-//
-//    public StartGamePage() {
-//        super();
-//    }
-//
-//    @FindBy(id = "startGame")
-//    private WebElement startGameButton;
-//
-//
-//    public ShootingPage startGame() {
-//        startGameButton.click();
-//
-//        return new ShootingPage();
-//    }
+
+    public StartGamePage() {
+        super();
+    }
+
+    @FindBy(id = "startGame")
+    private WebElement startGameButton;
+
+
+    public ShootingPage startGame() {
+        startGameButton.click();
+
+        return new ShootingPage();
+    }
 }
