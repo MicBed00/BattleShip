@@ -1,5 +1,6 @@
-package com.web;
+package com.web.repositorium;
 
+import com.web.enity.StartGame;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

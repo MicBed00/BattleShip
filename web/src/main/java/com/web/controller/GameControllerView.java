@@ -1,33 +1,24 @@
 package com.web.controller;
 
-import board.StatePreperationGame;
-import com.web.RepoStartGame;
-import com.web.StartGame;
+import com.web.repositorium.RepoStartGame;
 import com.web.service.GameService;
+import com.web.service.StartGameRepoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.testcontainers.shaded.org.bouncycastle.util.Times;
-import serialization.GameStatus;
-import serialization.Saver;
-
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("view")
 public class GameControllerView {
     private final GameService gameService;
-    private final RepoStartGame repoStartGame;
+    private final StartGameRepoService repoService;
 
     @Autowired
-    GameControllerView(GameService gameService, RepoStartGame repoStartGame) {
+    GameControllerView(GameService gameService, StartGameRepoService repoService) {
         this.gameService = gameService;
-        this.repoStartGame = repoStartGame;
+        this.repoService = repoService;
     }
 
 
@@ -41,10 +32,8 @@ public class GameControllerView {
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());
-        //TODO stworzyć isntację GameStatus(w serwisie), encji StartGame (id, kolumna typu: jsonB -> do bazy danych)
-//        repoStartGame.save(new StartGame());
-//        repoStartGame.save(new StartGame(1, Timestamp.valueOf(LocalDateTime.now()),
-//                            new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS)));
+
+        repoService.saveStatusGameToDataBase(gameService.getBoardList());
         return "add_ship";
     }
 

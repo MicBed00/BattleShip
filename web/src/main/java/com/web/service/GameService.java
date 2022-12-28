@@ -60,21 +60,23 @@ public class GameService {
         return boardList;
     }
 
-    public List<Board> addShipToList(Ship ship) {
+    public List<Board> assigneBoardPlayer(Ship ship) {
 
         if(ship.getLength() > 0 && ship.getPosition() != null) {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
 
-                boardPlayer1.addShip(ship.getLength(), ship.getXstart(),
-                        ship.getYstart(), ship.getPosition());
-
+                addShipToBoard(boardPlayer1, ship);
             }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
-                boardPlayer2.addShip(ship.getLength(), ship.getXstart(),
-                        ship.getYstart(), ship.getPosition());
+                addShipToBoard(boardPlayer2, ship);
             }
         }
 
         return getBoardList();
+    }
+
+    private void addShipToBoard(Board boardPlayer, Ship ship) {
+        boardPlayer.addShip(ship.getLength(), ship.getXstart(),
+                ship.getYstart(), ship.getPosition());
     }
 
     public List<Board> addShotAtShip(Shot shot) {
@@ -109,5 +111,16 @@ public class GameService {
         int lastIndex = board.getShips().size() - 1;
         board.getShips().remove(lastIndex);
         return boardList;
+    }
+
+    public int getCurrentPlayer(List<Board> boardsList) {
+            if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
+
+                return 1;
+            }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
+                return 2;
+            }
+
+        return 0;
     }
 }

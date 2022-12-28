@@ -1,4 +1,4 @@
-package com.web;
+package com.web.enity;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;

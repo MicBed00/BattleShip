@@ -4,6 +4,7 @@ import board.Board;
 import board.Shot;
 import board.StatePreperationGame;
 import com.web.service.GameService;
+import com.web.service.StartGameRepoService;
 import exceptions.BattleShipException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,28 +20,21 @@ import java.util.List;
 @RequestMapping("json")
 public class GameControllerJson {
     private final GameService gameService;
+    private final StartGameRepoService repoService;
 
     @Autowired
-    GameControllerJson(GameService gameService) {
+    GameControllerJson(GameService gameService, StartGameRepoService repoService) {
         this.gameService = gameService;
+        this.repoService = repoService;
     }
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
-        System.out.println(ship);
-        //poniższy kod jest w ramach testu, uzyskanie statusu gry w formacie json zapisanego do pliku
-        Saver saver = new Saver();
-        try {
-            saver.saveToFile(gameService.getBoardList().get(0),
-                    gameService.getBoardList().get(1),
-                    1,
-                    StatePreperationGame.IN_PROCCESS);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return ResponseEntity.ok(gameService.addShipToList(ship));
+        List<Board> boardsList = gameService.assigneBoardPlayer(ship);
+        repoService.saveStatusGameToDataBase(boardsList);
+        return ResponseEntity.ok(boardsList);
     }
+
 
     @GetMapping(value = "/game/boards/isFinished", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getList() {
@@ -64,6 +58,7 @@ public class GameControllerJson {
 
     @DeleteMapping(value = "/deleteShip/{idBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard) {
+
         return ResponseEntity.ok(gameService.deleteShip(idBoard));
     }
 

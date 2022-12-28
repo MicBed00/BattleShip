@@ -1,24 +1,21 @@
 package com.web.springTest;
 
 import board.StatePreperationGame;
-import com.web.RepoStartGame;
-import com.web.StartGame;
+import com.web.repositorium.RepoStartGame;
+import com.web.enity.StartGame;
 import com.web.service.GameService;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import serialization.GameStatus;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
