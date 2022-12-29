@@ -56,8 +56,14 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameService.getShipLimits());
     }
 
-    @DeleteMapping(value = "/deleteShip/{idBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard) {
+    @GetMapping(value="/shipId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> getLastShipId() {
+        return ResponseEntity.ok(repoService.getLastIdDataBase());
+    }
+
+    @DeleteMapping(value = "/deleteShip/{idBoard}/{idShip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard, @PathVariable int idShip) {
+        repoService.deleteLastShip(idShip);
 
         return ResponseEntity.ok(gameService.deleteShip(idBoard));
     }

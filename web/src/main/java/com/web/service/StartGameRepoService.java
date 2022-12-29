@@ -33,4 +33,13 @@ public class StartGameRepoService {
     }
 
 
+    public int getLastIdDataBase() {
+        List<StartGame> all = repoStartGame.findAll();
+
+        return all.size();
+    }
+
+    public void deleteLastShip(int idShip) {
+        repoStartGame.deleteById((long)idShip);
+    }
 }

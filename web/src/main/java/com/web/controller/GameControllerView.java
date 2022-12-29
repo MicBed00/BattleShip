@@ -28,15 +28,20 @@ public class GameControllerView {
     }
 
     @GetMapping(value = "/startGame")
-    public String startGame(Model model) {
+    public String startGame() {
+        repoService.saveStatusGameToDataBase(gameService.getBoardList());
+        return "redirect:/view/getParamGame";
+    }
+
+    @GetMapping(value = "/getParamGame")
+    public String getParametersGame(Model model) {
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());
+//        model.addAttribute("lastIdDataBase", repoService.getLastIdDataBase());
 
-        repoService.saveStatusGameToDataBase(gameService.getBoardList());
         return "add_ship";
     }
-
     @GetMapping("/added_Ship")
     public String addedShip() {
         return "addShip_success";

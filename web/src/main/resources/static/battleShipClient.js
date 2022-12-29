@@ -14,12 +14,16 @@ class BattleShipClient {
         this.get("/json/setup", null, null, onSuccess, onError);
     }
 
+    getShipId(onSuccess, onError) {
+        this.get("json/shipId", null, null, onSuccess, onError);
+    }
+
     getShips(onSuccess, onError) {
         this.get("/json/game/boards", null, null, onSuccess, onError);
     }
 
-    deleteLastAddedShip(idBoard, onSuccess, onError) {
-        this.delete("/json/deleteShip/"+idBoard, null, null, onSuccess, onError);
+    deleteLastAddedShip(idBoard,idShip, onSuccess, onError) {
+        this.delete("/json/deleteShip/"+idBoard+"/"+idShip, null, null, onSuccess, onError);
     }
 
     shooterShip(x, y, onSuccess, onError) {
@@ -70,5 +74,7 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
+
+
 }
 

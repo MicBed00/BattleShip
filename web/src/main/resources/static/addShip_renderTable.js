@@ -68,31 +68,43 @@ function checkIfStillBoardPlayerOne(boardslist) {
 }
 
 document.getElementById("backAction").addEventListener("click", function() {
+    var idShip;
 
-    if(checkIfStillBoardPlayerOne(boardsList)) {
-        new BattleShipClient().deleteLastAddedShip(0, (status, responseBody) =>  {
+    new BattleShipClient().getShipId((status, responseBody) => {
+        if(status >= 200 && status <=299) {
+            idShip = responseBody;
 
-            if (status >= 200 && status <= 299) {
-                document.getElementById("renderTable").style.pointerEvents = "auto";
-                document.getElementById("accept").disabled = true;
-                renderShip(responseBody[0]);
+            if(checkIfStillBoardPlayerOne(boardsList)) {
+                new BattleShipClient().deleteLastAddedShip(0, idShip, (status, responseBody) =>  {
+
+                    if (status >= 200 && status <= 299) {
+                        document.getElementById("renderTable").style.pointerEvents = "auto";
+                        document.getElementById("accept").disabled = true;
+                        renderShip(responseBody[0]);
+                    }
+                }, (status, responseBody) => {
+                    alert("Błąd " + status);
+                })
+
+            } else {
+                new BattleShipClient().deleteLastAddedShip(1, idShip, (status, responseBody) =>  {
+                    if (status >= 200 && status <= 299) {
+                        document.getElementById("renderTable").style.pointerEvents = "auto";
+                        document.getElementById("accept").disabled = true;
+                        renderShip(responseBody[1]);
+                    }
+                }, (status, responseBody) => {
+                    alert("Błąd " + status);
+                })
             }
-        }, (status, responseBody) => {
-            alert("Błąd " + status);
-        })
+        }
 
-    } else {
-        new BattleShipClient().deleteLastAddedShip(1, (status, responseBody) =>  {
-            if (status >= 200 && status <= 299) {
-                document.getElementById("renderTable").style.pointerEvents = "auto";
-                document.getElementById("accept").disabled = true;
-                renderShip(responseBody[1]);
-            }
-        }, (status, responseBody) => {
-            alert("Błąd " + status);
-        })
-    }
+    }, (status, responseBody) => {
+        alert("Błąd przy pobieraniu id Ship " + responseBody)
+    });
+
 }, false);
+
 
 function renderShip(responseBody) {
     // var horizontalOrientation = [[${orientList}]][1];
