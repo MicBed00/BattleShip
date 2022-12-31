@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Battle Ship add ship</title>
-    <link rel="stylesheet" href="/addShip.css">
+    <link rel="stylesheet" href="/addShip.css" type="text/css">
 </head>
 <body>
 
@@ -34,6 +34,17 @@
     <div id="numberShip">
        <p>Liczba staków na planszy: <span id="ShipNumber" th:text="${shipLimit}" ></span></p>
     </div>
+
+    <div class="overlay" id="id_resumeGame" hidden>
+        <div class="confirm-box">
+            <h2>Resume game?</h2>
+            <button onclick="resumeGame()">Yes</button>
+            <button onclick="startNewGame()">No</button>
+        </div>
+
+    </div>
+
+
 </div>
 <script th:src="@{/battleShipClient.js}"></script>
 <script th:src="@{/addShip_renderTable.js}"></script>

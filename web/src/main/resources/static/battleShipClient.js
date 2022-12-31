@@ -15,9 +15,15 @@ class BattleShipClient {
     }
 
     getShipId(onSuccess, onError) {
-        this.get("json/shipId", null, null, onSuccess, onError);
+        this.get("/json/shipId", null, null, onSuccess, onError);
     }
 
+    getShipFromDataBase(id, onSuccess, onError) {
+        this.get("/json/listBoard/"+id, null, null, onSuccess, onError);
+    }
+    // checkifGameIsFinished(onSuccess, onError) {
+    //     this.get("/json/game/boards/isFinished", null, null, onSuccess, onError);
+    // }
     getShips(onSuccess, onError) {
         this.get("/json/game/boards", null, null, onSuccess, onError);
     }
@@ -74,6 +80,7 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
+
 
 
 }

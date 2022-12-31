@@ -60,7 +60,7 @@ public class GameService {
         return boardList;
     }
 
-    public List<Board> assigneBoardPlayer(Ship ship) {
+    public List<Board> chooseBoardPlayer(Ship ship) {
 
         if(ship.getLength() > 0 && ship.getPosition() != null) {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {

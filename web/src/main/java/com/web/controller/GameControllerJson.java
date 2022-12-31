@@ -2,7 +2,6 @@ package com.web.controller;
 
 import board.Board;
 import board.Shot;
-import board.StatePreperationGame;
 import com.web.service.GameService;
 import com.web.service.StartGameRepoService;
 import exceptions.BattleShipException;
@@ -10,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import serialization.Saver;
 import ship.Ship;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,10 +26,20 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
-        List<Board> boardsList = gameService.assigneBoardPlayer(ship);
+    public ResponseEntity<Integer> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
+        //TODO pobieranie z bazy statusu gry na podstawie ostatniego id(id wyznaczać w servisie czy przesyłane w request??)
+        // dostanę entity z któego wyodrębnie informację typu lista statków itp
+
+        List<Board> boardsList = gameService.chooseBoardPlayer(ship);
         repoService.saveStatusGameToDataBase(boardsList);
-        return ResponseEntity.ok(boardsList);
+
+        return ResponseEntity.ok(repoService.getLastIdDataBase());
+    }
+
+//    /json/listBoard
+    @GetMapping(value = "/listBoard/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> getListBoard(@PathVariable int id) {
+        return ResponseEntity.ok(repoService.getListBoard(id));
     }
 
 

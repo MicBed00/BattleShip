@@ -38,7 +38,6 @@ public class GameControllerView {
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());
-//        model.addAttribute("lastIdDataBase", repoService.getLastIdDataBase());
 
         return "add_ship";
     }
