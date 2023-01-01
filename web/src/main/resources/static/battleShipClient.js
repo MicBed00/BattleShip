@@ -40,6 +40,10 @@ class BattleShipClient {
             this.post("/json/game/boards", JSON.stringify(shootObject), null, onSuccess, onError)
     }
 
+    restoringStateBoardListOnServer(idShip, onSuccess, onError) {
+        this.post("/json/setupBoard/"+idShip, null, null, onSuccess, onError);
+    }
+
     getterStatusGame(onSuccess, onError) {
         this.get("/json/game/boards/isFinished", null, null, onSuccess, onError)
     }

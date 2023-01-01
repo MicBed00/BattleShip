@@ -35,7 +35,6 @@ public class StartGameRepoService {
 
 
     public int getLastIdDataBase() {
-//        List<StartGame> all = repoStartGame.findAll();
 
         return repoStartGame.findMaxId();
     }

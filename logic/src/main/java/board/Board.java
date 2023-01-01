@@ -185,7 +185,7 @@ public class Board {
         return opponentShots.contains(shot);
     }
 
-        @JsonIgnore
+    @JsonIgnore
     public AtomicBoolean getIsFinished() {
         AtomicBoolean isFinished = new AtomicBoolean(true);
 

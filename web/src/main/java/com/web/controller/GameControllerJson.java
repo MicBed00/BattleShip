@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import serialization.GameStatus;
 import ship.Ship;
 
 import java.util.List;
@@ -29,19 +30,18 @@ public class GameControllerJson {
     public ResponseEntity<Integer> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
         //TODO pobieranie z bazy statusu gry na podstawie ostatniego id(id wyznaczać w servisie czy przesyłane w request??)
         // dostanę entity z któego wyodrębnie informację typu lista statków itp
-
+        List<Board> beforeAdd = gameService.getBoardList();
         List<Board> boardsList = gameService.chooseBoardPlayer(ship);
+        List<Board> after = gameService.getBoardList();
         repoService.saveStatusGameToDataBase(boardsList);
 
         return ResponseEntity.ok(repoService.getLastIdDataBase());
     }
 
-//    /json/listBoard
     @GetMapping(value = "/listBoard/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> getListBoard(@PathVariable int id) {
         return ResponseEntity.ok(repoService.getListBoard(id));
     }
-
 
     @GetMapping(value = "/game/boards/isFinished", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getList() {
@@ -51,6 +51,11 @@ public class GameControllerJson {
     @PostMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShot(@RequestBody Shot shot) {
         return ResponseEntity.ok(gameService.addShotAtShip(shot));
+    }
+
+    @PostMapping(value = "/setupBoard/{idShip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void setupBoardStatus(@PathVariable int idShip) {
+        gameService.restoreGameStatus(idShip);
     }
 
     @GetMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)

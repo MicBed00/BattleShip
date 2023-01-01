@@ -4,7 +4,10 @@ import DataConfig.Position;
 import DataConfig.ShipLimits;
 import board.Board;
 import board.Shot;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import serialization.GameStatus;
 import ship.Ship;
 
 import java.util.*;
@@ -19,8 +22,11 @@ public class GameService {
     private List<Set<Shot>> listSets;
     private Shot shot;
 
+    private StartGameRepoService repoService;
 
-    GameService() {
+    @Autowired
+    GameService(@Lazy StartGameRepoService repoService) {
+        this.repoService = repoService;
         shipSize = new ArrayList<>();
         boardList = new ArrayList<>();
         positionList = new ArrayList<>();
@@ -125,4 +131,10 @@ public class GameService {
     }
 
 
+    public void restoreGameStatus(int idShip) {
+        List<Board> listBoard = repoService.getListBoard(idShip);
+        boardPlayer1 = listBoard.get(0);
+        boardPlayer2 = listBoard.get(1);
+        boardList = new ArrayList<>(listBoard);
+    }
 }

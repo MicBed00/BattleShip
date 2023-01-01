@@ -82,46 +82,39 @@ function configurationGame(boardList) {
 
 function checkIfBoardPlayerTwoIsFull(boardsList) {
     return boardsList[0].ships.length === shipNumber && boardsList[1].ships.length <= shipNumber
+
 }
 
 function checkIfStillBoardPlayerOne(boardslist) {
     return boardslist[0].ships.length <= shipNumber && boardslist[1].ships.length === 0;
+    // return boardslist.curretnPlayer === 1;
 }
-
-// document.getElementById("id_trueResume").onclick = function() {
-//     //jeśli gracz potwierdzi, że chce zacząć grę od ostatniego zapisanego stanu gry wtedy odpytuję serwer o ostatni
-//     //zapisany rekord id z bazy i na jego podstawie odtwarzam stan gry
-//     document.getElementById("id_resumeGame").hidden = true;
-//
-//     new BattleShipClient().getShipId((status, responseBody) => {
-//         if(status >= 200 && status <= 299) {
-//             var idShip = responseBody;
-//
-//             //gdy mam już id to wysyłam rewuest o pobranie rekordu
-//             new BattleShipClient().getShipFromDataBase(idShip, (status, responseBody) => {
-//                 boardsList = responseBody;
-//                 configurationGame(boardsList)
-//             })
-//         }
-//
-//     }, (status, responseBody) => {
-//         alert("Błąd przy wznawianiu gry " + responseBody);
-//     });
-// }
 
 function resumeGame() {
     //jeśli gracz potwierdzi, że chce zacząć grę od ostatniego zapisanego stanu gry wtedy odpytuję serwer o ostatni
     //zapisany rekord id z bazy i na jego podstawie odtwarzam stan gry
     document.getElementById("id_resumeGame").hidden = true;
-
+    var idShip;
     new BattleShipClient().getShipId((status, responseBody) => {
-        if(status >= 200 && status <= 299) {
-            var idShip = responseBody;
+        if (status >= 200 && status <= 299) {
+            idShip = responseBody;
 
-            //gdy mam już id to wysyłam rewuest o pobranie rekordu
+            //gdy mam już id to wysyłam request do pobrania rekordu z bazy
             new BattleShipClient().getShipFromDataBase(idShip, (status, responseBody) => {
-                boardsList = responseBody;
-                configurationGame(boardsList)
+                if (status >= 200 && status <= 299) {
+                    //renderowanie na tablicy wcześniej dodanych statków
+                    boardsList = responseBody;
+                    configurationGame(boardsList)
+
+                    //odtworzenie stanu Listy Boardów w programie za pomocą metody POST
+                    new BattleShipClient().restoringStateBoardListOnServer(idShip, (status, responseBody) => {
+                        // if (status >= 200 && status <= 299)
+                            //chyba nie potrzebuje zwrotki
+                            alert("Zapis stanu boardów na serwerze!!")
+                            }, (status, responseBody) => {
+                        alert("Błąd przy odtwarzaniu stanu gry " + responseBody);
+                    });
+                }
             })
         }
 
@@ -135,6 +128,7 @@ function startNewGame() {
     var table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
     return table;
 }
+
 document.getElementById("backAction").addEventListener("click", function () {
     var idShip;
 
@@ -241,10 +235,10 @@ function setup() {
 
     //sprawdzam czy gra została zakończona
     new BattleShipClient().getterStatusGame((status, responseBody) => {
-        if(status >= 200 && status <= 299) {
+        if (status >= 200 && status <= 299) {
             var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
 
-            if(gameOver === true) {
+            if (gameOver === true) {
                 table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
                 return table;
             } else {
