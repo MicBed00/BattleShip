@@ -7,7 +7,6 @@ import board.Shot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import serialization.GameStatus;
 import ship.Ship;
 
 import java.util.*;
@@ -70,7 +69,6 @@ public class GameService {
 
         if(ship.getLength() > 0 && ship.getPosition() != null) {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
-
                 addShipToBoard(boardPlayer1, ship);
             }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
                 addShipToBoard(boardPlayer2, ship);
@@ -82,7 +80,7 @@ public class GameService {
 
     private void addShipToBoard(Board boardPlayer, Ship ship) {
         boardPlayer.addShip(ship.getLength(), ship.getXstart(),
-                ship.getYstart(), ship.getPosition());
+                    ship.getYstart(), ship.getPosition());
     }
 
     public List<Board> addShotAtShip(Shot shot) {
@@ -98,7 +96,7 @@ public class GameService {
         return getBoardList();
     }
 
-    public Boolean returnStatusGame() {
+    public Boolean checkIfAllShipsAreHitted() {
         return boardPlayer1.getIsFinished().get() || boardPlayer2.getIsFinished().get();
     }
 
@@ -129,12 +127,14 @@ public class GameService {
 
         return 0;
     }
+    public void restoreGameStatusOnServer(int idShip) {
 
-
-    public void restoreGameStatus(int idShip) {
-        List<Board> listBoard = repoService.getListBoard(idShip);
+        List<Board> listBoard = repoService.getBoards(idShip);
         boardPlayer1 = listBoard.get(0);
         boardPlayer2 = listBoard.get(1);
+        //dlaczego muszę kopiować nowe wartości do list, jeśli przypisuje do referencji boardPlayer1 i 2 nowe obiekty
+//        , a te refenracje są zapisane w liscie boardList
         boardList = new ArrayList<>(listBoard);
     }
+
 }

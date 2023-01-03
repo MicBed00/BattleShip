@@ -19,7 +19,7 @@ function adderShip(event) {
 
             id = responseBody;
 
-            new BattleShipClient().getShipFromDataBase(id, (status, responseBody) => {
+            new BattleShipClient().getStatusGameFromDataBase(id, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
 
                     boardsList = responseBody;
@@ -100,7 +100,7 @@ function resumeGame() {
             idShip = responseBody;
 
             //gdy mam już id to wysyłam request do pobrania rekordu z bazy
-            new BattleShipClient().getShipFromDataBase(idShip, (status, responseBody) => {
+            new BattleShipClient().getStatusGameFromDataBase(idShip, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
                     //renderowanie na tablicy wcześniej dodanych statków
                     boardsList = responseBody;
@@ -225,29 +225,40 @@ window.onload = setup();
 
 function setup() {
     var table;
-    //zwracamy shipLimit, rozmiar planszy itp.
-    // robię metode w kliencie pobierania tych danych i w tej funkcji będę miał je zwracane
+
     new BattleShipClient().getSetupsBoard((status, responseBody) => {
         shipNumber = responseBody;
     }, (status, responseBody) => {
         alert("Błąd przy pobieraniu ustawień " + responseBody)
     });
 
-    //sprawdzam czy gra została zakończona
-    new BattleShipClient().getterStatusGame((status, responseBody) => {
+
+    new BattleShipClient().getShipId((status, responseBody) => {
+
         if (status >= 200 && status <= 299) {
-            var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
+            idShip = responseBody;
 
-            if (gameOver === true) {
-                table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
-                return table;
-            } else {
-                document.getElementById("id_resumeGame").hidden = false;
-            }
+            //sprawdzam czy gra została zakończona
+            new BattleShipClient().getPhaseGame(idShip,(status, responseBody) => {
+                if (status >= 200 && status <= 299) {
 
+                    var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
+
+                    if (gameOver === 'FINISHED' ) {
+                        table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
+                        return table;
+                    } else {
+                        document.getElementById("id_resumeGame").hidden = false;
+                    }
+                }
+            }, (status, responseBody) => {
+                alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
+            })
         }
+
     }, (status, responseBody) => {
-        alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
-    })
+        alert("Błąd przy wznawianiu gry " + responseBody);
+    });
+
 
 }

@@ -18,7 +18,7 @@ class BattleShipClient {
         this.get("/json/shipId", null, null, onSuccess, onError);
     }
 
-    getShipFromDataBase(id, onSuccess, onError) {
+    getStatusGameFromDataBase(id, onSuccess, onError) {
         this.get("/json/listBoard/"+id, null, null, onSuccess, onError);
     }
     // checkifGameIsFinished(onSuccess, onError) {
@@ -40,13 +40,23 @@ class BattleShipClient {
             this.post("/json/game/boards", JSON.stringify(shootObject), null, onSuccess, onError)
     }
 
-    restoringStateBoardListOnServer(idShip, onSuccess, onError) {
-        this.post("/json/setupBoard/"+idShip, null, null, onSuccess, onError);
+    restoringStateBoardListOnServer(id, onSuccess, onError) {
+        this.post("/json/setupBoard/"+id, null, null, onSuccess, onError);
     }
 
     getterStatusGame(onSuccess, onError) {
-        this.get("/json/game/boards/isFinished", null, null, onSuccess, onError)
+        this.get("/json/game/boards/isFinished", null, null, onSuccess, onError);
     }
+
+    getPhaseGame(id, onSuccess, onError) {
+        this.get("/json/game/boards/phaseGame/"+id, null, null, onSuccess, onError);
+    }
+
+    getShotsFromDataBase(id, onSuccess, onError) {
+        this.get("/json/game/boards/shots/"+id, null, null, onSuccess, onError);
+    }
+
+
 
     delete(path, body, progressUpdate, success, error) {
         this.call("delete", path, null, progressUpdate, success, error);

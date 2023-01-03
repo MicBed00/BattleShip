@@ -6,6 +6,54 @@ var board1;
 var board2;
 renderBoards();
 var currentBoard = board1;
+checkIfIsFinished();
+
+function resumeGame() {
+    document.getElementById("id_resumeGame").hidden = true;
+    var idShip;
+    new BattleShipClient().getShipId((status, responseBody) => {
+        if (status >= 200 && status <= 299) {
+            idShip = responseBody;
+
+            //gdy mam już id to wysyłam request do pobrania rekordu z bazy
+            new BattleShipClient().getStatusGameFromDataBase(idShip, (status, responseBody) => {
+                if (status >= 200 && status <= 299) {
+
+                   renderShot(responseBody);
+                   currentBoard = board2;
+                   renderShot(responseBody);
+
+                    //odtworzenie stanu Boardów w programie na serwerze za pomocą metody POST
+                    new BattleShipClient().restoringStateBoardListOnServer(idShip, (status, responseBody) => {
+                        // if (status >= 200 && status <= 299)
+                        //chyba nie potrzebuje zwrotki
+
+                    }, (status, responseBody) => {
+                        alert("Błąd przy odtwarzaniu stanu gry " + responseBody);
+                    });
+                }
+            })
+        }
+
+    }, (status, responseBody) => {
+        alert("Błąd przy wznawianiu gry " + responseBody);
+    });
+}
+
+function startNewGame() {
+    document.getElementById("id_resumeGame").hidden = true;
+    var table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
+    return table;
+}
+
+
+
+
+
+
+
+
+
 
 function shotAtShip(event) {
     var target = event.target, col, row, shotX, shotY;
@@ -18,17 +66,18 @@ function shotAtShip(event) {
 
     if(table !== currentBoard) {
         new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
-            console.log("zwrotka z serwera " + status);
             if(status >= 200 && status <= 299) {
+                // new BattleShipClient().getStatusGameFromDataBase()
+
+
+
                 renderShot(responseBody, target);
                 currentBoard = currentBoard === board1 ? board2 : board1;
             }
         }, (status, responseBody) => {
             if(status === 400) {
-                alert("SDDSDs");
+                alert("Błąd renderowania strzału" + responseBody);
             }
-            // throw responseBody
-            // alert("Błąd " + responseBody)
         });
     } else {
         alert("Invalid board")
@@ -39,12 +88,22 @@ function shotAtShip(event) {
 function checkIfIsFinished() {
     new BattleShipClient().getterStatusGame((status, responseBody) => {
         if(responseBody === true) {
-            alert("Koooniec");
+
+            alert("Koniec gry");
             window.location.href = "/view/statistics";
+
+        } else {
+
+            document.getElementById("id_resumeGame").hidden = false;
         }
+
     }, (status, responseBody) => {
+
         alert("Błąd "+ responseBody)
     })
+
+
+
 }
 function renderBoards() {
     board1 = createBoard(ply1);
@@ -58,7 +117,7 @@ function renderShot(responseBody) {
         var boardShot = currentBoard === board1 ? board2 : board1;
         var index = currentBoard === board1 ? 1 : 0;
         for(const shot of responseBody[index].opponentShots) {
-            // w tym warunku chciałbym wykorzystać składnię -> shot.state.equals(Shot.State.HIT)
+            //TODO zmienić w warunku if "HIT" na daną zaciąganą z serwera
             if(shot.state === "HIT") {
                 boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0).style.backgroundColor = "red";
             } else if(shot.state === "MISSED") {
@@ -69,3 +128,5 @@ function renderShot(responseBody) {
     }
     checkIfIsFinished();
 }
+
+

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Main game</title>
-    <link rel="stylesheet" href="/gameView.css">
+    <link rel="stylesheet" href="/gameView.css"  type="text/css">
 </head>
 <body>
 
@@ -11,6 +11,14 @@
         <div id="boardPlayer1"><h3>Board's Player 1</h3></div>
 
         <div id="boardPlayer2"><h3>Board's Player 2</h3></div>
+    </div>
+
+    <div class="overlay" id="id_resumeGame" hidden>
+        <div class="confirm-box">
+            <h2>Resume game?</h2>
+            <button onclick="resumeGame()">Yes</button>
+            <button onclick="startNewGame()">No</button>
+        </div>
     </div>
 
 <div style="clear:both;"></div>

@@ -2,6 +2,7 @@ package com.web.controller;
 
 import board.Board;
 import board.Shot;
+import board.StatePreperationGame;
 import com.web.service.GameService;
 import com.web.service.StartGameRepoService;
 import exceptions.BattleShipException;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import serialization.GameStatus;
 import ship.Ship;
 
 import java.util.List;
@@ -30,9 +30,7 @@ public class GameControllerJson {
     public ResponseEntity<Integer> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
         //TODO pobieranie z bazy statusu gry na podstawie ostatniego id(id wyznaczać w servisie czy przesyłane w request??)
         // dostanę entity z któego wyodrębnie informację typu lista statków itp
-        List<Board> beforeAdd = gameService.getBoardList();
         List<Board> boardsList = gameService.chooseBoardPlayer(ship);
-        List<Board> after = gameService.getBoardList();
         repoService.saveStatusGameToDataBase(boardsList);
 
         return ResponseEntity.ok(repoService.getLastIdDataBase());
@@ -40,22 +38,29 @@ public class GameControllerJson {
 
     @GetMapping(value = "/listBoard/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> getListBoard(@PathVariable int id) {
-        return ResponseEntity.ok(repoService.getListBoard(id));
+        return ResponseEntity.ok(repoService.getBoards(id));
     }
 
     @GetMapping(value = "/game/boards/isFinished", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getList() {
-        return ResponseEntity.ok(gameService.returnStatusGame());
+        return ResponseEntity.ok(gameService.checkIfAllShipsAreHitted());
+    }
+
+    @GetMapping(value = "/game/boards/phaseGame/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StatePreperationGame> getPhaseGame(@PathVariable int id) {
+        return ResponseEntity.ok(repoService.getPhaseGame(id));
     }
 
     @PostMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShot(@RequestBody Shot shot) {
-        return ResponseEntity.ok(gameService.addShotAtShip(shot));
+        List<Board> boardListAfterShot = gameService.addShotAtShip(shot);
+        repoService.saveStatusGameToDataBase(boardListAfterShot);
+        return ResponseEntity.ok(boardListAfterShot);
     }
 
-    @PostMapping(value = "/setupBoard/{idShip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void setupBoardStatus(@PathVariable int idShip) {
-        gameService.restoreGameStatus(idShip);
+    @PostMapping(value = "/setupBoard/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void setupBoardStatusOnServer(@PathVariable int id) {
+        gameService.restoreGameStatusOnServer(id);
     }
 
     @GetMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,9 +78,9 @@ public class GameControllerJson {
         return ResponseEntity.ok(repoService.getLastIdDataBase());
     }
 
-    @DeleteMapping(value = "/deleteShip/{idBoard}/{idShip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard, @PathVariable int idShip) {
-        repoService.deleteLastShip(idShip);
+    @DeleteMapping(value = "/deleteShip/{idBoard}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard, @PathVariable int id) {
+        repoService.deleteLastShip(id);
 
         return ResponseEntity.ok(gameService.deleteShip(idBoard));
     }

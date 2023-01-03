@@ -11,7 +11,6 @@ import serialization.GameStatus;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StartGameRepoService {
@@ -43,17 +42,15 @@ public class StartGameRepoService {
         repoStartGame.deleteById((long)idShip);
     }
 
-    public List<Board> getAllShips(int id) {
-        StartGame statusGame = repoStartGame.findById((long) id).get();
-        List<Board> boardsStatus = statusGame.getGameStatus().getBoardsStatus();
 
-        return boardsStatus;
-
-    }
-
-    public List<Board> getListBoard(int id) {
+    public List<Board> getBoards(int id) {
         StartGame statusGame = repoStartGame.findById((long) id).get();
 
         return statusGame.getGameStatus().getBoardsStatus();
     }
-}
+
+    public StatePreperationGame getPhaseGame(int id) {
+        StartGame statusGame = repoStartGame.findById((long) id).get();
+        return statusGame.getGameStatus().getState();
+
+    }}
