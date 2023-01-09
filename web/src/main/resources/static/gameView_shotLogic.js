@@ -7,6 +7,7 @@ var board2;
 renderBoards();
 var currentBoard = board1;
 checkIfIsFinished();
+document.getElementById("id_resumeGame").hidden = false;
 
 function resumeGame() {
     document.getElementById("id_resumeGame").hidden = true;
@@ -22,6 +23,7 @@ function resumeGame() {
                    renderShot(responseBody);
                    currentBoard = board2;
                    renderShot(responseBody);
+                   currentBoard = board1;
 
                     //odtworzenie stanu Boardów w programie na serwerze za pomocą metody POST
                     new BattleShipClient().restoringStateBoardListOnServer(idShip, (status, responseBody) => {
@@ -42,18 +44,8 @@ function resumeGame() {
 
 function startNewGame() {
     document.getElementById("id_resumeGame").hidden = true;
-    var table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
-    return table;
+    renderShot(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
 }
-
-
-
-
-
-
-
-
-
 
 function shotAtShip(event) {
     var target = event.target, col, row, shotX, shotY;
@@ -68,8 +60,6 @@ function shotAtShip(event) {
         new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
             if(status >= 200 && status <= 299) {
                 // new BattleShipClient().getStatusGameFromDataBase()
-
-
 
                 renderShot(responseBody, target);
                 currentBoard = currentBoard === board1 ? board2 : board1;
@@ -92,9 +82,6 @@ function checkIfIsFinished() {
             alert("Koniec gry");
             window.location.href = "/view/statistics";
 
-        } else {
-
-            document.getElementById("id_resumeGame").hidden = false;
         }
 
     }, (status, responseBody) => {

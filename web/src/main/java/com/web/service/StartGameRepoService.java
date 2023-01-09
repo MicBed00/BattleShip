@@ -24,9 +24,9 @@ public class StartGameRepoService {
         this.gameService = gameService;
     }
 
-    public void saveStatusGameToDataBase(List<Board> boardsList) {
+    public void saveStatusGameToDataBase(List<Board> boardsList, StatePreperationGame state) {
         int currentPlayer = gameService.getCurrentPlayer(boardsList);
-        GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, StatePreperationGame.IN_PROCCESS);
+        GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
         StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), gameStatus);
 
         repoStartGame.save(startGame);
@@ -53,4 +53,13 @@ public class StartGameRepoService {
         StartGame statusGame = repoStartGame.findById((long) id).get();
         return statusGame.getGameStatus().getState();
 
-    }}
+    }
+
+    public void updateStatePreperationGame() {
+        long maxId = repoStartGame.findMaxId();
+        StartGame startGameStatus = repoStartGame.findById(maxId).get();
+        startGameStatus.getGameStatus().setState(StatePreperationGame.FINISHED);
+        repoStartGame.save(startGameStatus);
+
+    }
+}

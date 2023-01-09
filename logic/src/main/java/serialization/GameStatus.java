@@ -19,6 +19,7 @@ public class GameStatus {
         this.state = state;
     }
 
+
     public List<Board> getBoardsStatus() {
         return boardsStatus;
     }

@@ -13,10 +13,10 @@ function adderShip(event) {
     xstart = col.cellIndex;
 
     new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
+
         //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
         if (status >= 200 && status <= 299) {
             resetParam()
-
             id = responseBody;
 
             new BattleShipClient().getStatusGameFromDataBase(id, (status, responseBody) => {
@@ -105,8 +105,10 @@ function resumeGame() {
                     //renderowanie na tablicy wcześniej dodanych statków
                     boardsList = responseBody;
                     configurationGame(boardsList)
+                    if(responseBody[0].ships.length > 0)
+                        document.getElementById("backAction").disabled = false;
 
-                    //odtworzenie stanu Listy Boardów w programie za pomocą metody POST
+                    //odtworzenie stanu Listy Boardów po stronie serwera za pomocą metody POST
                     new BattleShipClient().restoringStateBoardListOnServer(idShip, (status, responseBody) => {
                         // if (status >= 200 && status <= 299)
                             //chyba nie potrzebuje zwrotki
@@ -244,7 +246,7 @@ function setup() {
 
                     var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
 
-                    if (gameOver === 'FINISHED' ) {
+                    if (gameOver === 'FINISHED') {
                         table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
                         return table;
                     } else {

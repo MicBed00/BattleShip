@@ -1,5 +1,6 @@
 package com.web.controller;
 
+import board.StatePreperationGame;
 import com.web.repositorium.RepoStartGame;
 import com.web.service.GameService;
 import com.web.service.StartGameRepoService;
@@ -29,7 +30,7 @@ public class GameControllerView {
 
     @GetMapping(value = "/startGame")
     public String startGame() {
-        repoService.saveStatusGameToDataBase(gameService.getBoardList());
+//        repoService.saveStatusGameToDataBase(gameService.getBoardList(), StatePreperationGame.IN_PROCCESS);
         return "redirect:/view/getParamGame";
     }
 
