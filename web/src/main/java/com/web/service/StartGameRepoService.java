@@ -2,7 +2,7 @@ package com.web.service;
 
 import board.Board;
 import board.StatePreperationGame;
-import com.web.enity.StartGame;
+import com.web.enity.statusGame.StartGame;
 import com.web.repositorium.RepoStartGame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,10 +55,10 @@ public class StartGameRepoService {
 
     }
 
-    public void updateStatePreperationGame() {
+    public void updateStatePreperationGame(String state) {
         long maxId = repoStartGame.findMaxId();
         StartGame startGameStatus = repoStartGame.findById(maxId).get();
-        startGameStatus.getGameStatus().setState(StatePreperationGame.FINISHED);
+        startGameStatus.getGameStatus().setState(StatePreperationGame.valueOf(state));
         repoStartGame.save(startGameStatus);
 
     }

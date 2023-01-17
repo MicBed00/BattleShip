@@ -1,4 +1,4 @@
-import DataConfig.Position;
+import dataConfig.Position;
 import board.Shot;
 import org.junit.jupiter.api.Test;
 import ship.Ship;

@@ -1,7 +1,7 @@
 package control;
 
-import DataConfig.Position;
-import DataConfig.ShipLimits;
+import dataConfig.Position;
+import dataConfig.ShipLimits;
 import board.*;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -24,7 +24,7 @@ public class ControlPanel {
 
     public GameStatus prepareBeforeGame(GameStatus gameStatus) {
         log.info("Wznowienie gry");
-        System.out.println(user.messageBundle("resume", new Date()));
+//        System.out.println(user.messageBundle("resume", new Date()));
         log.setLevel(Level.WARN);
         log.info("Testowy log poziom info, nie powinno go być");
         log.warn("log WARN");
@@ -66,6 +66,7 @@ public class ControlPanel {
             player = player == player1Board ? player2Board : player1Board;
             activePlayer = activePlayer == 1 ? 2 : 1;
         }
+
         System.out.println(user.messageBundle("boardReady") + "\n");
         try {
             saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.PREPARED );

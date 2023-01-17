@@ -1,4 +1,4 @@
-package DataConfig;
+package dataConfig;
 
 public enum Position {
     HORIZONTAL,

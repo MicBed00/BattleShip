@@ -1,6 +1,6 @@
 package ship;
 
-import DataConfig.Position;
+import dataConfig.Position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import board.UI;

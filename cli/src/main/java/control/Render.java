@@ -1,6 +1,6 @@
 package control;
 
-import DataConfig.Position;
+import dataConfig.Position;
 import board.Shot;
 import board.SizeBoard;
 import ship.Ship;

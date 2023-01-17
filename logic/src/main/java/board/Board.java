@@ -1,7 +1,7 @@
 package board;
 
-import DataConfig.Position;
-import DataConfig.ShipLimits;
+import dataConfig.Position;
+import dataConfig.ShipLimits;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;

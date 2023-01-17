@@ -95,7 +95,7 @@ function resumeGame() {
     //zapisany rekord id z bazy i na jego podstawie odtwarzam stan gry
     document.getElementById("id_resumeGame").hidden = true;
     var idShip;
-    new BattleShipClient().getShipId((status, responseBody) => {
+    new BattleShipClient().getId((status, responseBody) => {
         if (status >= 200 && status <= 299) {
             idShip = responseBody;
 
@@ -134,7 +134,7 @@ function startNewGame() {
 document.getElementById("backAction").addEventListener("click", function () {
     var idShip;
 
-    new BattleShipClient().getShipId((status, responseBody) => {
+    new BattleShipClient().getId((status, responseBody) => {
         if (status >= 200 && status <= 299) {
             idShip = responseBody;
 
@@ -235,7 +235,7 @@ function setup() {
     });
 
 
-    new BattleShipClient().getShipId((status, responseBody) => {
+    new BattleShipClient().getId((status, responseBody) => {
 
         if (status >= 200 && status <= 299) {
             idShip = responseBody;

@@ -2,10 +2,8 @@ package com.web.springTest;
 
 import board.StatePreperationGame;
 import com.web.repositorium.RepoStartGame;
-import com.web.enity.StartGame;
+import com.web.enity.statusGame.StartGame;
 import com.web.service.GameService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.junit.runner.RunWith;
@@ -34,20 +32,12 @@ class RespoStartGameTest {
 
     private StartGame startGame;
 
-    @BeforeEach
-    public void addElementToDatabase() {
+    @Test
+    public void shouldReturnListElement() {
+        //given
         GameStatus gameStatus = new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS);
         startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), gameStatus);
         repository.save(startGame);
-    }
-
-    @AfterEach
-    public void cleanDataBase() {
-        repository.deleteAll();
-    }
-
-    @Test
-    public void shouldReturnListElement() {
 
         //when
         List<StartGame> status = repository.findAll();
@@ -58,13 +48,25 @@ class RespoStartGameTest {
 
     @Test
     public void shouldReturnTheSameGameStatus() {
+        //given
+        GameStatus gameStatus = new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS);
+        startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), gameStatus);
+        repository.save(startGame);
+
+        //when
+        GameStatus gameStatusDataBase = repository.findAll().get(0).getGameStatus();
 
         //then
-        assertThat(repository.findAll().get(0).getGameStatus(), equalToObject(startGame.getGameStatus()));
+        assertThat(gameStatusDataBase, equalToObject(startGame.getGameStatus()));
     }
 
     @Test
     public void removingElementFromDataBaseShouldDecreaseRepositoryList() {
+        //given
+        GameStatus gameStatus = new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS);
+        startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), gameStatus);
+        repository.save(startGame);
+
         //when
         repository.delete(startGame);
 
@@ -75,6 +77,12 @@ class RespoStartGameTest {
 
     @Test
     public void shouldUpdateElementInDataBase() {
+        //given
+        GameStatus gameStatus = new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS);
+        startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), gameStatus);
+        repository.save(startGame);
+
+        //when
         StartGame startGameUpdated = null;
         Optional<StartGame> optionalStartGame = repository.findById(1L);
 
@@ -103,11 +111,18 @@ class RespoStartGameTest {
 //        assertThat(repository.findByDate(Timestamp.valueOf(date)).get(), equalToObject(startGameFindByDate));
 //    }
 
+    @Test
+    void shouldFindMaxIdInDataBase() {
+        //given
+        GameStatus gameStatus = new GameStatus(gameService.getBoardList(), 1, StatePreperationGame.IN_PROCCESS);
+        startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), gameStatus);
+        repository.save(startGame);
 
+        //when
+        int maxId = 1;
 
-
-
-
-
+        //then
+        assertThat(repository.findMaxId(), equalTo(maxId));
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.web.enity;
+package com.web.enity.statusGame;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;

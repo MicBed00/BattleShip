@@ -1,5 +1,5 @@
 import board.Board;
-import DataConfig.Position;
+import dataConfig.Position;
 import board.Shot;
 import org.junit.jupiter.api.Test;
 

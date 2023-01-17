@@ -1,4 +1,4 @@
-package DataConfig;
+package dataConfig;
 
 public enum ShipLimits {
     SHIP_LIMIT(5),

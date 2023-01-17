@@ -49,6 +49,7 @@ public class GameControllerView {
 
     @GetMapping(value = "/game")
     public String getBoards() {
+        repoService.updateStatePreperationGame("PREPARED");
         return "game";
     }
 

@@ -1,16 +1,3 @@
-import DataConfig.Position;
-import board.Board;
-import board.Shot;
-import board.StatePreperationGame;
-import org.junit.jupiter.api.Test;
-import serialization.GameStatus;
-import serialization.Reader;
-import serialization.Saver;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import static junit.framework.Assert.assertEquals;
 
 public class SaverTest {

@@ -1,7 +1,7 @@
 package com.web.service;
 
-import DataConfig.Position;
-import DataConfig.ShipLimits;
+import dataConfig.Position;
+import dataConfig.ShipLimits;
 import board.Board;
 import board.Shot;
 import org.springframework.beans.factory.annotation.Autowired;

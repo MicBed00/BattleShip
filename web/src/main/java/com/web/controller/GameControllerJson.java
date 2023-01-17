@@ -31,7 +31,7 @@ public class GameControllerJson {
         //TODO pobieranie z bazy statusu gry na podstawie ostatniego id(id wyznaczać w servisie czy przesyłane w request??)
         // dostanę entity z któego wyodrębnie informację typu lista statków itp
         List<Board> boardsList = gameService.chooseBoardPlayer(ship);
-        repoService.saveStatusGameToDataBase(boardsList, StatePreperationGame.PREPARED);
+        repoService.saveStatusGameToDataBase(boardsList, StatePreperationGame.IN_PROCCESS);
 
         return ResponseEntity.ok(repoService.getLastIdDataBase());
     }
@@ -44,7 +44,7 @@ public class GameControllerJson {
     @GetMapping(value = "/game/boards/isFinished", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getList() {
         if(gameService.checkIfAllShipsAreHitted())
-            repoService.updateStatePreperationGame();
+            repoService.updateStatePreperationGame("FINISHED");
         return ResponseEntity.ok(gameService.checkIfAllShipsAreHitted());
     }
 

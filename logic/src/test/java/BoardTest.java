@@ -1,4 +1,4 @@
-import DataConfig.Position;
+import dataConfig.Position;
 import board.Board;
 import board.Shot;
 import exceptions.CollidingException;

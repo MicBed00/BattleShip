@@ -14,7 +14,7 @@ class BattleShipClient {
         this.get("/json/setup", null, null, onSuccess, onError);
     }
 
-    getShipId(onSuccess, onError) {
+    getId(onSuccess, onError) {
         this.get("/json/shipId", null, null, onSuccess, onError);
     }
 

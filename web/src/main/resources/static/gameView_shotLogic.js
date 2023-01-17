@@ -12,7 +12,7 @@ document.getElementById("id_resumeGame").hidden = false;
 function resumeGame() {
     document.getElementById("id_resumeGame").hidden = true;
     var idShip;
-    new BattleShipClient().getShipId((status, responseBody) => {
+    new BattleShipClient().getId((status, responseBody) => {
         if (status >= 200 && status <= 299) {
             idShip = responseBody;
 
