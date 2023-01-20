@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 
-//@ComponentScan("com.web.service.GameService")
 @SpringBootApplication
 public class WebApplication {
 

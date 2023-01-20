@@ -13,4 +13,5 @@
         <include file="changeset/02_add_jsonB_column.sql" relativeToChangelogFile="true"/>
         <include file="changeset/03_edit_type_primarykey_in_column_from_int_to_integer.sql" relativeToChangelogFile="true"/>
         <include file="changeset/04_edit_type_primarykey_integer_into_serial.sql" relativeToChangelogFile="true"/>
+        <include file="changeset/05_add_new_tables_user_userRole.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

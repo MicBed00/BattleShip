@@ -1,7 +1,5 @@
 package com.web.controller;
 
-import board.StatePreperationGame;
-import com.web.repositorium.RepoStartGame;
 import com.web.service.GameService;
 import com.web.service.StartGameRepoService;
 import org.springframework.beans.factory.annotation.Autowired;

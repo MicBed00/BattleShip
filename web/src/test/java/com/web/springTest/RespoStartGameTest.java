@@ -1,7 +1,7 @@
 package com.web.springTest;
 
 import board.StatePreperationGame;
-import com.web.repositorium.RepoStartGame;
+import com.web.repositorium.StartGameRepo;
 import com.web.enity.statusGame.StartGame;
 import com.web.service.GameService;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class RespoStartGameTest {
     @Autowired
     GameService gameService;
     @Autowired
-    RepoStartGame repository;
+    StartGameRepo repository;
 
     private StartGame startGame;
 

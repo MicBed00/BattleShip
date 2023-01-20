@@ -28,8 +28,6 @@ public class GameControllerJson {
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Integer> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
-        //TODO pobieranie z bazy statusu gry na podstawie ostatniego id(id wyznaczać w servisie czy przesyłane w request??)
-        // dostanę entity z któego wyodrębnie informację typu lista statków itp
         List<Board> boardsList = gameService.chooseBoardPlayer(ship);
         repoService.saveStatusGameToDataBase(boardsList, StatePreperationGame.IN_PROCCESS);
 

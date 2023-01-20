@@ -7,29 +7,31 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
 
+    //mvcMatcher jest deprecated i zastąpiony requestMatchers
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(requests -> requests.anyRequest().authenticated());
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(requests -> requests
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/img/**", "/styles/**").permitAll()
+                .requestMatchers("/register", "/confirmation").permitAll()
+                .anyRequest().authenticated()
+        );
         http.formLogin(login -> login.loginPage("/login").permitAll());
         http.csrf().disable();
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        User.UserBuilder userBuilder = User.builder();
-        //superadmin/hard
-        String password1 = "{bcrypt}" + new BCryptPasswordEncoder().encode("hard");
-        UserDetails admin = userBuilder.username("superadmin").password(password1).roles("ADMIN").build();
-        //john/dog.8
-        String password2 = "{bcrypt}" + new BCryptPasswordEncoder().encode("dog.8");
-        UserDetails user1 = userBuilder.username("john").password(password2).roles("USER").build();
-        return new InMemoryUserDetailsManager(admin, user1);
+    PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
 }

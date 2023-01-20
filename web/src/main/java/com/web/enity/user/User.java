@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "game_user")
+@Table(name = "application_user")
 public class User {
 
     @Id
@@ -28,6 +28,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name="role_id", referencedColumnName = "id")
     )
     private Set<UserRole> roles = new HashSet<>();
+
 
     public Long getId() {
         return id;
