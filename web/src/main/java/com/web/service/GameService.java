@@ -21,10 +21,10 @@ public class GameService {
     private List<Set<Shot>> listSets;
     private Shot shot;
 
-    private StartGameRepoService repoService;
+    private GameRepoService repoService;
 
     @Autowired
-    GameService(@Lazy StartGameRepoService repoService) {
+    GameService(@Lazy GameRepoService repoService) {
         this.repoService = repoService;
         shipSize = new ArrayList<>();
         boardList = new ArrayList<>();
@@ -133,7 +133,7 @@ public class GameService {
         boardPlayer1 = listBoard.get(0);
         boardPlayer2 = listBoard.get(1);
         //dlaczego muszę kopiować nowe wartości do list, jeśli przypisuje do referencji boardPlayer1 i 2 nowe obiekty
-//        , a te refenracje są zapisane w liscie boardList
+        //, a te refenracje są zapisane w liscie boardList
         boardList = new ArrayList<>(listBoard);
     }
 

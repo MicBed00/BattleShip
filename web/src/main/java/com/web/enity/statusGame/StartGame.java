@@ -14,23 +14,19 @@ import java.sql.Timestamp;
 @Entity
 @Table(name="start_game")
 public class StartGame {
-    public StartGame() {}
-
-    public StartGame(Timestamp date, GameStatus gameStatus) {
-        this.date = date;
-        this.gameStatus = gameStatus;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    private String game;
     @Column
     private Timestamp date;
 
-    @Column(name="gamestatus")
-    @Type(JsonType.class)
-    private GameStatus gameStatus;
+    public StartGame() {}
+
+    public StartGame(Timestamp date, String game) {
+        this.game = game;
+        this.date = date;
+    }
 
     public void setId(Integer id) {
         this.id = id;
@@ -38,10 +34,6 @@ public class StartGame {
 
     public Integer getId() {
         return id;
-    }
-
-    public GameStatus getGameStatus() {
-        return gameStatus;
     }
 
     public Timestamp getDate() {

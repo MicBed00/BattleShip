@@ -3,9 +3,10 @@ package com.web.controller;
 import board.Board;
 import board.Shot;
 import board.StatePreperationGame;
+import com.web.service.GameRepoService;
 import com.web.service.GameService;
-import com.web.service.StartGameRepoService;
 import exceptions.BattleShipException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,10 @@ import java.util.List;
 @RequestMapping("json")
 public class GameControllerJson {
     private final GameService gameService;
-    private final StartGameRepoService repoService;
+    private final GameRepoService repoService;
 
     @Autowired
-    GameControllerJson(GameService gameService, StartGameRepoService repoService) {
+    GameControllerJson(GameService gameService, GameRepoService repoService) {
         this.gameService = gameService;
         this.repoService = repoService;
     }
@@ -78,11 +79,23 @@ public class GameControllerJson {
         return ResponseEntity.ok(repoService.getLastIdDataBase());
     }
 
+    @Transactional
     @DeleteMapping(value = "/deleteShip/{idBoard}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard, @PathVariable int id) {
         repoService.deleteLastShip(id);
 
         return ResponseEntity.ok(gameService.deleteShip(idBoard));
+    }
+
+    @PostMapping(value = "/rejected/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateStatusGame(@PathVariable String status) {
+        repoService.updateStatePreperationGame(status);
+        //TODO do sprawdzenia ta część
+//        return ResponseEntity.ok(repoService.saveNewGame());
+    }
+    @GetMapping(value = "/newGame", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Boolean> newGame() {
+        return ResponseEntity.ok(repoService.saveNewGame());
     }
 
 

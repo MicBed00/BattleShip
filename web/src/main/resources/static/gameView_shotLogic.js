@@ -41,7 +41,7 @@ function resumeGame() {
         alert("Błąd przy wznawianiu gry " + responseBody);
     });
 }
-
+//TODO startGame() w rendershot
 function startNewGame() {
     document.getElementById("id_resumeGame").hidden = true;
     renderShot(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą

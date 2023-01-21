@@ -1,7 +1,8 @@
 package com.web.controller;
 
+import com.web.service.GameRepoService;
 import com.web.service.GameService;
-import com.web.service.StartGameRepoService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("view")
 public class GameControllerView {
     private final GameService gameService;
-    private final StartGameRepoService repoService;
+    private final GameRepoService repoService;
 
     @Autowired
-    GameControllerView(GameService gameService, StartGameRepoService repoService) {
+    GameControllerView(GameService gameService, GameRepoService repoService) {
         this.gameService = gameService;
         this.repoService = repoService;
     }
@@ -28,18 +29,21 @@ public class GameControllerView {
 
     @GetMapping(value = "/startGame")
     public String startGame() {
-//        repoService.saveStatusGameToDataBase(gameService.getBoardList(), StatePreperationGame.IN_PROCCESS);
+//        repoService.saveNewGame();
         return "redirect:/view/getParamGame";
     }
+
 
     @GetMapping(value = "/getParamGame")
     public String getParametersGame(Model model) {
         model.addAttribute("shipSize", gameService.getShipSize());
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());
+        model.addAttribute("game_id", repoService.getGameId());
 
         return "add_ship";
     }
+
     @GetMapping("/added_Ship")
     public String addedShip() {
         return "addShip_success";

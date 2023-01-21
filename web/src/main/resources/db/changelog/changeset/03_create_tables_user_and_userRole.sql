@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset micbed:5
+--changeset micbed:3
 
 CREATE TABLE application_user
 (
@@ -12,8 +12,9 @@ CREATE TABLE application_user
 );
 
 INSERT INTO application_user (first_name, last_name, email, password)
+-- hasło: hard zakodowane w bcrypt
 VALUES
-    ('admin', 'admin', 'admin@admin.com', 'admin123');
+    ('admin', 'admin', 'admin@admin.com', '$2a$10$Ruu5GtmSVkfLeuGfz/wHUuzflCcMbwJHSBo/.Wui0EM0KIM52Gs2S');
 
 CREATE TABLE user_role
 (

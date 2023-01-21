@@ -127,8 +127,24 @@ function resumeGame() {
 
 function startNewGame() {
     document.getElementById("id_resumeGame").hidden = true;
-    var table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
-    return table;
+    //TODO do sprawdzenia ta część
+    new BattleShipClient().updateStatusGame("REJECTED",(status, responseBody) => {
+            if (status >= 200 && status <= 299) {
+
+                new BattleShipClient().getNewGame((status, responseBody) => {
+                    if (status >= 200 && status <= 299) {
+
+                        table = renderShip(null);
+                        return table;
+                    }
+                }, (status, responseBody) => {
+                    alert("Błąd przy wczytywaniu nowej gry " + responseBody);
+                })
+            }
+
+        }, (status, responseBody) => {
+        alert("Błąd przy przerwaniu gry " + responseBody)
+    })
 }
 
 document.getElementById("backAction").addEventListener("click", function () {
@@ -238,29 +254,36 @@ function setup() {
     new BattleShipClient().getId((status, responseBody) => {
 
         if (status >= 200 && status <= 299) {
-            idShip = responseBody;
+            idStatus = responseBody;
+                new BattleShipClient().getPhaseGame(idStatus, (status, responseBody) => {
+                    if (status >= 200 && status <= 299) {
 
-            //sprawdzam czy gra została zakończona
-            new BattleShipClient().getPhaseGame(idShip,(status, responseBody) => {
-                if (status >= 200 && status <= 299) {
+                        var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
 
-                    var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
+                            if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
+                                //TODO zapis nowej gry
+                                new BattleShipClient().getNewGame((status, responseBody) => {
 
-                    if (gameOver === 'FINISHED') {
-                        table = renderShip(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
-                        return table;
-                    } else {
-                        document.getElementById("id_resumeGame").hidden = false;
+                                    if (status >= 200 && status <= 299) {
+                                        table = renderShip(null);
+                                        return table;
+                                    }
+
+                                }, (status, responseBody) => {
+                                    alert("Błąd przy wczytywaniu nowej gry " + responseBody);
+                                })
+                            } else {
+                                document.getElementById("id_resumeGame").hidden = false;
+                            }
                     }
-                }
-            }, (status, responseBody) => {
-                alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
-            })
-        }
-
+                }, (status, responseBody) => {
+                    alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
+                })
+            }
     }, (status, responseBody) => {
         alert("Błąd przy wznawianiu gry " + responseBody);
     });
+
 
 
 }
