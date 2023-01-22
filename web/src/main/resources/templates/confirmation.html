@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Rejestracja zakończona</title>
+    <link rel="stylesheet" href="web/src/main/resources/static/styles/styleSuccessRegistration.css"  th:href="@{/styles/styleSuccessRegistration.css}"/>
+    <link rel="stylesheet" href= "https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap">
 </head>
 <body>
+    <div class="container">
+        <div class="sub-container">
+            <i class="checkmark">✓</i>
+        </div>
+            <h1>Rejestracja zakończona!</h1>
+            <p>
+                <a href="/view/welcomeView">Zaloguj się</a>
+            </p>
+    </div>
 
 </body>
 </html>

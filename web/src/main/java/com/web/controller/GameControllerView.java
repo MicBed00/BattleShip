@@ -22,7 +22,7 @@ public class GameControllerView {
     }
 
 
-    @GetMapping(value= "welcomeView")
+    @GetMapping(value= "/welcomeView")
     public String welcome() {
         return "welcomeView";
     }
