@@ -21,21 +21,21 @@ public class RegisterController {
     }
 
 
-    @GetMapping("/register")
+    @GetMapping(value = "/register")
     String register(Model model) {
         UserRegistrationDto user = new UserRegistrationDto();
         model.addAttribute("userDto", user);
         return "registration";
 
     }
-//
-//    @PostMapping("/register")
-//    String userRegister(UserRegistrationDto user) {
-//        userService.saveUser(user);
-//        return "redirect:/success";
-//    }
 
-    @GetMapping("/success")
+    @PostMapping(value = "/register")
+    String userRegister(UserRegistrationDto user) {
+        userService.saveUser(user);
+        return "redirect:/success";
+    }
+
+    @GetMapping(value = "/success")
     String successRegister() {
         return "confirmation";
     }

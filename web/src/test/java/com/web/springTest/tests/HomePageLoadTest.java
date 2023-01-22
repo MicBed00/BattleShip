@@ -13,21 +13,21 @@ import org.openqa.selenium.WebElement;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.web.springTest.config.WebDriverSingleton.getDriver;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HomePageLoadTest{
-    public static WebDriver webDriver;
-
-    @BeforeAll
-    public static void setUp() {
-        String baseURL = "http://localhost:8080/view/welcomeView";
-        webDriver = getDriver();
-        webDriver.manage().window().maximize();
-        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        webDriver.get(baseURL);
-    }
+//    public static WebDriver webDriver;
+//
+//    @BeforeAll
+//    public static void setUp() {
+//        String baseURL = "http://localhost:8080/view/welcomeView";
+//        webDriver = getDriver();
+//        webDriver.manage().window().maximize();
+//        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//        webDriver.get(baseURL);
+//    }
 
 //    @Test
 //    public void loadingHomePage() {
@@ -43,8 +43,8 @@ public class HomePageLoadTest{
 //        assertEquals(shootingPage.getClass(). );
 //    }
 
-    @AfterAll
-    public static void tearDown() {
-        webDriver.quit();
-    }
+//    @AfterAll
+//    public static void tearDown() {
+//        webDriver.quit();
+//    }
 }

@@ -8,17 +8,27 @@
     <link rel="stylesheet" href="web/src/main/resources/static/styles/styleAuthorization.css" th:href="@{/styles/styleAuthorization.css}"/>
 
     <title>Registration form</title>
+    <style>
+        body {
+            background-color: lightgrey;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1 class="login-header">Rejestracja</h1>
-        <form class="login-form" th:action="@{/register}" th:object="${user}" method="post">
+        <i class="fa-solid fa-lock fa-5x lock-icon"></i>
+        <form class="login-form" th:action="@{/register}" th:object="${userDto}" method="post">
             <input placeholder="podaj imię" th:field="*{firstName}" class="form-item">
             <input placeholder="podaj nazwisko"  th:field="*{lastName}"  class="form-item">
             <input placeholder="podaj email"      th:field="*{email}"     class="form-item">
-            <input placeholder="podaj hasło"   th:field="*{password}"  class="form-item">
+            <input placeholder="podaj hasło"   th:field="*{password}"  class="form-item" type="password">
+
+            <button type="submit" class="form-item">Zarejestruj się</button>
         </form>
-        <button type="submit" class="form=item">Zarejestruj się</button>
+
     </div>
 </body>
 </html>
