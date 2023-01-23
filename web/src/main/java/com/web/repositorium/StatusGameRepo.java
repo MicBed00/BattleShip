@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StatusGameRepo extends JpaRepository<StatusGame, Long> {
-    @Query(value = "SELECT MAX(id) FROM status_game", nativeQuery = true)
+    @Query(value = "SELECT MAX(id) FROM game_statuses", nativeQuery = true)
     int findMaxId();
 }

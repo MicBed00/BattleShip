@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StartGameRepo extends JpaRepository<StartGame,Long> {
-    @Query(value = "SELECT MAX(id) FROM start_game", nativeQuery = true)
+public interface GameRepo extends JpaRepository<StartGame,Long> {
+    @Query(value = "SELECT MAX(id) FROM games", nativeQuery = true)
     int findMaxId();
 }

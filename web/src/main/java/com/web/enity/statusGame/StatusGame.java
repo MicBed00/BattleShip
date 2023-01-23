@@ -7,13 +7,13 @@ import org.hibernate.annotations.Type;
 import serialization.GameStatus;
 
 @Entity
-@Table(name = "status_game")
+@Table(name = "game_statuses")
 public class StatusGame {
 
     @Id
     @GeneratedValue(strategy =GenerationType.IDENTITY )
     private Long id;
-    @Column(name="game_status")
+    @Column(name="status_game")
     @Type(JsonType.class)
     private GameStatus gameStatus;
     @ManyToOne

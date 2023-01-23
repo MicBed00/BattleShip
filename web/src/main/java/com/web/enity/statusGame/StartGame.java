@@ -12,19 +12,17 @@ import java.sql.Timestamp;
 
 
 @Entity
-@Table(name="start_game")
+@Table(name="games")
 public class StartGame {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String game;
     @Column
     private Timestamp date;
 
     public StartGame() {}
 
-    public StartGame(Timestamp date, String game) {
-        this.game = game;
+    public StartGame(Timestamp date) {
         this.date = date;
     }
 

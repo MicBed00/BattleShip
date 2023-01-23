@@ -4,7 +4,7 @@ import board.Board;
 import board.StatePreperationGame;
 import com.web.enity.statusGame.StartGame;
 import com.web.enity.statusGame.StatusGame;
-import com.web.repositorium.StartGameRepo;
+import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,12 @@ import java.util.List;
 @Service
 public class GameRepoService {
 
-    private final StartGameRepo repoStartGame;
+    private final GameRepo repoStartGame;
     private final StatusGameRepo repoStatusGame;
     private final GameService gameService;
 
     @Autowired
-    public GameRepoService(StartGameRepo repoStartGame, GameService gameService, StatusGameRepo repoStatusGame) {
+    public GameRepoService(GameRepo repoStartGame, GameService gameService, StatusGameRepo repoStatusGame) {
         this.repoStartGame = repoStartGame;
         this.gameService = gameService;
         this.repoStatusGame = repoStatusGame;
@@ -84,9 +84,7 @@ public class GameRepoService {
     }
 
     public boolean saveNewGame() {
-        //TODO nie wiem co zapisywać do tabeli start_game oprócz timestampa, dlatego teraz wrzucam poprostu stringa
-        String game = "game/" + Timestamp.valueOf(LocalDateTime.now());
-        StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), game);
+        StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
 
         return saveStartGame(startGame) &&
                 saveStatusGameToDataBase(gameService.getBoardList(), StatePreperationGame.IN_PROCCESS);
