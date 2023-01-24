@@ -94,6 +94,7 @@ class BattleShipClient {
                 } else if (error !== undefined)
                     error(this.status, this.responseText);
         };
+
         request.open(method.toUpperCase(), path, true);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);

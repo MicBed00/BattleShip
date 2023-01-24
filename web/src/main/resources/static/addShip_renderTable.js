@@ -255,30 +255,35 @@ function setup() {
 
         if (status >= 200 && status <= 299) {
             idStatus = responseBody;
-                new BattleShipClient().getPhaseGame(idStatus, (status, responseBody) => {
-                    if (status >= 200 && status <= 299) {
+                if(idStatus === 0) {
+                    table = renderShip(null);
+                    return table;
+                } else {
+                    new BattleShipClient().getPhaseGame(idStatus, (status, responseBody) => {
+                        if (status >= 200 && status <= 299) {
 
-                        var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
+                            var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
 
-                            if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
-                                //TODO zapis nowej gry
-                                new BattleShipClient().getNewGame((status, responseBody) => {
+                                if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
+                                    //TODO zapis nowej gry
+                                    new BattleShipClient().getNewGame((status, responseBody) => {
 
-                                    if (status >= 200 && status <= 299) {
-                                        table = renderShip(null);
-                                        return table;
-                                    }
+                                        if (status >= 200 && status <= 299) {
+                                            table = renderShip(null);
+                                            return table;
+                                        }
 
-                                }, (status, responseBody) => {
-                                    alert("Błąd przy wczytywaniu nowej gry " + responseBody);
-                                })
-                            } else {
-                                document.getElementById("id_resumeGame").hidden = false;
-                            }
-                    }
-                }, (status, responseBody) => {
-                    alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
-                })
+                                    }, (status, responseBody) => {
+                                        alert("Błąd przy wczytywaniu nowej gry " + responseBody);
+                                    })
+                                } else {
+                                    document.getElementById("id_resumeGame").hidden = false;
+                                }
+                        }
+                    }, (status, responseBody) => {
+                        alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
+                    })
+                }
             }
     }, (status, responseBody) => {
         alert("Błąd przy wznawianiu gry " + responseBody);

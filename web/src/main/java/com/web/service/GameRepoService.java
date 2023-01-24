@@ -14,6 +14,7 @@ import serialization.GameStatus;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GameRepoService {
@@ -41,7 +42,7 @@ public class GameRepoService {
     }
 
     private StartGame getActualGame() {
-        long game_id = (long) repoStartGame.findMaxId();
+        Long game_id = repoStartGame.findMaxId().get();
         return repoStartGame.findById(game_id).get();
     }
 
@@ -52,8 +53,8 @@ public class GameRepoService {
     }
 
 
-    public int getLastIdDataBase() {
-        return repoStatusGame.findMaxId();
+    public Long getLastIdDataBase() {
+        return repoStatusGame.findMaxId().orElse(0L);
 
     }
     @Transactional
@@ -73,14 +74,14 @@ public class GameRepoService {
     }
     @Transactional
     public void updateStatePreperationGame(String state) {
-        long maxId = repoStatusGame.findMaxId();
+        long maxId = repoStatusGame.findMaxId().get();
         StatusGame statusGame = repoStatusGame.findById(maxId).get();
         statusGame.getGameStatus().setState(StatePreperationGame.valueOf(state));
         repoStatusGame.save(statusGame);
     }
 
-    public int getGameId() {
-        return repoStartGame.findMaxId();
+    public Long getGameId() {
+       return repoStartGame.findMaxId().orElse(0L);
     }
 
     public boolean saveNewGame() {

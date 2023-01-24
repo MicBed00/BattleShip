@@ -27,11 +27,13 @@ public class SecurityConfig {
                 .requestMatchers("/img/**", "/styles/**").permitAll()
                 .anyRequest().authenticated()
         );
+        http.csrf().disable();
         http.formLogin(login -> login.loginPage("/login").permitAll());
         http.logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout/**", HttpMethod.GET.name()))
                 .logoutSuccessUrl("/login")
                 );
+
         return http.build();
     }
 

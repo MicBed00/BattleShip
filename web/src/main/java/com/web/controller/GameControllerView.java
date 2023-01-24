@@ -40,7 +40,7 @@ public class GameControllerView {
         model.addAttribute("orientList", gameService.getOrientation());
         model.addAttribute("shipLimit", gameService.getShipLimits());
         model.addAttribute("game_id", repoService.getGameId());
-
+        //TODO w tym miejscu sprawdziłbym stan zapisu w sytuacji gdy ktoś uruchomi grę bezpośrednio przez adres /view//getParamGame
         return "add_ship";
     }
 

@@ -28,7 +28,7 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
+    public ResponseEntity<Long> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
         List<Board> boardsList = gameService.chooseBoardPlayer(ship);
         repoService.saveStatusGameToDataBase(boardsList, StatePreperationGame.IN_PROCCESS);
 
@@ -75,7 +75,7 @@ public class GameControllerJson {
     }
 
     @GetMapping(value="/shipId", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> getLastShipId() {
+    public ResponseEntity<Long> getLastShipId() {
         return ResponseEntity.ok(repoService.getLastIdDataBase());
     }
 
