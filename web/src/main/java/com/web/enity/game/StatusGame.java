@@ -1,4 +1,4 @@
-package com.web.enity.statusGame;
+package com.web.enity.game;
 
 
 import com.vladmihalcea.hibernate.type.json.JsonType;

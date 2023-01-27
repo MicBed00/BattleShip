@@ -12,11 +12,12 @@ document.getElementById("id_resumeGame").hidden = false;
 function resumeGame() {
     document.getElementById("id_resumeGame").hidden = true;
     var idShip;
-    new BattleShipClient().getId((status, responseBody) => {
+    new BattleShipClient().checkIfUserHasGameBefore((status, responseBody) => {
         if (status >= 200 && status <= 299) {
             idShip = responseBody;
 
             //gdy mam już id to wysyłam request do pobrania rekordu z bazy
+            //TODO zamiast idShip należy przekazać userId wyciągniętego z context security
             new BattleShipClient().getStatusGameFromDataBase(idShip, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
 
@@ -26,6 +27,7 @@ function resumeGame() {
                    currentBoard = board1;
 
                     //odtworzenie stanu Boardów w programie na serwerze za pomocą metody POST
+                    //TODO zamiast idShip należy przekazać userId  wyciągniętego z context security
                     new BattleShipClient().restoringStateBoardListOnServer(idShip, (status, responseBody) => {
                         // if (status >= 200 && status <= 299)
                         //chyba nie potrzebuje zwrotki

@@ -12,7 +12,7 @@ import ship.Ship;
 import java.util.*;
 
 @Service
-public class GameService {
+public class GameStatusService {
     private List<String> shipSize;
     private List<Board> boardList;
     private List<Position> positionList;
@@ -21,11 +21,11 @@ public class GameService {
     private List<Set<Shot>> listSets;
     private Shot shot;
 
-    private GameRepoService repoService;
+    private GameStatusRepoService gameStatusRepoService;
 
     @Autowired
-    GameService(@Lazy GameRepoService repoService) {
-        this.repoService = repoService;
+    GameStatusService(@Lazy GameStatusRepoService gameStatusRepoService) {
+        this.gameStatusRepoService = gameStatusRepoService;
         shipSize = new ArrayList<>();
         boardList = new ArrayList<>();
         positionList = new ArrayList<>();
@@ -127,9 +127,8 @@ public class GameService {
 
         return 0;
     }
-    public void restoreGameStatusOnServer(int idShip) {
-
-        List<Board> listBoard = repoService.getBoards(idShip);
+    public void restoreGameStatusOnServer(int userId) {
+        List<Board> listBoard = gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus();
         boardPlayer1 = listBoard.get(0);
         boardPlayer2 = listBoard.get(1);
         //dlaczego muszę kopiować nowe wartości do list, jeśli przypisuje do referencji boardPlayer1 i 2 nowe obiekty

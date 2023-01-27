@@ -14,8 +14,8 @@ class BattleShipClient {
         this.get("/json/setup", null, null, onSuccess, onError);
     }
 
-    getId(onSuccess, onError) {
-        this.get("/json/shipId", null, null, onSuccess, onError);
+    checkIfUserHasGameBefore(onSuccess, onError) {
+        this.get("/json/lastGame", null, null, onSuccess, onError);
     }
 
     getStatusGameFromDataBase(id, onSuccess, onError) {
@@ -42,8 +42,8 @@ class BattleShipClient {
             this.post("/json/game/boards", JSON.stringify(shootObject), null, onSuccess, onError)
     }
 
-    restoringStateBoardListOnServer(id, onSuccess, onError) {
-        this.post("/json/setupBoard/"+id, null, null, onSuccess, onError);
+    restoringStateBoardListOnServer(userId, onSuccess, onError) {
+        this.post("/json/setupBoard/"+userId, null, null, onSuccess, onError);
     }
 
     getterStatusGame(onSuccess, onError) {
@@ -58,8 +58,8 @@ class BattleShipClient {
         this.get("/json/game/boards/shots/"+id, null, null, onSuccess, onError);
     }
 
-    updateStatusGame(status, onSuccess, onError) {
-        this.post("/json/rejected/"+status, null, null, onSuccess, onError);
+    updateStatusGame(userId,status, onSuccess, onError) {
+        this.post("/json/rejected/"+userId+"/"+status, null, null, onSuccess, onError);
     }
 
     delete(path, body, progressUpdate, success, error) {

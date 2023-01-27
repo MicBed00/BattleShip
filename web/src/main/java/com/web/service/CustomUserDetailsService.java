@@ -9,21 +9,29 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
+    //Wstrzykuje userService po to by pośrednio pobierać użytkowników z bazy danych
+    // CustomUserDetailsService->userService->UserRepo->baza danych
     private final UserService userService;
 
     public CustomUserDetailsService(UserService userService) {
         this.userService = userService;
     }
 
-
+    /*wykorzystuje metodę findCredentialsByEmail(username) zwracającą UserCredentialDto.
+    Wykorzystuję obiekt pośredni Dto żeby nie operować na encji w innych klasach.
+    UserCredentialDto odpowiada obiektowi UserDetialsManager zwracanym przez Springa
+    Klasa impementująca interfejs UserDetailsService jest to źródło użytkowników, musi nadpisać metodę loadUserByUsername
+    i ta metoda musi zwracać UserDetails. Ten obiekt z klasy impelentującej USerDetailsSerive jest
+    podawany do klasy DaoAuthenticationProvider gdzie następuje uwierzytelnienie - tzn porównanie danych zawartych
+    w obiekcie UserDetails(wyciągniętych z bazy) z obiektem Authentication(obiekt stworzony na podstawi danych wysłanych z formularza logowania)
+    */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userService.findCredentialsByEmail(username)
                 .map(this::createUserDetails)
                 .orElseThrow();
     }
-
+    //na podstawie obiektu UserCredentialDto tworzony jest obiekt UserDetails
     private UserDetails createUserDetails(UserCredentialsDto userCredentialsDto) {
         return User.builder()
                 .username(userCredentialsDto.getEmail())

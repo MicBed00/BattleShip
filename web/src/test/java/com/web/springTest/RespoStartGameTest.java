@@ -1,25 +1,13 @@
 package com.web.springTest;
 
-import board.StatePreperationGame;
 import com.web.repositorium.StartGameRepo;
-import com.web.enity.statusGame.StartGame;
-import com.web.service.GameService;
-import org.junit.jupiter.api.Test;
 
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import serialization.GameStatus;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

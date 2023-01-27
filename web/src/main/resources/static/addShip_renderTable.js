@@ -1,4 +1,5 @@
 var boardsList;
+var userId = document.getElementById("user_id").value;
 
 function adderShip(event) {
     var length = document.getElementById("len").value;
@@ -94,13 +95,8 @@ function resumeGame() {
     //jeśli gracz potwierdzi, że chce zacząć grę od ostatniego zapisanego stanu gry wtedy odpytuję serwer o ostatni
     //zapisany rekord id z bazy i na jego podstawie odtwarzam stan gry
     document.getElementById("id_resumeGame").hidden = true;
-    var idShip;
-    new BattleShipClient().getId((status, responseBody) => {
-        if (status >= 200 && status <= 299) {
-            idShip = responseBody;
 
-            //gdy mam już id to wysyłam request do pobrania rekordu z bazy
-            new BattleShipClient().getStatusGameFromDataBase(idShip, (status, responseBody) => {
+            new BattleShipClient().getStatusGameFromDataBase(userId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
                     //renderowanie na tablicy wcześniej dodanych statków
                     boardsList = responseBody;
@@ -109,7 +105,7 @@ function resumeGame() {
                         document.getElementById("backAction").disabled = false;
 
                     //odtworzenie stanu Listy Boardów po stronie serwera za pomocą metody POST
-                    new BattleShipClient().restoringStateBoardListOnServer(idShip, (status, responseBody) => {
+                    new BattleShipClient().restoringStateBoardListOnServer(userId, (status, responseBody) => {
                         // if (status >= 200 && status <= 299)
                             //chyba nie potrzebuje zwrotki
                             alert("Zapis stanu boardów na serwerze!!")
@@ -118,22 +114,16 @@ function resumeGame() {
                     });
                 }
             })
-        }
-
-    }, (status, responseBody) => {
-        alert("Błąd przy wznawianiu gry " + responseBody);
-    });
 }
 
 function startNewGame() {
     document.getElementById("id_resumeGame").hidden = true;
     //TODO do sprawdzenia ta część
-    new BattleShipClient().updateStatusGame("REJECTED",(status, responseBody) => {
+    new BattleShipClient().updateStatusGame(userId,"REJECTED",(status, responseBody) => {
             if (status >= 200 && status <= 299) {
-
+                //Zapisuję nową grę do tabeli games
                 new BattleShipClient().getNewGame((status, responseBody) => {
                     if (status >= 200 && status <= 299) {
-
                         table = renderShip(null);
                         return table;
                     }
@@ -149,8 +139,8 @@ function startNewGame() {
 
 document.getElementById("backAction").addEventListener("click", function () {
     var idShip;
-
-    new BattleShipClient().getId((status, responseBody) => {
+    //TODO delete statku z planszy do poprawy
+    new BattleShipClient().checkIfUserHasGameBefore((status, responseBody) => {
         if (status >= 200 && status <= 299) {
             idShip = responseBody;
 
@@ -251,40 +241,42 @@ function setup() {
     });
 
 
-    new BattleShipClient().getId((status, responseBody) => {
-
+    new BattleShipClient().checkIfUserHasGameBefore((status, responseBody) => {
+        let gameExistForUser;
         if (status >= 200 && status <= 299) {
-            idStatus = responseBody;
-                if(idStatus === 0) {
-                    table = renderShip(null);
-                    return table;
-                } else {
-                    new BattleShipClient().getPhaseGame(idStatus, (status, responseBody) => {
-                        if (status >= 200 && status <= 299) {
+            gameExistForUser = responseBody;
 
-                            var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
+            if (gameExistForUser === true) {
+                //zamiast idStatus musi być userId z contextu bezpieczeństwa wyciągniętego w HTML
+                new BattleShipClient().getPhaseGame(userId, (status, responseBody) => {
+                    if (status >= 200 && status <= 299) {
 
-                                if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
-                                    //TODO zapis nowej gry
-                                    new BattleShipClient().getNewGame((status, responseBody) => {
+                        var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
 
-                                        if (status >= 200 && status <= 299) {
-                                            table = renderShip(null);
-                                            return table;
-                                        }
-
-                                    }, (status, responseBody) => {
-                                        alert("Błąd przy wczytywaniu nowej gry " + responseBody);
-                                    })
-                                } else {
-                                    document.getElementById("id_resumeGame").hidden = false;
+                        if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
+                            //Zapis nowej gry do bazy
+                            new BattleShipClient().getNewGame((status, responseBody) => {
+                                if (status >= 200 && status <= 299) {
+                                    table = renderShip(null);
+                                    return table;
                                 }
+                            }, (status, responseBody) => {
+                                alert("Błąd przy wczytywaniu nowej gry " + responseBody);
+                            })
+
+                        } else {
+                            document.getElementById("id_resumeGame").hidden = false;
                         }
-                    }, (status, responseBody) => {
-                        alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
-                    })
-                }
+                    }
+                }, (status, responseBody) => {
+                    alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
+                });
+
+            } else {
+                table = renderShip(null);
+                return table;
             }
+        }
     }, (status, responseBody) => {
         alert("Błąd przy wznawianiu gry " + responseBody);
     });

@@ -1,12 +1,8 @@
-package com.web.enity.statusGame;
+package com.web.enity.game;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.web.enity.user.User;
 import jakarta.persistence.*;
 
-
-import org.hibernate.annotations.Type;
-
-import serialization.GameStatus;
 
 import java.sql.Timestamp;
 
@@ -20,10 +16,15 @@ public class StartGame {
     @Column
     private Timestamp date;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public StartGame() {}
 
-    public StartGame(Timestamp date) {
+    public StartGame(Timestamp date, User user) {
         this.date = date;
+        this.user = user;
     }
 
     public void setId(Integer id) {
