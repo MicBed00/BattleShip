@@ -4,7 +4,6 @@ import board.Board;
 import board.StatePreperationGame;
 import com.web.enity.game.StartGame;
 import com.web.enity.game.StatusGame;
-import com.web.enity.user.User;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
 import jakarta.transaction.Transactional;
@@ -12,11 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import serialization.GameStatus;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class GameStatusRepoService {
@@ -44,9 +40,7 @@ public class GameStatusRepoService {
         StartGame game = getActualGame();
         StatusGame statusGame = new StatusGame(gameStatus, game);
 
-        StatusGame newStatusGame = repoStatusGame.save(statusGame);
-
-        return statusGame.equals(newStatusGame);
+        return repoStatusGame.save(statusGame) != null;
     }
 
     private StartGame getActualGame() {
@@ -68,10 +62,8 @@ public class GameStatusRepoService {
         Long gameId = repoStartGame.findMaxIdByUserId(userId).orElseThrow(
                 () -> new NoSuchElementException("Brak gry dla Usera")
         );
-        StatusGame savedStateGame = repoStatusGame.findMaxIdByGameId(gameId).orElseThrow(
-                () -> new NoSuchElementException("Brak zapisanej gry")
-        );
-        return savedStateGame;
+        Long idStatusGame = repoStatusGame.findMaxIdByGameId(gameId).get();
+        return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("Brak zapisanego statusu gry"));
     }
     @Transactional
     public void updateStatePreperationGame(int userId, String state) {
@@ -79,12 +71,6 @@ public class GameStatusRepoService {
         savedStateGame.getGameStatus().setState(StatePreperationGame.valueOf(state));
         repoStatusGame.save(savedStateGame);
     }
-
-    public Long getGameId() {
-       return repoStartGame.findMaxId().orElse(0L);
-    }
-
-
 
 
 }

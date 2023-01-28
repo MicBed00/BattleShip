@@ -20,7 +20,7 @@ function adderShip(event) {
             resetParam()
             id = responseBody;
 
-            new BattleShipClient().getStatusGameFromDataBase(id, (status, responseBody) => {
+            new BattleShipClient().getStatusGameFromDataBase(userId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
 
                     boardsList = responseBody;
@@ -122,27 +122,35 @@ function startNewGame() {
     new BattleShipClient().updateStatusGame(userId,"REJECTED",(status, responseBody) => {
             if (status >= 200 && status <= 299) {
                 //Zapisuję nową grę do tabeli games
-                new BattleShipClient().getNewGame((status, responseBody) => {
+                new BattleShipClient().saverNewGame(userId,(status, responseBody) => {
                     if (status >= 200 && status <= 299) {
-                        table = renderShip(null);
-                        return table;
+                       //Zapisuje pusty status gry w game_statuses i w odpowiedzi dostaje
+                        new BattleShipClient().saverEmptyStatusGame((status, responseBody) => {
+                            if (status >= 200 && status <= 299) {
+                                table = renderShip(null);
+                                return table;
+                            }
+                        }, (status, responseBody) => {
+                            alert("Błąd przy wczytywaniu nowej gry " + responseBody);
+                        })
+                    }
+
+                }, (status, responseBody) => {
+                    alert("Błąd przy przerwaniu gry " + responseBody)
+                })
                     }
                 }, (status, responseBody) => {
-                    alert("Błąd przy wczytywaniu nowej gry " + responseBody);
+                    alert("Błąd przy zapisywaniu nowej gry " + responseBody);
                 })
-            }
 
-        }, (status, responseBody) => {
-        alert("Błąd przy przerwaniu gry " + responseBody)
-    })
 }
 
 document.getElementById("backAction").addEventListener("click", function () {
     var idShip;
     //TODO delete statku z planszy do poprawy
-    new BattleShipClient().checkIfUserHasGameBefore((status, responseBody) => {
+    new BattleShipClient().getStatusGameFromDataBase(userId,(status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            idShip = responseBody;
+            boardsList = responseBody;
 
             if (checkIfStillBoardPlayerOne(boardsList)) {
                 new BattleShipClient().deleteLastAddedShip(0, idShip, (status, responseBody) => {
@@ -255,7 +263,7 @@ function setup() {
 
                         if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
                             //Zapis nowej gry do bazy
-                            new BattleShipClient().getNewGame((status, responseBody) => {
+                            new BattleShipClient().saverEmptyStatusGame((status, responseBody) => {
                                 if (status >= 200 && status <= 299) {
                                     table = renderShip(null);
                                     return table;
@@ -273,6 +281,16 @@ function setup() {
                 });
 
             } else {
+                //user nie miał jeszcze gry w tabeli games, która miałby zapisany stan gry w tabeli games_statuses
+                // dlatego tu tworzymy nowa grę w games
+                new BattleShipClient().saverNewGame(userId,(status, responseBody) => {
+                    if (status >= 200 && status <= 299) {
+                        table = renderShip(null);
+                        return table;
+                    }
+                }, (status, responseBody) => {
+                    alert("Błąd przy zapisywaniu nowej gry " + responseBody);
+                })
                 table = renderShip(null);
                 return table;
             }

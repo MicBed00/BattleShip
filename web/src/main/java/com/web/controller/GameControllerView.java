@@ -7,6 +7,7 @@ import com.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class GameControllerView {
 
     @GetMapping(value= "/welcomeView")
     public String welcome() {
-        gameRepoService.saveNewGame();
+//        gameRepoService.saveNewGame();
         return "welcomeView";
     }
 
@@ -51,7 +52,9 @@ public class GameControllerView {
         model.addAttribute("shipSize", gameStatusService.getShipSize());
         model.addAttribute("orientList", gameStatusService.getOrientation());
         model.addAttribute("shipLimit", gameStatusService.getShipLimits());
-        model.addAttribute("userId", userService.getLogInUser().getId());
+        model.addAttribute("userId", userService
+                .getUser(SecurityContextHolder.getContext().getAuthentication().getName())
+                .getId());
 
         return "add_ship";
     }

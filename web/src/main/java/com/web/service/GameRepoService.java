@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class GameRepoService {
@@ -22,17 +21,15 @@ public class GameRepoService {
     }
 
 
-    public void saveNewGame() {
-        User user = userService.getLogInUser();
+    public boolean saveNewGame(long userId) {
+        User user = userService.getLogInUser(userId);
         StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), user);
-
-        gameRepo.save(startGame);
+        return gameRepo.save(startGame) != null;
     }
 
-    public boolean checkIfLastGameExist(String userEmail) {
+    public boolean checkIfLastGameExistAndStatusIsSaved(String userEmail) {
         User user = userService.getUser(userEmail);
-        Optional<StartGame> byUserId = gameRepo.findByUserId(user.getId());
-        return gameRepo.findByUserId(user.getId()) != null;
+        return gameRepo.existsByUserId(user.getId());
     }
 
 }

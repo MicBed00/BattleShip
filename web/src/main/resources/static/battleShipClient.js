@@ -18,16 +18,21 @@ class BattleShipClient {
         this.get("/json/lastGame", null, null, onSuccess, onError);
     }
 
-    getStatusGameFromDataBase(id, onSuccess, onError) {
-        this.get("/json/listBoard/"+id, null, null, onSuccess, onError);
+    getStatusGameFromDataBase(userId, onSuccess, onError) {
+        this.get("/json/listBoard/"+userId, null, null, onSuccess, onError);
     }
 
-    getNewGame(onSuccess, onError) {
-        this.get("/json/newGame", null, null, onSuccess, onError)
+    saverEmptyStatusGame(onSuccess, onError) {
+        this.post("/json/newGame", null, null, onSuccess, onError)
     }
 
     getShips(onSuccess, onError) {
         this.get("/json/game/boards", null, null, onSuccess, onError);
+    }
+
+    saverNewGame(userId, onSuccess, onError) {
+        this.post("/json/game/save/"+userId, null, null, onSuccess, onError)
+
     }
 
     deleteLastAddedShip(idBoard,idShip, onSuccess, onError) {
@@ -99,7 +104,6 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
-
 
 }
 

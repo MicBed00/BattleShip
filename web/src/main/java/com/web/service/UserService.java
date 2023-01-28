@@ -61,14 +61,13 @@ public class UserService {
         return lastUser.getId();
     }
     //TODO Usera mogę wyciągnać z SecurityContex po stronie serwera
-     public User getLogInUser() {
+     public User getLogInUser(long userId) {
         //po zalogowaniu użytkownika mogę wyciągnąć z kontekstu bezpieczeństwa nazwę użytkownika
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return userRepository.findByEmail(userEmail).get();
+        //String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+         return userRepository.findById(userId).get();
     }
 
-    User getUser(String userEmail) {
+    public User getUser(String userEmail) {
        return userRepository.findByEmail(userEmail).get();
     }
 

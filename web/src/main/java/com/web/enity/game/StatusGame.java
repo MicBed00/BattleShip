@@ -11,6 +11,7 @@ import serialization.GameStatus;
 public class StatusGame {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy =GenerationType.IDENTITY )
     private Long id;
     @Column(name="status_game")

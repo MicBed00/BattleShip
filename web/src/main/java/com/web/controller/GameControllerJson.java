@@ -22,52 +22,50 @@ import java.util.List;
 @RequestMapping("json")
 public class GameControllerJson {
     private final GameStatusService gameStatusService;
-    private final GameStatusRepoService gameStatusRep;
+    private final GameStatusRepoService gameStatusRepoService;
 
     private final GameRepoService gameRepoService;
     @Autowired
     public GameControllerJson(GameStatusService gameStatusService,
-                              GameStatusRepoService gameStatusRep,
+                              GameStatusRepoService gameStatusRepoService,
                               GameRepoService gameRepoService)
     {
         this.gameStatusService = gameStatusService;
-        this.gameStatusRep = gameStatusRep;
+        this.gameStatusRepoService = gameStatusRepoService;
         this.gameRepoService = gameRepoService;
     }
 
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Long> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
+    public ResponseEntity<Boolean> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
         List<Board> boardsList = gameStatusService.chooseBoardPlayer(ship);
-        gameStatusRep.saveGameStatusToDataBase(boardsList, StatePreperationGame.IN_PROCCESS);
-
-        return ResponseEntity.ok(gameStatusRep.getLastIdDataBase());
+        return ResponseEntity.ok( gameStatusRepoService.saveGameStatusToDataBase(boardsList, StatePreperationGame.IN_PROCCESS));
     }
 
-    @GetMapping(value = "/listBoard/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> getListBoard(@PathVariable int id) {
-        //TODO tutaj trzeba zawócić game status i edytować metodę getBoards()
-        // userId-> tabela games (ostatnia gra Usera) -> gameId -> tabela games_statuses
-        return ResponseEntity.ok(gameStatusRep.getSavedStateGame(id).getGameStatus().getBoardsStatus());
+    @GetMapping(value = "/listBoard/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> getListBoard(@PathVariable int userId) {
+        return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
     }
+
 
     @GetMapping(value = "/game/boards/isFinished/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getList(@PathVariable int userId) {
         //TODO update endpoint finished muszę dodać do URL parametr userId
         if(gameStatusService.checkIfAllShipsAreHitted())
-            gameStatusRep.updateStatePreperationGame(userId, "FINISHED");
+            gameStatusRepoService.updateStatePreperationGame(userId, "FINISHED");
         return ResponseEntity.ok(gameStatusService.checkIfAllShipsAreHitted());
     }
 
     @GetMapping(value = "/game/boards/phaseGame/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StatePreperationGame> getPhaseGame(@PathVariable int id) {
-        return ResponseEntity.ok(gameStatusRep.getSavedStateGame(id).getGameStatus().getState());
+        StatePreperationGame state = gameStatusRepoService.getSavedStateGame(id).getGameStatus().getState();
+        return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(id).getGameStatus().getState());
     }
 
     @PostMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> addShot(@RequestBody Shot shot) {
         List<Board> boardListAfterShot = gameStatusService.addShotAtShip(shot);
-        gameStatusRep.saveGameStatusToDataBase(boardListAfterShot, StatePreperationGame.PREPARED);
+        gameStatusRepoService.saveGameStatusToDataBase(boardListAfterShot, StatePreperationGame.PREPARED);
         return ResponseEntity.ok(boardListAfterShot);
     }
 
@@ -90,27 +88,29 @@ public class GameControllerJson {
     @GetMapping(value="/lastGame", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getLastShipId(@CurrentSecurityContext SecurityContext securityContext) {
         String userEmail = securityContext.getAuthentication().getName();
-        return ResponseEntity.ok(  gameRepoService.checkIfLastGameExist(userEmail));
+        return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userEmail));
     }
 
     @Transactional
     @DeleteMapping(value = "/deleteShip/{idBoard}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard, @PathVariable int id) {
-        gameStatusRep.deleteLastShip(id);
+        gameStatusRepoService.deleteLastShip(id);
         //TODO poprawa logiki usuwania statków z tablicy
         return ResponseEntity.ok(gameStatusService.deleteShip(idBoard));
     }
 
     @PostMapping(value = "/rejected/{userId}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateStatusGame(@PathVariable String status, @PathVariable int userId) {
-        //TODO update endpoint upadateStatusGame
-        gameStatusRep.updateStatePreperationGame(userId, status);
-        //TODO do sprawdzenia ta część
+        gameStatusRepoService.updateStatePreperationGame(userId, status);
     }
-    @GetMapping(value = "/newGame", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Boolean> newGame() {
-        return ResponseEntity.ok(gameStatusRep.saveGameStatusToDataBase(gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
+    @PostMapping (value = "/newGame", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Boolean> saveNewStatusGame() {
+        return ResponseEntity.ok(gameStatusRepoService.saveGameStatusToDataBase(gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
     }
 
+    @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
+        return ResponseEntity.ok(gameRepoService.saveNewGame(userId));
+    }
 
 }
