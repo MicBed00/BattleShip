@@ -35,8 +35,8 @@ class BattleShipClient {
 
     }
 
-    deleteLastAddedShip(idBoard,idShip, onSuccess, onError) {
-        this.delete("/json/deleteShip/"+idBoard+"/"+idShip, null, null, onSuccess, onError);
+    deleteLastAddedShip(indexBoard,userId, onSuccess, onError) {
+        this.delete("/json/deleteShip/"+userId+"/"+indexBoard, null, null, onSuccess, onError);
     }
 
     shooterShip(x, y, onSuccess, onError) {

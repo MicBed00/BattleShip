@@ -65,7 +65,8 @@ function configurationGame(boardList) {
                 document.getElementById("ownerBoard").innerText = "Board's player 2";
             }, false);
         }
-    } else if (checkIfBoardPlayerTwoIsFull(boardsList)) {
+    } else if (checkIfBoardPlayerTwoIsNotFull(boardsList)) {
+        document.getElementById("ownerBoard").innerText = "Board's player 2";
         renderShip(boardList[1])
 
         if (boardList[1].ships.length === shipNumber) {
@@ -81,7 +82,7 @@ function configurationGame(boardList) {
 }
 
 
-function checkIfBoardPlayerTwoIsFull(boardsList) {
+function checkIfBoardPlayerTwoIsNotFull(boardsList) {
     return boardsList[0].ships.length === shipNumber && boardsList[1].ships.length <= shipNumber
 
 }
@@ -107,8 +108,6 @@ function resumeGame() {
                     //odtworzenie stanu Listy Boardów po stronie serwera za pomocą metody POST
                     new BattleShipClient().restoringStateBoardListOnServer(userId, (status, responseBody) => {
                         // if (status >= 200 && status <= 299)
-                            //chyba nie potrzebuje zwrotki
-                            alert("Zapis stanu boardów na serwerze!!")
                             }, (status, responseBody) => {
                         alert("Błąd przy odtwarzaniu stanu gry " + responseBody);
                     });
@@ -124,15 +123,8 @@ function startNewGame() {
                 //Zapisuję nową grę do tabeli games
                 new BattleShipClient().saverNewGame(userId,(status, responseBody) => {
                     if (status >= 200 && status <= 299) {
-                       //Zapisuje pusty status gry w game_statuses i w odpowiedzi dostaje
-                        new BattleShipClient().saverEmptyStatusGame((status, responseBody) => {
-                            if (status >= 200 && status <= 299) {
-                                table = renderShip(null);
-                                return table;
-                            }
-                        }, (status, responseBody) => {
-                            alert("Błąd przy wczytywaniu nowej gry " + responseBody);
-                        })
+                        table = renderShip(null);
+                        return table;
                     }
 
                 }, (status, responseBody) => {
@@ -146,30 +138,34 @@ function startNewGame() {
 }
 
 document.getElementById("backAction").addEventListener("click", function () {
-    var idShip;
-    //TODO delete statku z planszy do poprawy
     new BattleShipClient().getStatusGameFromDataBase(userId,(status, responseBody) => {
         if (status >= 200 && status <= 299) {
             boardsList = responseBody;
 
             if (checkIfStillBoardPlayerOne(boardsList)) {
-                new BattleShipClient().deleteLastAddedShip(0, idShip, (status, responseBody) => {
-
+                new BattleShipClient().deleteLastAddedShip(0, userId, (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementById("accept").disabled = true;
                         renderShip(responseBody[0]);
+                        if(responseBody[0].ships.length  === 0) {
+                            document.getElementById("backAction").disabled = true;
+                        }
+
                     }
                 }, (status, responseBody) => {
                     alert("Błąd " + status);
                 })
 
             } else {
-                new BattleShipClient().deleteLastAddedShip(1, idShip, (status, responseBody) => {
+                new BattleShipClient().deleteLastAddedShip(1, userId, (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementById("accept").disabled = true;
                         renderShip(responseBody[1]);
+                        if(responseBody[1].ships.length === 0) {
+                            document.getElementById("backAction").disabled = true;
+                        }
                     }
                 }, (status, responseBody) => {
                     alert("Błąd " + status);
@@ -263,15 +259,14 @@ function setup() {
 
                         if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
                             //Zapis nowej gry do bazy
-                            new BattleShipClient().saverEmptyStatusGame((status, responseBody) => {
+                            new BattleShipClient().saverNewGame(userId,(status, responseBody) => {
                                 if (status >= 200 && status <= 299) {
                                     table = renderShip(null);
                                     return table;
                                 }
                             }, (status, responseBody) => {
-                                alert("Błąd przy wczytywaniu nowej gry " + responseBody);
+                                alert("Błąd przy zapisywaniu nowej gry " + responseBody);
                             })
-
                         } else {
                             document.getElementById("id_resumeGame").hidden = false;
                         }
@@ -291,8 +286,6 @@ function setup() {
                 }, (status, responseBody) => {
                     alert("Błąd przy zapisywaniu nowej gry " + responseBody);
                 })
-                table = renderShip(null);
-                return table;
             }
         }
     }, (status, responseBody) => {

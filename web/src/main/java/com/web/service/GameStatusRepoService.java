@@ -53,8 +53,13 @@ public class GameStatusRepoService {
 
     }
     @Transactional
-    public void deleteLastShip(int idShip) {
-        repoStartGame.deleteById((long)idShip);
+    public void deleteLastShip(long userId, int indexBoad) {
+        Long gameId = repoStartGame.findMaxIdByUserId(userId).orElseThrow(
+                () -> new NoSuchElementException("Brak gry dla Usera")
+        );
+        repoStatusGame.deleteLast(gameId);
+        //TODO do obsłużenia wyjątek, gdy
+        gameStatusService.deleteShipFromServer(indexBoad);
     }
 
 

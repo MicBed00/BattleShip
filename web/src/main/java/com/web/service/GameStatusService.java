@@ -110,7 +110,7 @@ public class GameStatusService {
 
     }
 
-    public List<Board> deleteShip(int idBoard) {
+    public List<Board> deleteShipFromServer(int idBoard) {
         Board board  = boardList.get(idBoard);
         int lastIndex = board.getShips().size() - 1;
         board.getShips().remove(lastIndex);

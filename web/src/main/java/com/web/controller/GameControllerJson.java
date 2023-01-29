@@ -92,17 +92,17 @@ public class GameControllerJson {
     }
 
     @Transactional
-    @DeleteMapping(value = "/deleteShip/{idBoard}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int idBoard, @PathVariable int id) {
-        gameStatusRepoService.deleteLastShip(id);
-        //TODO poprawa logiki usuwania statków z tablicy
-        return ResponseEntity.ok(gameStatusService.deleteShip(idBoard));
+    @DeleteMapping(value = "/deleteShip/{userId}/{indexBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int userId, @PathVariable int indexBoard) {
+        gameStatusRepoService.deleteLastShip(userId, indexBoard);
+        return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
     }
 
     @PostMapping(value = "/rejected/{userId}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateStatusGame(@PathVariable String status, @PathVariable int userId) {
         gameStatusRepoService.updateStatePreperationGame(userId, status);
     }
+    //TODO ten endpoint będzie do usunięcia, operacja przeniesiona do endpointa /game/save/{userId}
     @PostMapping (value = "/newGame", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewStatusGame() {
         return ResponseEntity.ok(gameStatusRepoService.saveGameStatusToDataBase(gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
@@ -110,7 +110,7 @@ public class GameControllerJson {
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
-        return ResponseEntity.ok(gameRepoService.saveNewGame(userId));
+        return ResponseEntity.ok(gameRepoService.saveNewGame(userId, gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
     }
 
 }
