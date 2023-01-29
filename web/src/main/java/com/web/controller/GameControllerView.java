@@ -46,7 +46,6 @@ public class GameControllerView {
         return "redirect:/view/getParamGame";
     }
 
-
     @GetMapping(value = "/getParamGame")
     public String getParametersGame(Model model) {
         model.addAttribute("shipSize", gameStatusService.getShipSize());
