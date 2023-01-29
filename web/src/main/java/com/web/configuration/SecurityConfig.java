@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .requestMatchers("/img/**", "/styles/**").permitAll()
                 .anyRequest().authenticated()
         );
-        http.csrf().disable();
+//        http.csrf().disable();
         http.formLogin(login -> login
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/view/welcomeView", true));

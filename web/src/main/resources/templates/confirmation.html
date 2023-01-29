@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Rejestracja zakończona</title>
     <link rel="stylesheet" href="web/src/main/resources/static/styles/styleSuccessRegistration.css"  th:href="@{/styles/styleSuccessRegistration.css}"/>
     <link rel="stylesheet" href= "https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap">

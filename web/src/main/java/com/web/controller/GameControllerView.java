@@ -8,11 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("view")
@@ -54,6 +58,8 @@ public class GameControllerView {
         model.addAttribute("userId", userService
                 .getUser(SecurityContextHolder.getContext().getAuthentication().getName())
                 .getId());
+//        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+//        model.getAttribute("_csrf", csrfToken.getToken());
 
         return "add_ship";
     }
