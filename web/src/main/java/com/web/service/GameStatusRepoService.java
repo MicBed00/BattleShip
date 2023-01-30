@@ -48,10 +48,6 @@ public class GameStatusRepoService {
         return repoStartGame.findById(game_id).get();
     }
 
-    public Long getLastIdDataBase() {
-        return repoStatusGame.findMaxId().orElse(0L);
-
-    }
     @Transactional
     public void deleteLastShip(long userId, int indexBoad) {
         Long gameId = repoStartGame.findMaxIdByUserId(userId).orElseThrow(
@@ -63,7 +59,7 @@ public class GameStatusRepoService {
     }
 
 
-    public StatusGame getSavedStateGame(int userId) {
+    public StatusGame getSavedStateGame(long userId) {
         Long gameId = repoStartGame.findMaxIdByUserId(userId).orElseThrow(
                 () -> new NoSuchElementException("Brak gry dla Usera")
         );
@@ -71,7 +67,7 @@ public class GameStatusRepoService {
         return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("Brak zapisanego statusu gry"));
     }
     @Transactional
-    public void updateStatePreperationGame(int userId, String state) {
+    public void updateStatePreperationGame(long userId, String state) {
         StatusGame savedStateGame = getSavedStateGame(userId);
         savedStateGame.getGameStatus().setState(StatePreperationGame.valueOf(state));
         repoStatusGame.save(savedStateGame);

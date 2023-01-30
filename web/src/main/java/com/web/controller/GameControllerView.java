@@ -1,5 +1,6 @@
 package com.web.controller;
 
+import com.web.enity.user.User;
 import com.web.service.GameRepoService;
 import com.web.service.GameStatusRepoService;
 import com.web.service.GameStatusService;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +26,6 @@ public class GameControllerView {
     private final GameStatusService gameStatusService;
     private final GameStatusRepoService gameStatusRepoService;
     private final GameRepoService gameRepoService;
-
     private final UserService userService;
 
     @Autowired
@@ -41,7 +42,6 @@ public class GameControllerView {
 
     @GetMapping(value= "/welcomeView")
     public String welcome() {
-//        gameRepoService.saveNewGame();
         return "welcomeView";
     }
 
@@ -58,9 +58,6 @@ public class GameControllerView {
         model.addAttribute("userId", userService
                 .getUser(SecurityContextHolder.getContext().getAuthentication().getName())
                 .getId());
-//        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-//        model.getAttribute("_csrf", csrfToken.getToken());
-
         return "add_ship";
     }
 
@@ -69,10 +66,13 @@ public class GameControllerView {
         return "addShip_success";
     }
 
-    @GetMapping(value = "/game/{userId}")
-    public String getBoards(@PathVariable int userId) {
+    @GetMapping(value = "/game")
+    public String getBoards(Model model) {
         //TODO update endpoint getBoards /game
-        gameStatusRepoService.updateStatePreperationGame(userId, "PREPARED");
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUser(username);
+        gameStatusRepoService.updateStatePreperationGame(user.getId(), "PREPARED");
+        model.addAttribute("userId", user.getId());
         return "game";
     }
 

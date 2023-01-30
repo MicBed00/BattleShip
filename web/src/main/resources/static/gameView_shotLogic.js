@@ -6,29 +6,37 @@ var board1;
 var board2;
 renderBoards();
 var currentBoard = board1;
+var userId = document.getElementById("user_id").value;
 checkIfIsFinished();
 document.getElementById("id_resumeGame").hidden = false;
 
 function resumeGame() {
+    //TODO przy wznawianiu gry muszę sprawdzić na jakiej tablicy zakończyło się strzelanie i od jakiej tab zacząć strzelać
+    //aktualnie po wznowieniu tablica ładuje się ZAWSZE z domyślnym currentBoard = board1
+    //ocenę mogę dokonać na serwerze porównując rozmiar tablic Opponents shots
+
     document.getElementById("id_resumeGame").hidden = true;
-    var idShip;
-    new BattleShipClient().checkIfUserHasGameBefore((status, responseBody) => {
-        if (status >= 200 && status <= 299) {
-            idShip = responseBody;
 
             //gdy mam już id to wysyłam request do pobrania rekordu z bazy
             //TODO zamiast idShip należy przekazać userId wyciągniętego z context security
-            new BattleShipClient().getStatusGameFromDataBase(idShip, (status, responseBody) => {
+            new BattleShipClient().getStatusGameFromDataBase(userId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
-
-                   renderShot(responseBody);
-                   currentBoard = board2;
-                   renderShot(responseBody);
-                   currentBoard = board1;
+                    if(responseBody[0].opponentShots.length < responseBody[1].opponentShots.length) {
+                        currentBoard = board2;
+                        renderShot(responseBody);
+                        currentBoard = board1;
+                        renderShot(responseBody);
+                        currentBoard = board2;
+                    } else {
+                        renderShot(responseBody);
+                        currentBoard = board2;
+                        renderShot(responseBody);
+                        currentBoard = board1;
+                    }
 
                     //odtworzenie stanu Boardów w programie na serwerze za pomocą metody POST
                     //TODO zamiast idShip należy przekazać userId  wyciągniętego z context security
-                    new BattleShipClient().restoringStateBoardListOnServer(idShip, (status, responseBody) => {
+                    new BattleShipClient().restoringStateBoardListOnServer(userId, (status, responseBody) => {
                         // if (status >= 200 && status <= 299)
                         //chyba nie potrzebuje zwrotki
 
@@ -37,11 +45,7 @@ function resumeGame() {
                     });
                 }
             })
-        }
 
-    }, (status, responseBody) => {
-        alert("Błąd przy wznawianiu gry " + responseBody);
-    });
 }
 //TODO startGame() w rendershot
 function startNewGame() {
@@ -61,7 +65,6 @@ function shotAtShip(event) {
     if(table !== currentBoard) {
         new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
             if(status >= 200 && status <= 299) {
-                // new BattleShipClient().getStatusGameFromDataBase()
 
                 renderShot(responseBody, target);
                 currentBoard = currentBoard === board1 ? board2 : board1;
@@ -78,7 +81,7 @@ function shotAtShip(event) {
 
 
 function checkIfIsFinished() {
-    new BattleShipClient().getterStatusGame((status, responseBody) => {
+    new BattleShipClient().getterStatusGame(userId,(status, responseBody) => {
         if(responseBody === true) {
 
             alert("Koniec gry");
@@ -105,6 +108,7 @@ function renderShot(responseBody) {
     if(responseBody != null) {
         var boardShot = currentBoard === board1 ? board2 : board1;
         var index = currentBoard === board1 ? 1 : 0;
+        //TODO do przypomnienia sobie ta składnia z if
         for(const shot of responseBody[index].opponentShots) {
             //TODO zmienić w warunku if "HIT" na daną zaciąganą z serwera
             if(shot.state === "HIT") {

@@ -51,8 +51,8 @@ class BattleShipClient {
         this.post("/json/setupBoard/"+userId, null, null, onSuccess, onError);
     }
 
-    getterStatusGame(onSuccess, onError) {
-        this.get("/json/game/boards/isFinished", null, null, onSuccess, onError);
+    getterStatusGame(userId, onSuccess, onError) {
+        this.get("/json/game/boards/isFinished/"+userId, null, null, onSuccess, onError);
     }
 
     getPhaseGame(id, onSuccess, onError) {

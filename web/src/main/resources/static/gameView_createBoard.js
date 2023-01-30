@@ -1,3 +1,9 @@
+function redirect() {
+    var userName = document.getElementById("user_name").value;
+    window.location.href = "/view/game?"+id;
+}
+
+
 function createBoard(diff) {
     const tableShot = document.createElement("table");
     tableShot.id ="tableBoard"+diff;
