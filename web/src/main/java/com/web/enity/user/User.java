@@ -1,5 +1,6 @@
 package com.web.enity.user;
 
+import com.web.enity.game.StartGame;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,13 @@ public class User {
     )
     private Set<UserRole> roles = new HashSet<>();
 
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="user_games"
+            joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name="game_id", referencedColumnName = "id")
+    )
+    private Set<StartGame> games = new HashSet<>();
     public Long getId() {
         return id;
     }

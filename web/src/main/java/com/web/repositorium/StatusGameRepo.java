@@ -12,8 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface StatusGameRepo extends JpaRepository<StatusGame, Long> {
-    @Query(value="SELECT MAX(id) FROM game_statuses", nativeQuery = true)
-    Optional<Long> findMaxId();
 
     /*
     TODO Błąd w StatusGameRepo

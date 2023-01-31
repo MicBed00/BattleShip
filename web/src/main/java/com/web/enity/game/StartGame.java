@@ -16,7 +16,7 @@ public class StartGame {
     @Column
     private Timestamp date;
 
-    @ManyToOne
+    @ManyToMany
     @JoinColumn(name = "user_id")
     private User user;
 
