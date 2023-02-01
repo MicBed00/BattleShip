@@ -85,10 +85,9 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameStatusService.getShipLimits());
     }
 
-    @GetMapping(value="/lastGame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> getLastShipId(@CurrentSecurityContext SecurityContext securityContext) {
-        String userEmail = securityContext.getAuthentication().getName();
-        return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userEmail));
+    @GetMapping(value="/lastGame/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> getLastShipId(@PathVariable long userId) {
+        return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId));
     }
 
     @Transactional
@@ -101,11 +100,6 @@ public class GameControllerJson {
     @PostMapping(value = "/rejected/{userId}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateStatusGame(@PathVariable String status, @PathVariable int userId) {
         gameStatusRepoService.updateStatePreperationGame(userId, status);
-    }
-    //TODO ten endpoint będzie do usunięcia, operacja przeniesiona do endpointa /game/save/{userId}
-    @PostMapping (value = "/newGame", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Boolean> saveNewStatusGame() {
-        return ResponseEntity.ok(gameStatusRepoService.saveGameStatusToDataBase(gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
     }
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)

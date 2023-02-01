@@ -245,7 +245,7 @@ function setup() {
     });
 
 
-    new BattleShipClient().checkIfUserHasGameBefore((status, responseBody) => {
+    new BattleShipClient().checkIfUserHasGameBefore(userId,(status, responseBody) => {
         let gameExistForUser;
         if (status >= 200 && status <= 299) {
             gameExistForUser = responseBody;

@@ -5,7 +5,6 @@ import com.web.repositorium.UserRepo;
 import com.web.repositorium.UserRoleRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveUser(UserRegistrationDto userRegistrationDto) {
+    public void saveRegistrationUser(UserRegistrationDto userRegistrationDto) {
         User user = new User();
         user.setFirstName(userRegistrationDto.getFirstName());
         user.setLastName(userRegistrationDto.getLastName());
@@ -55,17 +54,19 @@ public class UserService {
         );
         userRepository.save(user);
     }
-
+    @Transactional
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
     public long getLastIdUser() {
         User lastUser = userRepository.findTopByOrderByIdDesc();
         return lastUser.getId();
     }
-    //TODO Usera mogę wyciągnać z SecurityContex po stronie serwera
      public User getLogInUser(long userId) {
-        //po zalogowaniu użytkownika mogę wyciągnąć z kontekstu bezpieczeństwa nazwę użytkownika
-        //String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
          return userRepository.findById(userId).get();
     }
+
+
 
     public User getUser(String userEmail) {
        return userRepository.findByEmail(userEmail).get();

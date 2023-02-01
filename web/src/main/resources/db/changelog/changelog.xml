@@ -20,4 +20,6 @@
         <include file="changeset/09_edit_name_table_startgame.sql" relativeToChangelogFile="true"/>
         <include file="changeset/10_edit_table_games.sql" relativeToChangelogFile="true"/>
         <include file="changeset/11_create_indexes.sql" relativeToChangelogFile="true"/>
+        <include file="changeset/12_implement_association_table_usergames.sql" relativeToChangelogFile="true"/>
+        <include file="changeset/13_edit_name_table_usergames.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

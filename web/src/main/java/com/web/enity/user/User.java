@@ -32,11 +32,20 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name="user_games"
+            name="users_games",
             joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name="game_id", referencedColumnName = "id")
     )
     private Set<StartGame> games = new HashSet<>();
+
+    public Set<StartGame> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<StartGame> games) {
+        this.games = games;
+    }
+
     public Long getId() {
         return id;
     }

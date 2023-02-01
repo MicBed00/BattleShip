@@ -33,7 +33,7 @@ public class GameStatusRepoService {
         this.repoStatusGame = repoStatusGame;
         this.userService = userService;
     }
-
+    @Transactional
     public boolean saveGameStatusToDataBase(List<Board> boardsList, StatePreperationGame state) {
         int currentPlayer = gameStatusService.getCurrentPlayer(boardsList);
         GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
@@ -50,7 +50,7 @@ public class GameStatusRepoService {
 
     @Transactional
     public void deleteLastShip(long userId, int indexBoad) {
-        Long gameId = repoStartGame.findMaxIdByUserId(userId).orElseThrow(
+        Long gameId = repoStartGame.findMaxId().orElseThrow(
                 () -> new NoSuchElementException("Brak gry dla Usera")
         );
         repoStatusGame.deleteLast(gameId);
@@ -60,7 +60,7 @@ public class GameStatusRepoService {
 
 
     public StatusGame getSavedStateGame(long userId) {
-        Long gameId = repoStartGame.findMaxIdByUserId(userId).orElseThrow(
+        Long gameId = repoStartGame.findMaxId().orElseThrow(
                 () -> new NoSuchElementException("Brak gry dla Usera")
         );
         Long idStatusGame = repoStatusGame.findMaxIdByGameId(gameId).get();

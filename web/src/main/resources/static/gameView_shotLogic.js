@@ -9,11 +9,10 @@ var currentBoard = board1;
 var userId = document.getElementById("user_id").value;
 checkIfIsFinished();
 document.getElementById("id_resumeGame").hidden = false;
-
+//TODO błąd - po przejściu do okna strzelania zawsze pojawia się okno Resume Game, nawet w sytuacji gdy nikt nie przerywa gry
 function resumeGame() {
     //TODO przy wznawianiu gry muszę sprawdzić na jakiej tablicy zakończyło się strzelanie i od jakiej tab zacząć strzelać
     //aktualnie po wznowieniu tablica ładuje się ZAWSZE z domyślnym currentBoard = board1
-    //ocenę mogę dokonać na serwerze porównując rozmiar tablic Opponents shots
 
     document.getElementById("id_resumeGame").hidden = true;
 
@@ -33,7 +32,6 @@ function resumeGame() {
                         renderShot(responseBody);
                         currentBoard = board1;
                     }
-
                     //odtworzenie stanu Boardów w programie na serwerze za pomocą metody POST
                     //TODO zamiast idShip należy przekazać userId  wyciągniętego z context security
                     new BattleShipClient().restoringStateBoardListOnServer(userId, (status, responseBody) => {

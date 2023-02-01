@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -15,16 +17,21 @@ public class StartGame {
     private Integer id;
     @Column
     private Timestamp date;
-
-    @ManyToMany
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "games")
+    private Set<User> users = new HashSet<>();
 
     public StartGame() {}
 
-    public StartGame(Timestamp date, User user) {
+    public StartGame(Timestamp date) {
         this.date = date;
-        this.user = user;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     public void setId(Integer id) {

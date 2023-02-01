@@ -14,16 +14,12 @@ class BattleShipClient {
         this.get("/json/setup", null, null, onSuccess, onError);
     }
 
-    checkIfUserHasGameBefore(onSuccess, onError) {
-        this.get("/json/lastGame", null, null, onSuccess, onError);
+    checkIfUserHasGameBefore(userId, onSuccess, onError) {
+        this.get("/json/lastGame/"+userId, null, null, onSuccess, onError);
     }
 
     getStatusGameFromDataBase(userId, onSuccess, onError) {
         this.get("/json/listBoard/"+userId, null, null, onSuccess, onError);
-    }
-
-    saverEmptyStatusGame(onSuccess, onError) {
-        this.post("/json/newGame", null, null, onSuccess, onError)
     }
 
     getShips(onSuccess, onError) {
@@ -94,7 +90,6 @@ class BattleShipClient {
             if (this.readyState === XMLHttpRequest.DONE)
                 if (this.status >= 200 && this.status <= 299) {
                     let body = this.responseText != null && this.responseText.length > 0 ? JSON.parse(this.responseText) : null;
-                    //let body = this.responseText;
                     success(this.status, body);
                 } else if (error !== undefined)
                     error(this.status, this.responseText);

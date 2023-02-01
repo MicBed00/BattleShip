@@ -5,6 +5,7 @@ import board.StatePreperationGame;
 import com.web.enity.game.StartGame;
 import com.web.enity.user.User;
 import com.web.repositorium.GameRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +28,19 @@ public class GameRepoService {
         this.gameStatusRepoService = gameStatusRepoService;
     }
 
-
+    @Transactional
     public boolean saveNewGame(long userId, List<Board> boardList, StatePreperationGame stateGame) {
         User user = userService.getLogInUser(userId);
-        StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()), user);
-        gameRepo.save(startGame);
+        StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
+        user.getGames().add(startGame);
+        //TODO tu był problem bo zapisywałem drugi raz obiekt User wykorzystywny w transakcji??
+        //userService.saveUser(user); //zapis usera po dodaniu do jego Setu gry
+        startGame.getUsers().add(user);
         return  gameRepo.save(startGame) != null && gameStatusRepoService.saveGameStatusToDataBase(boardList, stateGame);
     }
 
-    public boolean checkIfLastGameExistAndStatusIsSaved(String userEmail) {
-        User user = userService.getUser(userEmail);
-        return gameRepo.existsByUserId(user.getId());
+    public boolean checkIfLastGameExistAndStatusIsSaved(long userId) {
+        return !userService.getLogInUser(userId).getGames().isEmpty();
     }
 
 }
