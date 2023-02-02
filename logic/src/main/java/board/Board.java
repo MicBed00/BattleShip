@@ -31,6 +31,9 @@ public class Board {
         return opponentShots;
     }
 
+    public List<Ship> getHittedShip() {
+        return hittedShip;
+    }
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
         List<Ship> copyList = new ArrayList<>();
         int beforeAddNewShip = ships.size();

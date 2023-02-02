@@ -1,5 +1,6 @@
 package com.web.service;
 
+import board.StatePreperationGame;
 import dataConfig.Position;
 import dataConfig.ShipLimits;
 import board.Board;
@@ -7,6 +8,7 @@ import board.Shot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import serialization.GameStatus;
 import ship.Ship;
 
 import java.util.*;
@@ -20,7 +22,6 @@ public class GameStatusService {
     private Board boardPlayer2;
     private List<Set<Shot>> listSets;
     private Shot shot;
-
     private GameStatusRepoService gameStatusRepoService;
 
     @Autowired
@@ -127,13 +128,31 @@ public class GameStatusService {
 
         return 0;
     }
-    public void restoreGameStatusOnServer(int userId) {
-        List<Board> listBoard = gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus();
-        boardPlayer1 = listBoard.get(0);
-        boardPlayer2 = listBoard.get(1);
-        //dlaczego muszę kopiować nowe wartości do list, jeśli przypisuje do referencji boardPlayer1 i 2 nowe obiekty
-        //, a te refenracje są zapisane w liscie boardList
-        boardList = new ArrayList<>(listBoard);
+    public List<Board> restoreStatusGameFromDataBase(long userId) {
+        GameStatus gameStatus = gameStatusRepoService.getSavedStateGame(userId).getGameStatus();
+        StatePreperationGame stateGameSaveDB = gameStatus.getState();
+        List<Board> listBoard = gameStatus.getBoardsStatus();
+        if(stateGameSaveDB.equals(StatePreperationGame.REJECTED) || stateGameSaveDB.equals(StatePreperationGame.FINISHED)){
+            resetGame();
+            //TODO !!!!
+            return listBoard;
+        } else {
+            boardPlayer1 = listBoard.get(0);
+            boardPlayer2 = listBoard.get(1);
+            //dlaczego muszę kopiować nowe wartości do list, jeśli przypisuje do referencji boardPlayer1 i 2 nowe obiekty
+            //, a te refenracje są zapisane w liscie boardList
+            return boardList = new ArrayList<>(listBoard);
+        }
+    }
+    public void resetGame() {
+        boardPlayer1.getShips().clear();
+        boardPlayer1.getOpponentShots().clear();
+        boardPlayer1.getHittedShip().clear();
+        boardPlayer2.getShips().clear();
+        boardPlayer2.getOpponentShots().clear();
+        boardPlayer2.getHittedShip().clear();
+//        this.boardPlayer1 = new Board();
+//        this.boardPlayer2 = new Board();
     }
 
 }

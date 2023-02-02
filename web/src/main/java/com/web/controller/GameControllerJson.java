@@ -11,8 +11,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.*;
 import ship.Ship;
 
@@ -23,7 +21,6 @@ import java.util.List;
 public class GameControllerJson {
     private final GameStatusService gameStatusService;
     private final GameStatusRepoService gameStatusRepoService;
-
     private final GameRepoService gameRepoService;
     @Autowired
     public GameControllerJson(GameStatusService gameStatusService,
@@ -58,7 +55,7 @@ public class GameControllerJson {
 
     @GetMapping(value = "/game/boards/phaseGame/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StatePreperationGame> getPhaseGame(@PathVariable int id) {
-        StatePreperationGame state = gameStatusRepoService.getSavedStateGame(id).getGameStatus().getState();
+//        StatePreperationGame state = gameStatusRepoService.getSavedStateGame(id).getGameStatus().getState();
         return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(id).getGameStatus().getState());
     }
 
@@ -70,9 +67,9 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/setupBoard/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void setupBoardStatusOnServer(@PathVariable int userId) {
+    public void setupBoardStatusOnServer(@PathVariable long userId) {
         //TODO czy tak się odtwarza stan po stronie serwera w przypadku wznowienia gry??
-        gameStatusService.restoreGameStatusOnServer(userId);
+        gameStatusService.restoreStatusGameFromDataBase(userId);
     }
 
     @GetMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)

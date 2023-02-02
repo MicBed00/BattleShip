@@ -1,5 +1,6 @@
 package com.web.service;
 
+import com.web.enity.game.StartGame;
 import com.web.enity.user.*;
 import com.web.repositorium.UserRepo;
 import com.web.repositorium.UserRoleRepo;
@@ -8,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -72,5 +72,11 @@ public class UserService {
        return userRepository.findByEmail(userEmail).get();
     }
 
+    public StartGame getLastUserGames(long userId) {
+        User user = getLogInUser(userId);
+        List<StartGame> games = new ArrayList<>(user.getGames());
+        games.sort((game1, game2) -> game2.getDate().compareTo(game1.getDate()));
+        return games.get(0);
+    }
 }
 

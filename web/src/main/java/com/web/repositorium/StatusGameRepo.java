@@ -20,7 +20,7 @@ public interface StatusGameRepo extends JpaRepository<StatusGame, Long> {
            nativeQuery = true)
      */
     @Query(value="SELECT MAX(gs.id) FROM game_statuses gs WHERE gs.game_id = :gameId", nativeQuery = true)
-    Optional<Long> findMaxIdByGameId(@Param("gameId") long gameId);
+    Long findMaxIdByGameId(@Param("gameId") long gameId);
 
     @Modifying
     @Transactional

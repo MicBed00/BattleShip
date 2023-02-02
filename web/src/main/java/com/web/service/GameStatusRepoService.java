@@ -7,6 +7,7 @@ import com.web.enity.game.StatusGame;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
 import jakarta.transaction.Transactional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import serialization.GameStatus;
@@ -60,10 +61,10 @@ public class GameStatusRepoService {
 
 
     public StatusGame getSavedStateGame(long userId) {
-        Long gameId = repoStartGame.findMaxId().orElseThrow(
-                () -> new NoSuchElementException("Brak gry dla Usera")
-        );
-        Long idStatusGame = repoStatusGame.findMaxIdByGameId(gameId).get();
+        //TODO pobieranie ostatniej gry dla Usera do sprawdzenia
+        StartGame game = userService.getLastUserGames(userId);
+
+        Long idStatusGame = repoStatusGame.findMaxIdByGameId(game.getId());
         return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("Brak zapisanego statusu gry"));
     }
     @Transactional
