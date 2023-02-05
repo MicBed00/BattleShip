@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface GameRepo extends JpaRepository<StartGame,Long> {
+    //TODO błąd przy pobieraniu gry dla użytkownika
     @Query(value = "SELECT MAX(id) FROM games", nativeQuery = true)
     Optional<Long> findMaxId();
 

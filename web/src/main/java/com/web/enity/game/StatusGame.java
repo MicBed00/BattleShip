@@ -25,7 +25,6 @@ public class StatusGame {
     }
 
     public StatusGame(GameStatus gameStatus, StartGame game) {
-        this.id = id;
         this.gameStatus = gameStatus;
         this.game = game;
     }

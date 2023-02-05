@@ -96,6 +96,7 @@ class BattleShipClient {
         };
         var token = document.querySelector("meta[name='_csrf']").getAttribute("content");
         var header = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+        // csrfToken
         request.open(method.toUpperCase(), path, true);
         if(method.toUpperCase() !== "GET")
            request.setRequestHeader(header, token);

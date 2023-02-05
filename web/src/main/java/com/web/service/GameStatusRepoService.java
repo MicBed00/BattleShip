@@ -34,19 +34,15 @@ public class GameStatusRepoService {
         this.repoStatusGame = repoStatusGame;
         this.userService = userService;
     }
+
     @Transactional
     public boolean saveGameStatusToDataBase(List<Board> boardsList, StatePreperationGame state) {
         int currentPlayer = gameStatusService.getCurrentPlayer(boardsList);
         GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
-        StartGame game = getActualGame();
+        StartGame game = userService.getLastUserGames(userService.getUserId());
         StatusGame statusGame = new StatusGame(gameStatus, game);
 
         return repoStatusGame.save(statusGame) != null;
-    }
-
-    private StartGame getActualGame() {
-        Long game_id = repoStartGame.findMaxId().get();
-        return repoStartGame.findById(game_id).get();
     }
 
     @Transactional
@@ -63,7 +59,6 @@ public class GameStatusRepoService {
     public StatusGame getSavedStateGame(long userId) {
         //TODO pobieranie ostatniej gry dla Usera do sprawdzenia
         StartGame game = userService.getLastUserGames(userId);
-
         Long idStatusGame = repoStatusGame.findMaxIdByGameId(game.getId());
         return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("Brak zapisanego statusu gry"));
     }

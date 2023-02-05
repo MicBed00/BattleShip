@@ -6,6 +6,8 @@ import com.web.repositorium.UserRepo;
 import com.web.repositorium.UserRoleRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,10 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .map(UserCredentialsDtoMapper::map);
     }
+    public long getUserId() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getUser(userEmail).getId();
+    }
 
     @Transactional
     public void saveRegistrationUser(UserRegistrationDto userRegistrationDto) {
@@ -58,15 +64,9 @@ public class UserService {
     public void saveUser(User user) {
         userRepository.save(user);
     }
-    public long getLastIdUser() {
-        User lastUser = userRepository.findTopByOrderByIdDesc();
-        return lastUser.getId();
-    }
      public User getLogInUser(long userId) {
          return userRepository.findById(userId).get();
     }
-
-
 
     public User getUser(String userEmail) {
        return userRepository.findByEmail(userEmail).get();

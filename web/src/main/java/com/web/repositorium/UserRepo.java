@@ -12,10 +12,6 @@ import java.util.Optional;
 public interface UserRepo extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
-    User findTopByOrderByIdDesc();
-//
-//    @Query("SELECT * FROM users WHERE id = :userId ORDER BY ")
+//    @Query(value = "SELECT * FROM users WHERE id = :userId ORDER BY id DESC LIMIT 1", nativeQuery = true)
 //    StartGame findLatesGameForUser(@Param("userId") long userId);
-
-
 }

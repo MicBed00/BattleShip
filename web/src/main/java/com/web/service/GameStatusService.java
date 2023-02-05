@@ -151,8 +151,6 @@ public class GameStatusService {
         boardPlayer2.getShips().clear();
         boardPlayer2.getOpponentShots().clear();
         boardPlayer2.getHittedShip().clear();
-//        this.boardPlayer1 = new Board();
-//        this.boardPlayer2 = new Board();
     }
 
 }
