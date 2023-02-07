@@ -29,16 +29,4 @@ public class LoginController {
         return "login_form";
     }
 
-    @GetMapping(value ="/clean")
-    String logout() {
-        //po wylogowaniu czyszczę Boardy na serwerze
-        gameStatusService.resetGame();
-//        Board board1 = gameStatusService.getBoardList().get(0);
-//        board1 = new Board();
-//        Board board2 = gameStatusService.getBoardList().get(1);
-//        board2 = new Board();
-//        List<Board> boardList = gameStatusService.getBoardList();
-        System.out.println("Board List " + gameStatusService.getBoardList());
-        return "redirect:/login";
-    }
 }

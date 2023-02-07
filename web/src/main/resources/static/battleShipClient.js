@@ -58,6 +58,9 @@ class BattleShipClient {
     getShotsFromDataBase(id, onSuccess, onError) {
         this.get("/json/game/boards/shots/"+id, null, null, onSuccess, onError);
     }
+    getCsrfToken(onSuccess, onError) {
+        this.get("/json/csrf", null, null, onSuccess, onError);
+    }
 
     updateStatusGame(userId,status, onSuccess, onError) {
         this.post("/json/rejected/"+userId+"/"+status, null, null, onSuccess, onError);
@@ -98,8 +101,7 @@ class BattleShipClient {
         var header = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
         // csrfToken
         request.open(method.toUpperCase(), path, true);
-        if(method.toUpperCase() !== "GET")
-           request.setRequestHeader(header, token);
+        request.setRequestHeader(header, token);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }

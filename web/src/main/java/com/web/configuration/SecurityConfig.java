@@ -13,6 +13,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -23,7 +24,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/register", "/confirmation", "/success").permitAll()
+                .requestMatchers("/register", "/confirmation", "/success", "/json/csrf").permitAll()
                 .requestMatchers("/img/**", "/styles/**").permitAll()
                 .anyRequest().authenticated()
         );
@@ -32,8 +33,9 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/view/welcomeView", true));
         http.logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout/**", HttpMethod.GET.name()))
-                .logoutSuccessUrl("/clean").permitAll()
+                .logoutSuccessUrl("/login").permitAll()
                 );
+//        http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
 
         return http.build();
     }

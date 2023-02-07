@@ -134,7 +134,6 @@ public class GameStatusService {
         List<Board> listBoard = gameStatus.getBoardsStatus();
         if(stateGameSaveDB.equals(StatePreperationGame.REJECTED) || stateGameSaveDB.equals(StatePreperationGame.FINISHED)){
             resetGame();
-            //TODO !!!!
             return listBoard;
         } else {
             boardPlayer1 = listBoard.get(0);

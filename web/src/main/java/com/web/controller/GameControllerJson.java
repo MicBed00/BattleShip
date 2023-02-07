@@ -7,14 +7,22 @@ import com.web.service.GameRepoService;
 import com.web.service.GameStatusRepoService;
 import com.web.service.GameStatusService;
 import exceptions.BattleShipException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 import ship.Ship;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("json")
@@ -32,6 +40,12 @@ public class GameControllerJson {
         this.gameRepoService = gameRepoService;
     }
 
+    @GetMapping("/csrf")
+    public void csrf(CsrfToken token) {
+        // Return the CSRF token as a response header
+        HttpServletResponse response = ((ServletWebRequest) RequestContextHolder.currentRequestAttributes()).getResponse();
+        response.setHeader("X-CSRF-TOKEN", token.getToken());
+    }
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
@@ -55,7 +69,6 @@ public class GameControllerJson {
 
     @GetMapping(value = "/game/boards/phaseGame/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StatePreperationGame> getPhaseGame(@PathVariable int id) {
-//        StatePreperationGame state = gameStatusRepoService.getSavedStateGame(id).getGameStatus().getState();
         return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(id).getGameStatus().getState());
     }
 
@@ -87,6 +100,25 @@ public class GameControllerJson {
         return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId));
     }
 
+//    @GetMapping(value="/csrf", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<String> getLastShipId(HttpServletRequest request) {
+//        String csrfToken = request.getHeader("X-CSRF-TOKEN");
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("X-CSRF-TOKEN", csrfToken);
+//        return new ResponseEntity<>("Value", headers, HttpStatus.OK);
+//    }
+
+    @PostMapping(value = "/csrf", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> fetchValue(@RequestBody Map<String, Object> data, HttpServletRequest request) {
+        String csrfToken = request.getHeader("X-CSRF-TOKEN");
+        // ... add additional logic here ...
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-CSRF-TOKEN", csrfToken);
+        return new ResponseEntity<>("Value", headers, HttpStatus.OK);
+    }
+
+
     @Transactional
     @DeleteMapping(value = "/deleteShip/{userId}/{indexBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int userId, @PathVariable int indexBoard) {
@@ -101,6 +133,7 @@ public class GameControllerJson {
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
+        gameStatusService.resetGame();
         return ResponseEntity.ok(gameRepoService.saveNewGame(userId, gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
     }
 
