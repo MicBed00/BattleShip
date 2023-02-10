@@ -1,26 +1,17 @@
-package com.web.configuration;
+package com.web.configurationTest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
+//@Configuration
+public class SecurityConfigTest {
 
-//    mvcMatcher jest deprecated i zastąpiony requestMatchers
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
@@ -34,21 +25,12 @@ public class SecurityConfig {
         http.logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout/**", HttpMethod.GET.name()))
                 .logoutSuccessUrl("/login").permitAll()
-                );
+        );
         return http.build();
     }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        User.UserBuilder userBuilder = User.builder();
-//        UserDetails admin = userBuilder.username("admin@gmail.com").password("123").roles("ADMIN").build();
-//        UserDetails user1 = userBuilder.username("john").password("{noop}asdf1234").roles("USER").build();
-//        return new InMemoryUserDetailsManager(admin, user1);
-//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
 }
