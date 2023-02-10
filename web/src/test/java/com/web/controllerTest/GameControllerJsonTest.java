@@ -41,7 +41,7 @@ public class GameControllerJsonTest {
 //    @Value("${spring.security.user.password}")
 //    private String password;
 
-    String extractCSRFToken(String url, String tag, String attr, String sessionCookie) {
+    CsrfToken extractCSRFToken(String url, String tag, String attr, String sessionCookie) {
         //"http://localhost:"+port+ - napisz metodę buildUrl()
         HttpHeaders headers = new HttpHeaders();
         if(sessionCookie != null){
@@ -56,17 +56,22 @@ public class GameControllerJsonTest {
         String csrfToken = csrfTokenElement.attr(attr);
 
 
-
-        return csrfToken;
+        try {
+            sessionCookie = extractSessionCookie(response);
+        } catch (NullPointerException e) {
+        }
+        return new CsrfToken(csrfToken, sessionCookie);
     }
 
     private ResponseEntity<String> executeLogin() {
         HttpHeaders headers = new HttpHeaders();
+        CsrfToken token = extractCSRFToken("/login", "input", "value", null);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Cookie", token.session);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("username", "adam@gmail.com");
         map.add("password", "123");
-        map.add("_csrf", extractCSRFToken("/login", "input", "value", null));
+        map.add("_csrf", token.token);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:"+port+"/login" , request , String.class );
@@ -75,14 +80,19 @@ public class GameControllerJsonTest {
 
     private String login() {
         ResponseEntity<String> response = executeLogin();
+        return extractSessionCookie(response);
+    }
+
+    private static String extractSessionCookie(ResponseEntity<String> response) {
         return response.getHeaders().get("Set-Cookie").get(0).split(";")[0];
     }
+
     @Test
     void loginTest(){
         ResponseEntity<String> response = executeLogin();
-        //TODO dodać assercję na header Location
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FOUND);
         assertThat(response.getHeaders().get("Set-Cookie").get(0).startsWith("JSESSIONID")).isTrue();
+        assertThat(response.getHeaders().get("Location").get(0).contains("/view/welcomeView")).isTrue();
     }
 
 
@@ -90,11 +100,12 @@ public class GameControllerJsonTest {
     @Test
     void testAddShipToDataBaseWithCsrfToken() {
         String sessionCookie = login();
+        CsrfToken token = extractCSRFToken("/view/getParamGame", "meta", "content", sessionCookie);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 //        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         headers.set("Cookie", sessionCookie);
-        headers.set("X-CSRF-TOKEN", extractCSRFToken("/view/getParamGame", "meta", "content", sessionCookie));
+        headers.set("X-CSRF-TOKEN", token.token);
 
         //pobranie csrf token za pomocą metody GET
 //        HttpHeaders headersCSRF = new HttpHeaders();
@@ -117,12 +128,24 @@ public class GameControllerJsonTest {
 //
         Ship ship = new Ship(3, 1, 1, Position.VERTICAL);
         HttpEntity<Ship> requestWithToken = new HttpEntity<>(ship, headers);
-        ResponseEntity<Boolean> responseWithCsrfToken = restTemplate
+        ResponseEntity<String> responseWithCsrfToken = restTemplate
                 .postForEntity("http://localhost:"+port+"/json/addShip",
                 requestWithToken,
-                Boolean.class
+                String.class
         );
+        // TODO stacktrace pokaże, dlaczego dostajemy 500 tutaj - 	at com.web.service.UserService.getLastUserGames(UserService.java:79) - trzeba najpierw zacząć grę zanim dodamy statek :)
         //then
         assertThat(responseWithCsrfToken.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    class CsrfToken {
+
+        public final String token;
+        public final String session;
+
+        public CsrfToken(String token, String session) {
+            this.token = token;
+            this.session = session;
+        }
     }
 }
