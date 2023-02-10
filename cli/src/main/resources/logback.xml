@@ -34,9 +34,9 @@
     </appender>
 <!--    dla każdego pakietu można ustalic własny poziom logowania oraz hierarchię logów parent - child. Wyższy pakiet jest rodzicem,
 a pakiet zagnieżdżony jest dzieckiem-->
-    <logger name =  "control.ControlPanel" leve = "DEBUG" />
+    <logger name =  "control.ControlPanel" leve = "INFO" />
     <logger name =  "board.Board" leve = "INFO" />
-    <root level="debug">
+    <root level="info">
 <!--        poniżej podajemy nazwę, która reprezentuje daną klasę/pakiet. Dopiero po zadeklarowaniu nazwy w tym miejscu logowanie zacznie działać-->
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />

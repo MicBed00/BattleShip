@@ -12,10 +12,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 //@Configuration
 public class SecurityConfigTest {
 
-    @Bean
+//    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/register", "/confirmation", "/success", "/view/getParamGame").permitAll()
+                .requestMatchers("/register", "/confirmation", "/success").permitAll()
                 .requestMatchers("/img/**", "/styles/**").permitAll()
                 .anyRequest().authenticated()
         );
@@ -29,7 +29,7 @@ public class SecurityConfigTest {
         return http.build();
     }
 
-    @Bean
+//    @Bean
     PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }

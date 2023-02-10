@@ -1,5 +1,8 @@
 package com.web.configuration;
 
+import com.web.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,10 +24,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
 //    mvcMatcher jest deprecated i zastąpiony requestMatchers
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.userDetailsService(customUserDetailsService);
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/register", "/confirmation", "/success", "/view/getParamGame").permitAll()
+                .requestMatchers("/register", "/confirmation", "/success").permitAll()
                 .requestMatchers("/img/**", "/styles/**").permitAll()
                 .anyRequest().authenticated()
         );
