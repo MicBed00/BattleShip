@@ -40,13 +40,6 @@ public class GameControllerJson {
         this.gameRepoService = gameRepoService;
     }
 
-    @GetMapping("/csrf")
-    public void csrf(CsrfToken token) {
-        // Return the CSRF token as a response header
-        HttpServletResponse response = ((ServletWebRequest) RequestContextHolder.currentRequestAttributes()).getResponse();
-        response.setHeader("X-CSRF-TOKEN", token.getToken());
-    }
-
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
         List<Board> boardsList = gameStatusService.chooseBoardPlayer(ship);
@@ -100,25 +93,6 @@ public class GameControllerJson {
         return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId));
     }
 
-//    @GetMapping(value="/csrf", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<String> getLastShipId(HttpServletRequest request) {
-//        String csrfToken = request.getHeader("X-CSRF-TOKEN");
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("X-CSRF-TOKEN", csrfToken);
-//        return new ResponseEntity<>("Value", headers, HttpStatus.OK);
-//    }
-
-    @PostMapping(value = "/csrf", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> fetchValue(@RequestBody Map<String, Object> data, HttpServletRequest request) {
-        String csrfToken = request.getHeader("X-CSRF-TOKEN");
-        // ... add additional logic here ...
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-CSRF-TOKEN", csrfToken);
-        return new ResponseEntity<>("Value", headers, HttpStatus.OK);
-    }
-
-
     @Transactional
     @DeleteMapping(value = "/deleteShip/{userId}/{indexBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int userId, @PathVariable int indexBoard) {
@@ -133,6 +107,7 @@ public class GameControllerJson {
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
+        //TODO tu zapisuje nową grę
         gameStatusService.resetGame();
         return ResponseEntity.ok(gameRepoService.saveNewGame(userId, gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
     }

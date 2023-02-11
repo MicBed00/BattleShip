@@ -74,6 +74,7 @@ public class UserService {
 
     public StartGame getLastUserGames(long userId) {
         User user = getLogInUser(userId);
+        //TODO brak gry w bazie
         List<StartGame> games = new ArrayList<>(user.getGames());
         games.sort((game1, game2) -> game2.getDate().compareTo(game1.getDate()));
         return games.get(0);
