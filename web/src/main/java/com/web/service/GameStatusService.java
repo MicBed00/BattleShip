@@ -143,6 +143,13 @@ public class GameStatusService {
             return boardList = new ArrayList<>(listBoard);
         }
     }
+
+    public Boolean statusGameInServerIsProperForGame(long userId) {
+        GameStatus gameStatus = gameStatusRepoService.getSavedStateGame(userId).getGameStatus();
+        List<Board> boardsFromDataBase = gameStatus.getBoardsStatus();
+
+        return boardList.equals(boardsFromDataBase);
+    }
     public void resetGame() {
         boardPlayer1.getShips().clear();
         boardPlayer1.getOpponentShots().clear();

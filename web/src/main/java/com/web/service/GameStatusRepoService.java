@@ -48,7 +48,7 @@ public class GameStatusRepoService {
     @Transactional
     public void deleteLastShip(long userId, int indexBoad) {
         Long gameId = repoStartGame.findMaxId().orElseThrow(
-                () -> new NoSuchElementException("Brak gry dla Usera")
+                () -> new NoSuchElementException("User has not yet added the ship")
         );
         repoStatusGame.deleteLast(gameId);
         //TODO do obsłużenia wyjątek, gdy
@@ -60,7 +60,7 @@ public class GameStatusRepoService {
         //TODO pobieranie ostatniej gry dla Usera do sprawdzenia
         StartGame game = userService.getLastUserGames(userId);
         Long idStatusGame = repoStatusGame.findMaxIdByGameId(game.getId());
-        return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("Brak zapisanego statusu gry"));
+        return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("User has not yet added the ship"));
     }
     @Transactional
     public void updateStatePreperationGame(long userId, String state) {

@@ -73,9 +73,10 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/setupBoard/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void setupBoardStatusOnServer(@PathVariable long userId) {
+    public ResponseEntity<Boolean> setupBoardStatusOnServer(@PathVariable long userId) {
         //TODO czy tak się odtwarza stan po stronie serwera w przypadku wznowienia gry??
         gameStatusService.restoreStatusGameFromDataBase(userId);
+        return ResponseEntity.ok(gameStatusService.statusGameInServerIsProperForGame(userId));
     }
 
     @GetMapping(value = "/game/boards", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -100,8 +101,8 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
     }
 
-    @PostMapping(value = "/rejected/{userId}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void updateStatusGame(@PathVariable String status, @PathVariable int userId) {
+    @PostMapping(value = "/rejected/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateStatusGame(@RequestBody String status, @PathVariable long userId) {
         gameStatusRepoService.updateStatePreperationGame(userId, status);
     }
 

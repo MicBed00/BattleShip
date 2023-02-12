@@ -106,7 +106,13 @@ function resumeGame() {
 
                     //odtworzenie stanu Listy Boardów po stronie serwera za pomocą metody POST
                     new BattleShipClient().restoringStateBoardListOnServer(userId, (status, responseBody) => {
-                        // if (status >= 200 && status <= 299)
+                         if (status >= 200 && status <= 299){
+                             var recoveredStatusGame = responseBody;
+
+                             if(recoveredStatusGame === false) {
+                                 alert("Błąd przy przywracaniu statusu gry na serwerze");
+                             }
+                         }
                             }, (status, responseBody) => {
                         alert("Błąd przy odtwarzaniu stanu gry " + responseBody);
                     });
