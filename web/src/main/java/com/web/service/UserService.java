@@ -65,11 +65,19 @@ public class UserService {
         userRepository.save(user);
     }
      public User getLogInUser(long userId) {
-         return userRepository.findById(userId).get();
+         return userRepository.findById(userId).orElseThrow(
+                 () -> {
+                     throw new NoSuchElementException("No user with id "+ userId);
+                 }
+         );
     }
 
     public User getUser(String userEmail) {
-       return userRepository.findByEmail(userEmail).get();
+       return userRepository.findByEmail(userEmail).orElseThrow(
+               () -> {
+                   throw new NoSuchElementException("No user named "+ userEmail);
+               }
+       );
     }
 
     public StartGame getLastUserGames(long userId) {

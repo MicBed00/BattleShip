@@ -7,22 +7,14 @@ import com.web.service.GameRepoService;
 import com.web.service.GameStatusRepoService;
 import com.web.service.GameStatusService;
 import exceptions.BattleShipException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletWebRequest;
 import ship.Ship;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("json")
@@ -54,7 +46,6 @@ public class GameControllerJson {
 
     @GetMapping(value = "/game/boards/isFinished/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getList(@PathVariable int userId) {
-        //TODO update endpoint finished muszę dodać do URL parametr userId
         if(gameStatusService.checkIfAllShipsAreHitted())
             gameStatusRepoService.updateStatePreperationGame(userId, "FINISHED");
         return ResponseEntity.ok(gameStatusService.checkIfAllShipsAreHitted());
@@ -85,7 +76,7 @@ public class GameControllerJson {
     }
 
     @GetMapping(value = "/setup", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> getSetpu() {
+    public ResponseEntity<Integer> getSetup() {
         return ResponseEntity.ok(gameStatusService.getShipLimits());
     }
 
@@ -108,7 +99,6 @@ public class GameControllerJson {
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
-        //TODO tu zapisuje nową grę
         gameStatusService.resetGame();
         return ResponseEntity.ok(gameRepoService.saveNewGame(userId, gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
     }

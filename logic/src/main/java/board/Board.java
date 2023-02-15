@@ -193,7 +193,7 @@ public class Board {
         AtomicBoolean isFinished = new AtomicBoolean(true);
 
         if (ships.isEmpty())
-            isFinished.set(false);
+            throw new NoSuchElementException("Empty ship list");
 
         ships.forEach(ship -> {
             if (!ship.checkIfDead())

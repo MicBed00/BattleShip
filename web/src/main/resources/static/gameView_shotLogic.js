@@ -16,8 +16,6 @@ function resumeGame() {
 
     document.getElementById("id_resumeGame").hidden = true;
 
-            //gdy mam już id to wysyłam request do pobrania rekordu z bazy
-            //TODO zamiast idShip należy przekazać userId wyciągniętego z context security
             new BattleShipClient().getStatusGameFromDataBase(userId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
                     if(responseBody[0].opponentShots.length < responseBody[1].opponentShots.length) {
@@ -33,7 +31,6 @@ function resumeGame() {
                         currentBoard = board1;
                     }
                     //odtworzenie stanu Boardów w programie na serwerze za pomocą metody POST
-                    //TODO zamiast idShip należy przekazać userId  wyciągniętego z context security
                     new BattleShipClient().restoringStateBoardListOnServer(userId, (status, responseBody) => {
                         // if (status >= 200 && status <= 299)
                         //chyba nie potrzebuje zwrotki
@@ -45,7 +42,6 @@ function resumeGame() {
             })
 
 }
-//TODO startGame() w rendershot
 function startNewGame() {
     document.getElementById("id_resumeGame").hidden = true;
     renderShot(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
