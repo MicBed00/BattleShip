@@ -34,7 +34,7 @@ public class GameControllerJson {
 
     @PostMapping(value = "/addShip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> addShiptoList(@RequestBody Ship ship) throws BattleShipException {
-        List<Board> boardsList = gameStatusService.chooseBoardPlayer(ship);
+        List<Board> boardsList = gameStatusService.addShipToList(ship);
         return ResponseEntity.ok( gameStatusRepoService.saveGameStatusToDataBase(boardsList, StatePreperationGame.IN_PROCCESS));
     }
 

@@ -66,7 +66,7 @@ public class GameStatusService {
         return boardList;
     }
 
-    public List<Board> chooseBoardPlayer(Ship ship) {
+    public List<Board> addShipToList(Ship ship) {
 
         if(ship.getLength() > 0 && ship.getPosition() != null) {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
@@ -120,12 +120,11 @@ public class GameStatusService {
 
     public int getCurrentPlayer(List<Board> boardsList) {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
-
                 return 1;
             }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {
                 return 2;
             }
-
+            //TODO w tym miejscu wyrzucić wyjątek zamist tego zera
         return 0;
     }
     public List<Board> restoreStatusGameFromDataBase(long userId) {

@@ -169,8 +169,6 @@ public class Board {
                     hittedShip.add(ship);
                 }
             });
-        } else {
-            shot.setState(Shot.State.INVALID);
         }
         opponentShots.add(shot);
         return opponentShots;
@@ -179,6 +177,7 @@ public class Board {
     private boolean correctShot(Shot shot) {
         if (shotSamePlace(shot)) {
             log.warn("Shoot in the same place");
+            shot.setState(Shot.State.INVALID);
             throw new ShotSamePlaceException(user.messageBundle("shotSamePlaceException"));
         }
         return true;
