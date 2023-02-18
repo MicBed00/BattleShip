@@ -1,4 +1,4 @@
-package com.web.serviceTest;
+package com.web.service;
 
 import board.Board;
 import board.Shot;
@@ -9,8 +9,10 @@ import exceptions.OutOfBoundsException;
 import exceptions.ShotSamePlaceException;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.junit.jupiter.api.Assertions.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -26,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@TestPropertySource(locations = "classpath:emptyUnitTest.properties")
+//@ExtendWith(MockitoExtension.class)
 public class GameStatusServiceTest {
 
     @Autowired

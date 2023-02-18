@@ -60,10 +60,7 @@ public class UserService {
         );
         userRepository.save(user);
     }
-    @Transactional
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
+
      public User getLogInUser(long userId) {
          return userRepository.findById(userId).orElseThrow(
                  () -> {
