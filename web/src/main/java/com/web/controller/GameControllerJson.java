@@ -88,7 +88,7 @@ public class GameControllerJson {
     @Transactional
     @DeleteMapping(value = "/deleteShip/{userId}/{indexBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int userId, @PathVariable int indexBoard) {
-        gameStatusRepoService.deleteLastShip(userId, indexBoard);
+        gameStatusRepoService.deleteLastShip(indexBoard);
         return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
     }
 

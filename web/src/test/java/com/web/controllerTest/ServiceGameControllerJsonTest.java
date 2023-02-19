@@ -1,4 +1,4 @@
-package com.web.configurationTest;
+package com.web.controllerTest;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,7 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @Configuration
-public class ServiceTests {
+public class ServiceGameControllerJsonTest {
 
     public String buildUrl(String endpoint, int port) {
         return "http://localhost:" + port + endpoint;

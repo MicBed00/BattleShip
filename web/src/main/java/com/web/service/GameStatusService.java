@@ -118,7 +118,7 @@ public class GameStatusService {
         return boardList;
     }
 
-    public int getCurrentPlayer(List<Board> boardsList) {
+    public int getCurrentPlayer() {
             if(checkIsOverTheLimitShip(boardPlayer1.getShips().size())) {
                 return 1;
             }else if(checkIsOverTheLimitShip(boardPlayer2.getShips().size())) {

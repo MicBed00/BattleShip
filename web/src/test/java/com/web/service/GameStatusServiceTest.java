@@ -315,7 +315,7 @@ public class GameStatusServiceTest {
         //when
         List<Board> boardList = gameStatusService.getBoardList();
         //then
-        assertEquals(2, gameStatusService.getCurrentPlayer(boardList));
+        assertEquals(2, gameStatusService.getCurrentPlayer());
     }
 
     @DirtiesContext

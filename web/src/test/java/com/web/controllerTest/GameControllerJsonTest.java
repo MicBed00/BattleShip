@@ -4,7 +4,6 @@ import java.lang.Void;
 
 import board.Shot;
 import board.StatePreperationGame;
-import com.web.configurationTest.ServiceTests;
 import com.web.service.GameStatusService;
 import dataConfig.Position;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ public class GameControllerJsonTest {
     GameStatusService gameStatusService;
 
     @Autowired
-    ServiceTests serviceTests;
+    ServiceGameControllerJsonTest serviceTests;
 
 
     @DirtiesContext

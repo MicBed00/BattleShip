@@ -37,36 +37,36 @@ public class GameStatusRepoService {
 
     @Transactional
     public boolean saveGameStatusToDataBase(List<Board> boardsList, StatePreperationGame state) {
-        int currentPlayer = gameStatusService.getCurrentPlayer(boardsList);
+        int currentPlayer = gameStatusService.getCurrentPlayer();
         GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
-        StartGame game = userService.getLastUserGames(userService.getUserId());
+        long userId = userService.getUserId();
+        StartGame game = userService.getLastUserGames(userId);
         StatusGame statusGame = new StatusGame(gameStatus, game);
 
         return repoStatusGame.save(statusGame) != null;
     }
 
     @Transactional
-    public void deleteLastShip(long userId, int indexBoad) {
+    public void deleteLastShip(int indexBoard) {
         Long gameId = repoStartGame.findMaxId().orElseThrow(
                 () -> new NoSuchElementException("User has not yet added the ship")
         );
         repoStatusGame.deleteLast(gameId);
         //TODO do obsłużenia wyjątek, gdy
-        gameStatusService.deleteShipFromServer(indexBoad);
+        gameStatusService.deleteShipFromServer(indexBoard);
     }
 
 
     public StatusGame getSavedStateGame(long userId) {
-        //TODO pobieranie ostatniej gry dla Usera do sprawdzenia
         StartGame game = userService.getLastUserGames(userId);
         Long idStatusGame = repoStatusGame.findMaxIdByGameId(game.getId());
         return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("User has not yet added the ship"));
     }
     @Transactional
-    public void updateStatePreperationGame(long userId, String state) {
+    public StatusGame updateStatePreperationGame(long userId, String state) {
         StatusGame savedStateGame = getSavedStateGame(userId);
         savedStateGame.getGameStatus().setState(StatePreperationGame.valueOf(state));
-        repoStatusGame.save(savedStateGame);
+        return repoStatusGame.save(savedStateGame);
     }
 
 

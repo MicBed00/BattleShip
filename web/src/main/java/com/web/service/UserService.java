@@ -5,6 +5,7 @@ import com.web.enity.user.*;
 import com.web.repositorium.UserRepo;
 import com.web.repositorium.UserRoleRepo;
 import jakarta.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,7 +45,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveRegistrationUser(UserRegistrationDto userRegistrationDto) {
+    public User saveRegistrationUser(UserRegistrationDto userRegistrationDto) {
         User user = new User();
         user.setFirstName(userRegistrationDto.getFirstName());
         user.setLastName(userRegistrationDto.getLastName());
@@ -58,10 +59,10 @@ public class UserService {
                     throw new NoSuchElementException();
                 }
         );
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
-     public User getLogInUser(long userId) {
+    public User getLogInUser(long userId) {
          return userRepository.findById(userId).orElseThrow(
                  () -> {
                      throw new NoSuchElementException("No user with id "+ userId);

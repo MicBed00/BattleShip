@@ -18,7 +18,7 @@ function adderShip(event) {
         //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
         if (status >= 200 && status <= 299) {
             resetParam()
-
+            alert("Response Body " + responseBody);
             new BattleShipClient().getStatusGameFromDataBase(userId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
 
