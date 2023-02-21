@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     /*wykorzystuje metodę findCredentialsByEmail(username) zwracającą UserCredentialDto.
         Wykorzystuję obiekt pośredni Dto żeby nie operować na encji w innych klasach.
-        UserCredentialDto odpowiada obiektowi UserDetialsManager zwracanym przez Springa
+        UserCredentialDto odpowiada obiektowi UserDetialsManager zwracanym przez Springa.
         Klasa impementująca interfejs UserDetailsService jest to źródło użytkowników, musi nadpisać metodę loadUserByUsername
         i ta metoda musi zwracać UserDetails. Ten obiekt z klasy impelentującej USerDetailsSerive jest
         podawany do klasy DaoAuthenticationProvider gdzie następuje uwierzytelnienie - tzn porównanie danych zawartych

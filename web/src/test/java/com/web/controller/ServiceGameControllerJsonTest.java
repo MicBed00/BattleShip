@@ -1,4 +1,4 @@
-package com.web.controllerTest;
+package com.web.controller;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

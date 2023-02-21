@@ -59,7 +59,8 @@ class GameStatusRepoServiceTest {
         List<Board> list = new ArrayList<>();
         list.add(new Board());
         list.add(new Board());
-        given(gameStatusService.getCurrentPlayer()).willReturn(1);
+        int currentPlayer = 1;
+        given(gameStatusService.getCurrentPlayer()).willReturn(currentPlayer);
         long userId = 1;
         given(userService.getUserId()).willReturn(userId);
         StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
@@ -67,9 +68,11 @@ class GameStatusRepoServiceTest {
         given(userService.getLastUserGames(userId)).willReturn(startGame);
 
         //when
-        boolean result = gameStatusRepoService.saveGameStatusToDataBase(list, StatePreperationGame.IN_PROCCESS);
+        gameStatusRepoService.saveGameStatusToDataBase(list, StatePreperationGame.IN_PROCCESS);
 
         //then
+        verify(gameStatusService, times(1)).getCurrentPlayer();
+        verify(userService, times(1)).getUserId();
         verify(repoStatusGame, times(1)).save(any(StatusGame.class));
     }
 
@@ -84,6 +87,7 @@ class GameStatusRepoServiceTest {
         gameStatusRepoService.deleteLastShip(index);
 
         //then
+        verify(repoStartGame).findMaxId();
         verify(repoStatusGame).deleteLast(gameId);
         verify(gameStatusService).deleteShipFromServer(index);
     }

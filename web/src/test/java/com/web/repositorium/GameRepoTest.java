@@ -29,11 +29,14 @@ class GameRepoTest {
     @Test
     void shouldfindMaxIdGame() {
         //given
-        gameRepo.save(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
+        StartGame save = gameRepo.save(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
         gameRepo.save(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
         //when
         Long maxId = gameRepo.findMaxId().get();
         //then
         assertEquals(2,maxId);
+        assertNotNull(save);
     }
+
+
 }

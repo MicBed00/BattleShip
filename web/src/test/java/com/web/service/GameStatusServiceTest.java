@@ -2,21 +2,15 @@ package com.web.service;
 
 import board.Board;
 import board.Shot;
-import com.web.service.GameStatusService;
 import dataConfig.Position;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShotSamePlaceException;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.junit.jupiter.api.Assertions.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import ship.Ship;
 
@@ -30,6 +24,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@ExtendWith(MockitoExtension.class)
 public class GameStatusServiceTest {
+//TODO czemu nie działa z mockiem?
+//    @Mock
+//    private GameStatusRepoService gameStatusRepoService;
+//    private AutoCloseable autoCloseable;
+//    private GameStatusService gameStatusService;
+//    @BeforeEach
+//    void setUp() {
+//        autoCloseable = MockitoAnnotations.openMocks(this);
+//        gameStatusService = new GameStatusService(gameStatusRepoService);
+//    }
+//
+//    @AfterEach
+//    void tearDown() throws Exception {
+//        autoCloseable.close();
+//    }
 
     @Autowired
     GameStatusService gameStatusService;

@@ -1,4 +1,4 @@
-package com.web.controllerTest;
+package com.web.controller;
 
 import java.lang.Void;
 

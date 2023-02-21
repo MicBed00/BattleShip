@@ -94,8 +94,7 @@ class GameRepoServiceTest {
         //given
         long userId = 1L;
         User user = new User();
-        Set<StartGame> games = user.getGames();
-        games.add(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
+        user.getGames().add(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
         when(userService.getLogInUser(userId)).thenReturn(user);
 
         //when
