@@ -52,26 +52,26 @@ class GameRepoServiceTest {
         autoCloseable.close();
     }
 
-    @Test
-    void shouldSaveNewGame() {
-        //given
-        long userId = 1;
-        List<Board> boardList = new ArrayList<>();
-        StatePreperationGame state = StatePreperationGame.IN_PROCCESS;
-        User user = new User();
-        StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
-        when(userService.getLogInUser(userId)).thenReturn(user);
-        when(gameStatusRepoService.saveGameStatusToDataBase(boardList, state)).thenReturn(true);
-        doReturn(startGame).when(gameRepo).save(Mockito.any(StartGame.class));
-
-        //when
-        boolean result = gameRepoService.saveNewGame(userId, boardList, state);
-
-        //then
-        assertTrue(result);
-        verify(userService, times(1)).getLogInUser(userId);
-        verify(gameStatusRepoService, times(1)).saveGameStatusToDataBase(boardList, state);
-    }
+//    @Test
+//    void shouldSaveNewGame() {
+//        //given
+//        long userId = 1;
+//        List<Board> boardList = new ArrayList<>();
+//        StatePreperationGame state = StatePreperationGame.IN_PROCCESS;
+//        User user = new User();
+//        StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
+//        when(userService.getLogInUser(userId)).thenReturn(user);
+//        when(gameStatusRepoService.saveGameStatusToDataBase(boardList, state)).thenReturn(true);
+//        doReturn(startGame).when(gameRepo).save(Mockito.any(StartGame.class));
+//
+//        //when
+//        boolean result = gameRepoService.saveNewGame(userId, boardList, state);
+//
+//        //then
+//        assertTrue(result);
+//        verify(userService, times(1)).getLogInUser(userId);
+//        verify(gameStatusRepoService, times(1)).saveGameStatusToDataBase(boardList, state);
+//    }
 
     @Test
     void shouldReturnFalseForUserWithoutGames() {

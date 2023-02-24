@@ -56,6 +56,14 @@ public class GameStatusRepoService {
         gameStatusService.deleteShipFromServer(indexBoard);
     }
 
+    public StatusGame getStatusForGame(int idGame) {
+        Long idStatusGame = repoStatusGame.findMaxIdByGameId(idGame);
+        return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("User has not yet added the ship"));
+    }
+
+    public Integer getGameId(long statusId) {
+        return repoStatusGame.findGameIdById(statusId).orElseThrow(() -> new NoSuchElementException("No games for status"));
+    }
 
     public StatusGame getSavedStateGame(long userId) {
         StartGame game = userService.getLastUserGames(userId);

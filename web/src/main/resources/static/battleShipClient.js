@@ -9,7 +9,9 @@ class BattleShipClient {
         };
         this.post("/json/addShip", JSON.stringify(shipObject), null, onSuccess, onError);
     }
-
+    addSecondPlayerToGame(userId, gameId, onSuccess, onError) {
+        this.post("/json/addSecondPlayer/"+userId+"/"+gameId, null, null, onSuccess, onError);
+    }
     getSetupsBoard(onSuccess, onError) {
         this.get("/json/setup", null, null, onSuccess, onError);
     }
@@ -20,10 +22,6 @@ class BattleShipClient {
 
     getStatusGameFromDataBase(userId, onSuccess, onError) {
         this.get("/json/listBoard/"+userId, null, null, onSuccess, onError);
-    }
-
-    getShips(onSuccess, onError) {
-        this.get("/json/game/boards", null, null, onSuccess, onError);
     }
 
     saverNewGame(userId, onSuccess, onError) {
@@ -105,6 +103,7 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
+
 
 }
 

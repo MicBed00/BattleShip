@@ -37,7 +37,11 @@ public class GameControllerJson {
         List<Board> boardsList = gameStatusService.addShipToList(ship);
         return ResponseEntity.ok( gameStatusRepoService.saveGameStatusToDataBase(boardsList, StatePreperationGame.IN_PROCCESS));
     }
-
+    @PostMapping(value = "/addSecondPlayer/{userId}/{gameId}")
+    public ResponseEntity<Boolean> addSecondPlayerToGame(@PathVariable long userId,
+                                                         @PathVariable long gameId) {
+        return ResponseEntity.ok(gameRepoService.addSecondPlayerToGame(userId, gameId));
+    }
     @GetMapping(value = "/listBoard/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> getListBoard(@PathVariable int userId) {
         return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
@@ -100,7 +104,7 @@ public class GameControllerJson {
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
         gameStatusService.resetGame();
-        return ResponseEntity.ok(gameRepoService.saveNewGame(userId, gameStatusService.getBoardList(), StatePreperationGame.IN_PROCCESS));
+        return ResponseEntity.ok(gameRepoService.saveNewGame(userId));
     }
 
 }
