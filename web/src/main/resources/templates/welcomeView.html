@@ -17,8 +17,10 @@
         <select id="gameSelector" class="gameSelect" th:name="game" multiple>
             <option th:each="game : ${waitingGames}" th:value="${game}" th:text="'game id ' + ${game}"></option>
         </select>
-        <button class="joinButton" id="joinGame" disabled>Join to game</button>
-        <button class="ownGameButton" id="ownGame">Own game</button>
+        <div class="buttonContainer">
+            <button class="joinButton" id="joinGame" disabled>Join to game</button>
+            <button class="ownGameButton" id="ownGame">Own game</button>
+        </div>
     </div>
 </div>
 

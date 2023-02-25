@@ -5,8 +5,15 @@
     bottom: 300px;
     left:400px;
 }
+.buttonContainer {
+    display: flex;
+}
+
+.ownGameButton {
+    margin-left: 10px;
+}
 .joinButton, .ownGameButton {
-    margin: 10px 0;
+    margin: 30px 0 30px 15px;
 }
 .joinButton:disabled {
     opacity: 0.5;
