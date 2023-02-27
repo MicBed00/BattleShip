@@ -19,12 +19,12 @@ public class StatusGame {
     private GameStatus gameStatus;
     @ManyToOne
     @JoinColumn(name="game_id")
-    private StartGame game;
+    private Game game;
 
     public StatusGame() {
     }
 
-    public StatusGame(GameStatus gameStatus, StartGame game) {
+    public StatusGame(GameStatus gameStatus, Game game) {
         this.gameStatus = gameStatus;
         this.game = game;
     }
@@ -45,11 +45,11 @@ public class StatusGame {
         this.gameStatus = gameStatus;
     }
 
-    public StartGame getGame() {
+    public Game getGame() {
         return game;
     }
 
-    public void setGame(StartGame game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 }

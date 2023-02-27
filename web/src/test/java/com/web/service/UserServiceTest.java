@@ -1,28 +1,24 @@
 package com.web.service;
 
-import com.web.enity.game.StartGame;
+import com.web.enity.game.Game;
 import com.web.enity.user.User;
 import com.web.enity.user.UserRegistrationDto;
 import com.web.enity.user.UserRole;
 import com.web.repositorium.UserRepo;
 import com.web.repositorium.UserRoleRepo;
-import org.apache.commons.collections4.set.TransformedSet;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.InstanceOfAssertFactories.MATCHER;
 import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Timestamp;
@@ -171,11 +167,11 @@ class UserServiceTest {
     @Test
     void shouldReturnLastUserGame() {
         //given
-        StartGame game1 = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
+        Game game1 = new Game(Timestamp.valueOf(LocalDateTime.now()));
         game1.setId(1);
-        StartGame game2 = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
+        Game game2 = new Game(Timestamp.valueOf(LocalDateTime.now()));
         game2.setId(2);
-        Set<StartGame> games = new HashSet<>();
+        Set<Game> games = new HashSet<>();
         games.add(game1);
         games.add(game2);
 
@@ -187,7 +183,7 @@ class UserServiceTest {
         given(userRepo.findById(userId)).willReturn(Optional.of(user));
 
         //then
-        StartGame result = userService.getLastUserGames(userId);
+        Game result = userService.getLastUserGames(userId);
 
         //then
         assertEquals(game2, result);

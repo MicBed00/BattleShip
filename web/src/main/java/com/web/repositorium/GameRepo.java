@@ -1,6 +1,6 @@
 package com.web.repositorium;
 
-import com.web.enity.game.StartGame;
+import com.web.enity.game.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,8 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface GameRepo extends JpaRepository<StartGame,Long> {
+public interface GameRepo extends JpaRepository<Game,Long> {
     //TODO błąd przy pobieraniu gry dla użytkownika
     @Query(value = "SELECT MAX(id) FROM games", nativeQuery = true)
     Optional<Long> findMaxId();
+
 }

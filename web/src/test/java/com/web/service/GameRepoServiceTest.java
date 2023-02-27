@@ -1,29 +1,20 @@
 package com.web.service;
 
-import board.Board;
-import board.StatePreperationGame;
-import com.web.enity.game.StartGame;
+import com.web.enity.game.Game;
 import com.web.enity.user.User;
 import com.web.repositorium.GameRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,7 +69,7 @@ class GameRepoServiceTest {
         //given
         long userId = 1L;
         User user = new User();
-        Set<StartGame> games = user.getGames();
+        Set<Game> games = user.getGames();
         when(userService.getLogInUser(userId)).thenReturn(user);
 
         //when
@@ -94,7 +85,7 @@ class GameRepoServiceTest {
         //given
         long userId = 1L;
         User user = new User();
-        user.getGames().add(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
+        user.getGames().add(new Game(Timestamp.valueOf(LocalDateTime.now())));
         when(userService.getLogInUser(userId)).thenReturn(user);
 
         //when

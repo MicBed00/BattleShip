@@ -1,46 +1,51 @@
 package serialization;
 
 import board.Board;
-import board.StatePreperationGame;
+import board.StateGame;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class GameStatus {
     private List<Board> boardsStatus;
-    private StatePreperationGame state;
-    private int curretnPlayer;
+    private StateGame state;
+    private int currentPlayer;
 
-    public GameStatus() {}
-
-    public GameStatus(List<Board> boardsStatus, int curretnPlayer, StatePreperationGame state ) {
-        this.boardsStatus = boardsStatus;
-        this.curretnPlayer = curretnPlayer;
-        this.state = state;
+    public GameStatus() {
+        boardsStatus = new ArrayList<>();
+        boardsStatus.add(new Board());
+        boardsStatus.add(new Board());
+        state = StateGame.WAITING;
     }
 
+    public GameStatus(List<Board> boardsStatus, int currentPlayer, StateGame state ) {
+        this.boardsStatus = boardsStatus;
+        this.currentPlayer = currentPlayer;
+        this.state = state;
+    }
 
     public List<Board> getBoardsStatus() {
         return boardsStatus;
     }
 
-    public int getCurretnPlayer() {
-        return curretnPlayer;
+    public int getCurrentPlayer() {
+        return currentPlayer;
     }
 
     public void setBoardsStatus(List<Board> boardsStatus) {
         this.boardsStatus = boardsStatus;
     }
 
-    public void setCurretnPlayer(int curretnPlayer) {
-        this.curretnPlayer = curretnPlayer;
+    public void setCurrentPlayer(int currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
-    public StatePreperationGame getState() {
+    public StateGame getState() {
         return state;
     }
 
-    public void setState(StatePreperationGame state) {
+    public void setState(StateGame state) {
         this.state = state;
     }
 
@@ -48,7 +53,7 @@ public class GameStatus {
     public String toString() {
         return "GameStatus{" +
                 "boardsStatus=" + boardsStatus +
-                ", curretnPlayer=" + curretnPlayer +
+                ", curretnPlayer=" + currentPlayer +
                 ", state=" + state +
                 '}';
     }
@@ -58,11 +63,11 @@ public class GameStatus {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameStatus that = (GameStatus) o;
-        return curretnPlayer == that.curretnPlayer && Objects.equals(boardsStatus, that.boardsStatus) && state == that.state;
+        return currentPlayer == that.currentPlayer && Objects.equals(boardsStatus, that.boardsStatus) && state == that.state;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boardsStatus, curretnPlayer, state);
+        return Objects.hash(boardsStatus, currentPlayer, state);
     }
 }

@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="games")
-public class StartGame {
+public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,9 +20,9 @@ public class StartGame {
     @ManyToMany(mappedBy = "games")
     private Set<User> users = new HashSet<>();
 
-    public StartGame() {}
+    public Game() {}
 
-    public StartGame(Timestamp date) {
+    public Game(Timestamp date) {
         this.date = date;
     }
 

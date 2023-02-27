@@ -36,8 +36,8 @@ public class ControlPanel {
         Board player1Board = reconstrucedListBoard.get(0);
         Board player2Board = reconstrucedListBoard.get(1);
 
-        Board player = gameStatus.getCurretnPlayer() == 1 ? player2Board : player1Board;
-        int activePlayer = gameStatus.getCurretnPlayer() == 1 ? 2 : 1;
+        Board player = gameStatus.getCurrentPlayer() == 1 ? player2Board : player1Board;
+        int activePlayer = gameStatus.getCurrentPlayer() == 1 ? 2 : 1;
 
         while (addedShipsCounter != (ShipLimits.SHIP_LIMIT.getQty()* NUMBER_BOARDS)) {
             try {
@@ -56,7 +56,7 @@ public class ControlPanel {
                     Render.renderAndPrintBoardBeforeGame(player.getShips());
                     addedShipsCounter++;
                 }
-                saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.IN_PROCCESS );
+                saver.saveToFile(player1Board, player2Board, activePlayer, StateGame.IN_PROCCESS );
             } catch (InputMismatchException | ShipLimitExceedException | OutOfBoundsException | CollidingException | IOException e) {
                 System.err.println(e.getMessage());
                 System.out.flush();
@@ -69,7 +69,7 @@ public class ControlPanel {
 
         System.out.println(user.messageBundle("boardReady") + "\n");
         try {
-            saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.PREPARED );
+            saver.saveToFile(player1Board, player2Board, activePlayer, StateGame.PREPARED );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +78,7 @@ public class ControlPanel {
         if( player2Board != null){
             boardsPlayer.add(player2Board);
         }
-        return new GameStatus(boardsPlayer, activePlayer, StatePreperationGame.PREPARED );
+        return new GameStatus(boardsPlayer, activePlayer, StateGame.PREPARED );
     }
 
     private List<Board> getListBoardFromGameStatus(GameStatus gameStatus) {
@@ -127,7 +127,7 @@ public class ControlPanel {
                     addedShipsCounter++;
                 }
 
-                saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.IN_PROCCESS );
+                saver.saveToFile(player1Board, player2Board, activePlayer, StateGame.IN_PROCCESS );
             } catch (InputMismatchException | ShipLimitExceedException | OutOfBoundsException | CollidingException | IOException e) {
                 System.err.println(e.getMessage());
                 System.out.flush();
@@ -140,7 +140,7 @@ public class ControlPanel {
         System.out.println(user.messageBundle("boardReady") + "\n");
         List<Board> boardsPlayer = getBoardsPlayer(player1Board, player2Board);
 
-        return new GameStatus(boardsPlayer, activePlayer, StatePreperationGame.PREPARED );
+        return new GameStatus(boardsPlayer, activePlayer, StateGame.PREPARED );
     }
 
     private List<Board> getBoardsPlayer(Board player1Board, Board player2Board) {
@@ -153,13 +153,13 @@ public class ControlPanel {
     public void playGame(GameStatus gameStatus) throws ArrayIndexOutOfBoundsException {
         UI user = new UI();
         Saver saver = new Saver();
-        int activePlayer = gameStatus.getCurretnPlayer();
+        int activePlayer = gameStatus.getCurrentPlayer();
         activePlayer = activePlayer == 1 ? 1 : 2;
         Board player1Board = gameStatus.getBoardsStatus().get(0);
         Board player2Board = gameStatus.getBoardsStatus().get(1);
-        Board opponentBoard = gameStatus.getCurretnPlayer() == 1? player2Board : player1Board;
+        Board opponentBoard = gameStatus.getCurrentPlayer() == 1? player2Board : player1Board;
 
-        while (!opponentBoard.getIsFinished().get() && !gameStatus.getState().equals(StatePreperationGame.FINISHED)) {
+        while (!opponentBoard.getIsFinished().get() && !gameStatus.getState().equals(StateGame.FINISHED)) {
             activePlayer = activePlayer == 1 ? 2 : 1;
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
 
@@ -174,7 +174,7 @@ public class ControlPanel {
                 Shot shot = new Shot(x, y);
                 Set<Shot> opponetShots = opponentBoard.shoot(shot);
                 printShoot(opponetShots, shot, opponentBoard);
-                saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.IN_PROCCESS);
+                saver.saveToFile(player1Board, player2Board, activePlayer, StateGame.IN_PROCCESS);
             } catch (InputMismatchException | ShotSamePlaceException | ArrayIndexOutOfBoundsException | OutOfBoundsException | IOException e) {
                 log.error(user.messageBundle("error", e));
                 System.err.println(e.getMessage());
@@ -182,7 +182,7 @@ public class ControlPanel {
             }
         }
         try {
-            saver.saveToFile(player1Board, player2Board, activePlayer, StatePreperationGame.FINISHED);
+            saver.saveToFile(player1Board, player2Board, activePlayer, StateGame.FINISHED);
         } catch (IOException e) {
             e.printStackTrace();
         }

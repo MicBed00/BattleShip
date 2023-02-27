@@ -1,18 +1,14 @@
 package com.web.repositorium;
 
-import com.web.enity.game.StartGame;
+import com.web.enity.game.Game;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,8 +25,8 @@ class GameRepoTest {
     @Test
     void shouldfindMaxIdGame() {
         //given
-        StartGame save = gameRepo.save(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
-        gameRepo.save(new StartGame(Timestamp.valueOf(LocalDateTime.now())));
+        Game save = gameRepo.save(new Game(Timestamp.valueOf(LocalDateTime.now())));
+        gameRepo.save(new Game(Timestamp.valueOf(LocalDateTime.now())));
         //when
         Long maxId = gameRepo.findMaxId().get();
         //then

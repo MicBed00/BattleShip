@@ -3,7 +3,7 @@ package com.web.controller;
 import java.lang.Void;
 
 import board.Shot;
-import board.StatePreperationGame;
+import board.StateGame;
 import com.web.service.GameStatusService;
 import dataConfig.Position;
 import org.junit.jupiter.api.Test;
@@ -279,15 +279,15 @@ public class GameControllerJsonTest {
         long userId = 1;
         serviceTests.addNewGameWithStatusGameForUser(userId,restTemplate, port);
         HttpEntity<Long> request = new HttpEntity<>(userId, headers);
-        ResponseEntity<StatePreperationGame> response = restTemplate.exchange(
+        ResponseEntity<StateGame> response = restTemplate.exchange(
                 serviceTests.buildUrl("/json/game/boards/phaseGame/" + userId, port)
                 , HttpMethod.GET
                 , request
-                , StatePreperationGame.class);
+                , StateGame.class);
 
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(StatePreperationGame.IN_PROCCESS);
+        assertThat(response.getBody()).isEqualTo(StateGame.IN_PROCCESS);
     }
 
     @DirtiesContext

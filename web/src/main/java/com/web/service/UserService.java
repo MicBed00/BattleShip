@@ -1,13 +1,11 @@
 package com.web.service;
 
-import com.web.enity.game.StartGame;
+import com.web.enity.game.Game;
 import com.web.enity.user.*;
 import com.web.repositorium.UserRepo;
 import com.web.repositorium.UserRoleRepo;
 import jakarta.transaction.Transactional;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -78,14 +76,14 @@ public class UserService {
        );
     }
 
-    public StartGame getLastUserGames(long userId) {
+    public Game getLastUserGames(long userId) {
         User user = getLogInUser(userId);
         //TODO rozpatrzeć przypadek braku gry w bazie metoda getLastUserGames()
-        Set<StartGame> setGames = user.getGames();
+        Set<Game> setGames = user.getGames();
         if(setGames.size() == 0) {
             throw new NoSuchElementException("User has not yet added the ship");
         } else {
-            List<StartGame> games = new ArrayList<>(setGames);
+            List<Game> games = new ArrayList<>(setGames);
             games.sort((game1, game2) -> game2.getDate().compareTo(game1.getDate()));
             return games.get(0);
         }

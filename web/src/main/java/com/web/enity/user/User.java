@@ -1,6 +1,6 @@
 package com.web.enity.user;
 
-import com.web.enity.game.StartGame;
+import com.web.enity.game.Game;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,13 +36,13 @@ public class User {
             joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name="game_id", referencedColumnName = "id")
     )
-    private Set<StartGame> games = new HashSet<>();
+    private Set<Game> games = new HashSet<>();
 
-    public Set<StartGame> getGames() {
+    public Set<Game> getGames() {
         return games;
     }
 
-    public void setGames(Set<StartGame> games) {
+    public void setGames(Set<Game> games) {
         this.games = games;
     }
 

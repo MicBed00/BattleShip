@@ -1,6 +1,6 @@
 package com.web.repositorium;
 
-import com.web.enity.game.StartGame;
+import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import serialization.GameStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,9 +30,9 @@ class StatusGameRepoTest {
     @Test
     void shouldFindMaxIdByGameId() {
         //given
-        StartGame startGame = new StartGame();
-        gameRepo.save(startGame);
-        StatusGame statusGame = new StatusGame(new GameStatus(), startGame);
+        Game game = new Game();
+        gameRepo.save(game);
+        StatusGame statusGame = new StatusGame(new GameStatus(), game);
         statusGameRepo.save(statusGame);
 
         //when
@@ -46,10 +46,10 @@ class StatusGameRepoTest {
     @Test
     void shouldDeleteLastStatusGameByGameId() {
         //given
-        StartGame startGame = new StartGame();
-        gameRepo.save(startGame);
-        StatusGame statusGame1 = new StatusGame(new GameStatus(), startGame);
-        StatusGame statusGame2 = new StatusGame(new GameStatus(), startGame);
+        Game game = new Game();
+        gameRepo.save(game);
+        StatusGame statusGame1 = new StatusGame(new GameStatus(), game);
+        StatusGame statusGame2 = new StatusGame(new GameStatus(), game);
         statusGameRepo.save(statusGame1);
         statusGameRepo.save(statusGame2);
 
@@ -65,9 +65,9 @@ class StatusGameRepoTest {
     @Test
     void shouldSaveStatusGame() {
         //given
-        StartGame startGame = new StartGame();
-        gameRepo.save(startGame);
-        StatusGame statusGame = new StatusGame(new GameStatus(), startGame);
+        Game game = new Game();
+        gameRepo.save(game);
+        StatusGame statusGame = new StatusGame(new GameStatus(), game);
 
         //when
         StatusGame result = statusGameRepo.save(statusGame);

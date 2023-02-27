@@ -12,10 +12,16 @@
 .ownGameButton {
     margin-left: 10px;
 }
+
 .joinButton, .ownGameButton {
     margin: 30px 0 30px 15px;
 }
 .joinButton:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.ownGame:disabled {
     opacity: 0.5;
     cursor: default;
 }

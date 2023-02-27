@@ -1,8 +1,8 @@
 package com.web.service;
 
 import board.Board;
-import board.StatePreperationGame;
-import com.web.enity.game.StartGame;
+import board.StateGame;
+import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import serialization.GameStatus;
@@ -63,12 +62,12 @@ class GameStatusRepoServiceTest {
         given(gameStatusService.getCurrentPlayer()).willReturn(currentPlayer);
         long userId = 1;
         given(userService.getUserId()).willReturn(userId);
-        StartGame startGame = new StartGame(Timestamp.valueOf(LocalDateTime.now()));
-        startGame.setId(1);
-        given(userService.getLastUserGames(userId)).willReturn(startGame);
+        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()));
+        game.setId(1);
+        given(userService.getLastUserGames(userId)).willReturn(game);
 
         //when
-        gameStatusRepoService.saveGameStatusToDataBase(list, StatePreperationGame.IN_PROCCESS);
+        gameStatusRepoService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS);
 
         //then
         verify(gameStatusService, times(1)).getCurrentPlayer();
@@ -113,7 +112,7 @@ class GameStatusRepoServiceTest {
     void shouldReturnSavedStateGame() {
         //given
         long userId = 1;
-        StartGame game = new StartGame();
+        Game game = new Game();
         game.setId(1);
         long idStatusGame = 2;
         StatusGame status = new StatusGame();
@@ -134,7 +133,7 @@ class GameStatusRepoServiceTest {
     void shouldThrowExceptionWhenStateGameIsNotSaved() {
         //given
         long userId = 1;
-        StartGame game = new StartGame();
+        Game game = new Game();
         game.setId(1);
         long idStatusGame = 2;
         StatusGame status = new StatusGame();
@@ -157,10 +156,10 @@ class GameStatusRepoServiceTest {
     void updateStatePreperationGame() {
         //given
         String state = "FINISHED";
-        StatusGame savedGame = new StatusGame(new GameStatus(new ArrayList<>(),1, StatePreperationGame.IN_PROCCESS)
-                                            , new StartGame());
+        StatusGame savedGame = new StatusGame(new GameStatus(new ArrayList<>(),1, StateGame.IN_PROCCESS)
+                                            , new Game());
         long userId = 1;
-        StartGame game = new StartGame();
+        Game game = new Game();
         game.setId(1);
         long idStatusGame = 2;
         given(userService.getLastUserGames(userId)).willReturn(game);

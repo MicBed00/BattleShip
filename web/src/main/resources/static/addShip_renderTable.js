@@ -1,5 +1,6 @@
 var boardsList;
 var userId = document.getElementById("user_id").value;
+var gameId = document.getElementById("game_id").value;
 
 function adderShip(event) {
     var length = document.getElementById("len").value;
@@ -13,13 +14,13 @@ function adderShip(event) {
     ystart = row.rowIndex;
     xstart = col.cellIndex;
 
-    new BattleShipClient().addShip(length, xstart, ystart, position, (status, responseBody) => {
+    new BattleShipClient().addShip(length, xstart, ystart, position, userId, gameId, (status, responseBody) => {
 
         //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
         if (status >= 200 && status <= 299) {
             resetParam()
             alert("Response Body " + responseBody);
-            new BattleShipClient().getStatusGameFromDataBase(userId, (status, responseBody) => {
+            new BattleShipClient().getStatusGameFromDataBase(gameId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
 
                     boardsList = responseBody;
@@ -92,36 +93,19 @@ function checkIfStillBoardPlayerOne(boardslist) {
 }
 
 function resumeGame() {
-    //jeśli gracz potwierdzi, że chce zacząć grę od ostatniego zapisanego stanu gry wtedy odpytuję serwer o ostatni
-    //zapisany rekord id z bazy i na jego podstawie odtwarzam stan gry
-    document.getElementById("id_resumeGame").hidden = true;
-
-            new BattleShipClient().getStatusGameFromDataBase(userId, (status, responseBody) => {
+            new BattleShipClient().getStatusGameFromDataBase(gameId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
                     //renderowanie na tablicy wcześniej dodanych statków
                     boardsList = responseBody;
                     configurationGame(boardsList)
                     if(responseBody[0].ships.length > 0)
                         document.getElementById("backAction").disabled = false;
-
-                    //odtworzenie stanu Listy Boardów po stronie serwera za pomocą metody POST
-                    new BattleShipClient().restoringStateBoardListOnServer(userId, (status, responseBody) => {
-                         if (status >= 200 && status <= 299){
-                             var recoveredStatusGame = responseBody;
-
-                             if(recoveredStatusGame === false) {
-                                 alert("Błąd przy przywracaniu statusu gry na serwerze");
-                             }
-                         }
-                            }, (status, responseBody) => {
-                        alert("Błąd przy odtwarzaniu stanu gry " + responseBody);
-                    });
                 }
             })
 }
 
 function startNewGame() {
-    document.getElementById("id_resumeGame").hidden = true;
+    // document.getElementById("id_resumeGame").hidden = true;
     //TODO do sprawdzenia ta część
     new BattleShipClient().updateStatusGame(userId,"REJECTED",(status, responseBody) => {
             if (status >= 200 && status <= 299) {
@@ -148,7 +132,7 @@ document.getElementById("backAction").addEventListener("click", function () {
             boardsList = responseBody;
 
             if (checkIfStillBoardPlayerOne(boardsList)) {
-                new BattleShipClient().deleteLastAddedShip(0, userId, (status, responseBody) => {
+                new BattleShipClient().deleteLastAddedShip(userId, gameId, 0, (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementById("accept").disabled = true;
@@ -163,7 +147,7 @@ document.getElementById("backAction").addEventListener("click", function () {
                 })
 
             } else {
-                new BattleShipClient().deleteLastAddedShip(1, userId, (status, responseBody) => {
+                new BattleShipClient().deleteLastAddedShip(userId, gameId,1, (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementById("accept").disabled = true;
@@ -241,62 +225,10 @@ var shipNumber;
 window.onload = setup();
 
 function setup() {
-    var table;
-
     new BattleShipClient().getSetupsBoard((status, responseBody) => {
         shipNumber = responseBody;
     }, (status, responseBody) => {
         alert("Błąd przy pobieraniu ustawień " + responseBody)
     });
-
-
-    new BattleShipClient().checkIfUserHasGameBefore(userId,(status, responseBody) => {
-        let gameExistForUser;
-        if (status >= 200 && status <= 299) {
-            gameExistForUser = responseBody;
-
-            if (gameExistForUser === true) {
-                //zamiast idStatus musi być userId z contextu bezpieczeństwa wyciągniętego w HTML
-                new BattleShipClient().getPhaseGame(userId, (status, responseBody) => {
-                    if (status >= 200 && status <= 299) {
-
-                        var gameOver = responseBody //tu wyciągam wartość pola 'state' ze statusu rozgrywki
-
-                        if (gameOver === 'FINISHED' || gameOver === 'REJECTED') {
-                            //Zapis nowej gry do bazy
-                            new BattleShipClient().saverNewGame(userId,(status, responseBody) => {
-                                if (status >= 200 && status <= 299) {
-                                    table = renderShip(null);
-                                    return table;
-                                }
-                            }, (status, responseBody) => {
-                                alert("Błąd przy zapisywaniu nowej gry " + responseBody);
-                            })
-                        } else {
-                            document.getElementById("id_resumeGame").hidden = false;
-                        }
-                    }
-                }, (status, responseBody) => {
-                    alert("Błąd przy sprawdzaniu statusu gry " + responseBody);
-                });
-
-            } else {
-                //user nie miał jeszcze gry w tabeli games, która miałby zapisany stan gry w tabeli games_statuses
-                // dlatego tu tworzymy nowa grę w games
-                new BattleShipClient().saverNewGame(userId,(status, responseBody) => {
-                    if (status >= 200 && status <= 299) {
-                        table = renderShip(null);
-                        return table;
-                    }
-                }, (status, responseBody) => {
-                    alert("Błąd przy zapisywaniu nowej gry " + responseBody);
-                })
-            }
-        }
-    }, (status, responseBody) => {
-        alert("Błąd przy wznawianiu gry " + responseBody);
-    });
-
-
-
+    resumeGame();
 }

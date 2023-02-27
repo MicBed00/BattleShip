@@ -3,7 +3,7 @@ package serialization;
 import board.Board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.*;
-import board.StatePreperationGame;
+import board.StateGame;
 import exceptions.NullObject;
 
 import java.io.BufferedWriter;
@@ -21,7 +21,7 @@ public class Saver {
         objectMapper.writerWithDefaultPrettyPrinter();
     }
 
-    public void saveToFile(Board board1, Board board2, int currentPlayer, StatePreperationGame state) throws IOException, NullObject{
+    public void saveToFile(Board board1, Board board2, int currentPlayer, StateGame state) throws IOException, NullObject{
         List<Board> boardList = creatBoardsList(board1, board2);
         GameStatus gameStatus = new GameStatus(boardList, currentPlayer, state);
         String str = objectMapper.writeValueAsString(gameStatus);

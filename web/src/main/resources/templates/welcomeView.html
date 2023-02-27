@@ -14,12 +14,12 @@
     <h3>Choose the game with another user: </h3>
 
     <div class="gameSelectorContainer">
-        <select id="gameSelector" class="gameSelect" th:name="game" multiple>
+        <select id="gameSelector" class="gameSelect" th:name="game" multiple disabled>
             <option th:each="game : ${waitingGames}" th:value="${game}" th:text="'game id ' + ${game}"></option>
         </select>
         <div class="buttonContainer">
             <button class="joinButton" id="joinGame" disabled>Join to game</button>
-            <button class="ownGameButton" id="ownGame">Own game</button>
+            <button class="ownGameButton" id="ownGame" disabled>Create new game</button>
         </div>
     </div>
 </div>
@@ -31,14 +31,6 @@
         <option value="en" th:text="#{lang.eng}"></option>
         <option value="pl" th:text="#{lang.pl}"></option>
     </select>
-</div>
-
-<div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-    <a id=start href="/view/startGame">
-        <button id="startButton" style="padding: 10px 20px; font-size: 24px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 10px;">
-            Start game
-        </button>
-    </a>
 </div>
 
 <input type=hidden id="user_id" th:value="${userId}">

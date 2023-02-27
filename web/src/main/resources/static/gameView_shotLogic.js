@@ -57,7 +57,7 @@ function shotAtShip(event) {
     const table = tbody.parentElement;
 
     if(table !== currentBoard) {
-        new BattleShipClient().shooterShip(shotX, shotY, (status, responseBody) => {
+        new BattleShipClient().shooterShip(shotX, shotY, gameId,(status, responseBody) => {
             if(status >= 200 && status <= 299) {
 
                 renderShot(responseBody, target);

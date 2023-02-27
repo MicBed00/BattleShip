@@ -3,7 +3,7 @@ package main;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import control.ControlPanel;
-import board.StatePreperationGame;
+import board.StateGame;
 import board.UI;
 import org.slf4j.LoggerFactory;
 import serialization.GameStatus;
@@ -45,7 +45,7 @@ public class MainGame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (Objects.requireNonNull(gameStatus).getState().equals(StatePreperationGame.IN_PROCCESS)) {
+            if (Objects.requireNonNull(gameStatus).getState().equals(StateGame.IN_PROCCESS)) {
                 GameStatus game = cp.prepareBeforeGame(gameStatus);
                 cp.playGame(game);
             } else {
