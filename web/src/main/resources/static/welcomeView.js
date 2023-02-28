@@ -35,8 +35,8 @@ function requestToJoinTheGame() {
 
     new BattleShipClient().requestJoinToGame(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            gameIdReq = responseBody;
-            intervalId = setInterval(waitForApprove(gameIdReq), 1000);
+            // var gameIdReq = responseBody;
+            intervalId = setInterval(waitForApprove, 1000);
 
         }
     }, (status, responseBody) => {
@@ -44,23 +44,27 @@ function requestToJoinTheGame() {
     })
 }
 
-function waitForApprove(gameId) {
-    //TODO muszę zrobić endpoit na któym będzie nasłuchiwał zaminy statusu gry z requesting na approved metoda checkStatusGame
-    // var gameId = document.getElementById("gameSelector").value;
-
+function waitForApprove() {
+    var gameId = document.getElementById("gameSelector").value;
     new BattleShipClient().checkStatusGame(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            alert("Jestem w check status")
-            if (responseBody === "APPROVED")
+            alert("Jestem w check status" + responseBody)
+            if (responseBody === "APPROVED") {
                 // Stop the interval after 100 ms
                 setTimeout(function () {
                     clearInterval(intervalId);
                 }, 100);
-            joinToGame();
-
-        } else if (responseBody === "REJECTED") {
-            //TODO zmiana statusu na WAITING i  info o odmowie dostępu do gry
-        }
+                joinToGame();
+            } else if(responseBody === "WAITING") {
+                setTimeout(function () {
+                    clearInterval(intervalId);
+                }, 100);
+                alert("The invitation was rejected");
+                gameSelector.disabled = false;
+                joinButton.disabled = true;
+                newGame.disabled = false;
+            }
+        } 
     }, (status, responseBody) => {
 
     })
@@ -93,12 +97,10 @@ function checkOpponent() {
             setTimeout(function () {
                 clearInterval(intervalId);
             }, 100);
-
             if (confirm("Player " + responseBody[1] + " wants to start to game") === true) {
                 approveGame();
             } else {
-                //TODO wysłanie requestu z odrzuceniem
-                txt = "Rejected player!";
+                rejectOpponentRequest();
             }
 
         }
@@ -108,10 +110,21 @@ function checkOpponent() {
 }
 
 function approveGame() {
-    new BattleShipClient().approveGame(userId, (status, responseBody) => {
+    new BattleShipClient().changeState(userId, "APPROVED",(status, responseBody) => {
         if (status >= 200 && status <= 299) {
             gameId = responseBody;
             window.location.href = "/view/getParamGame/" + gameId;
+        }
+    }, (status, responseBody) => {
+        alert("Błąd");
+    })
+}
+
+function rejectOpponentRequest() {
+    new BattleShipClient().changeState(userId, "WAITING",(status, responseBody) => {
+        if (status >= 200 && status <= 299) {
+           alert("The invitation was rejected");
+            intervalId = setInterval(checkOpponent, 1000);
         }
     }, (status, responseBody) => {
         alert("Błąd");

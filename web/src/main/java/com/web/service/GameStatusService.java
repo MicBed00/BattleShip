@@ -8,6 +8,7 @@ import dataConfig.Position;
 import dataConfig.ShipLimits;
 import board.Board;
 import board.Shot;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,8 @@ public class GameStatusService {
     public int getShipLimits() {
         return ShipLimits.SHIP_LIMIT.getQty();
     }
-    private boolean checkIsOverTheLimitShip(int size){
+
+    private boolean checkIsOverTheLimitShip(int size) {
         return size < ShipLimits.SHIP_LIMIT.getQty();
     }
 
@@ -57,21 +59,15 @@ public class GameStatusService {
         return positionList;
     }
 
-
-//    public List<Board> getBoardList() {
-//        return boardList;
-//    }
-
-    public List<Board> addShipToList(Ship ship, long gameId) {
+    @Transactional
+    public List<Board> addShipToList(Ship ship, long gameId, long userId) {
         List<Board> boardList = getBoardList(gameId);
+        List<User> users = gameRepoService.getGame(gameId).getUsers();
 
-        if(ship.getLength() > 0 && ship.getPosition() != null) {
-
-            if(checkIsOverTheLimitShip(boardList.get(0).getShips().size())) {
+        if (ship.getLength() > 0 && ship.getPosition() != null) {
+            if (users.get(0).getId() == userId) {
                 addShipToBoard(boardList.get(0), ship);
-
-            }else if(checkIsOverTheLimitShip(boardList.get(1).getShips().size())) {
-
+            } else if (users.get(1).getId() == userId) {
                 addShipToBoard(boardList.get(1), ship);
             }
         }
@@ -81,16 +77,27 @@ public class GameStatusService {
     public List<Board> getBoardList(long gameId) {
         return gameStatusRepoService.getStatusGame(gameId).getGameStatus().getBoardsStatus();
     }
+    public Board getBoard(long gameId, long userId) {
+        List<Board> boardList = getBoardList(gameId);
+        List<User> users = gameRepoService.getGame(gameId).getUsers();
+
+            if (users.get(0).getId() == userId) {
+                return boardList.get(0);
+            } else if (users.get(1).getId() == userId) {
+                return boardList.get(1);
+            }
+        return null;
+    }
 
     private void addShipToBoard(Board boardPlayer, Ship ship) {
         boardPlayer.addShip(ship.getLength(), ship.getXstart(),
-                    ship.getYstart(), ship.getPosition());
+                ship.getYstart(), ship.getPosition());
     }
 
     public List<Board> addShotAtShip(Shot shot, long gameId) {
         List<Board> boardList = getBoardList(gameId);
 
-        if(boardList.get(0).getOpponentShots().size() == boardList.get(1).getOpponentShots().size()) {
+        if (boardList.get(0).getOpponentShots().size() == boardList.get(1).getOpponentShots().size()) {
             boardList.get(1).shoot(shot);
         } else {
             boardList.get(0).shoot(shot);
@@ -108,27 +115,27 @@ public class GameStatusService {
     }
 
     public double getAccuracyShot(int totalShots, int hitShot) {
-        return ((double) hitShot/totalShots) * 100;
+        return ((double) hitShot / totalShots) * 100;
 
     }
 
     public int getCurrentPlayer(long gameId) {
         List<Board> boardList = getBoardList(gameId);
-        if(checkIsOverTheLimitShip(boardList.get(0).getShips().size())) {
-                return 1;
-            }else if(checkIsOverTheLimitShip(boardList.get(1).getShips().size())) {
-                return 2;
-            }
-            //TODO w tym miejscu wyrzucić wyjątek zamist tego zera
+        if (checkIsOverTheLimitShip(boardList.get(0).getShips().size())) {
+            return 1;
+        } else if (checkIsOverTheLimitShip(boardList.get(1).getShips().size())) {
+            return 2;
+        }
+        //TODO w tym miejscu wyrzucić wyjątek zamist tego zera
         return 0;
     }
 
-    public List<String>  checkIfOpponentAppears(long userId) {
+    public List<String> checkIfOpponentAppears(long userId) {
         //TODO tu wyciągnąc wszystkie gry usera i sprawdzić czy ma przeciwnika
         List<String> answer = new ArrayList<>();
         StatusGame savedStateGame = gameStatusRepoService.getSavedStateGame(userId);
         Game lastUserGames = userService.getLastUserGames(userId);
-        if(savedStateGame.getGameStatus().getState().equals(StateGame.REQUESTING)) {
+        if (savedStateGame.getGameStatus().getState().equals(StateGame.REQUESTING)) {
             answer.add("true");
             answer.add(String.valueOf(lastUserGames.getId()));
         } else {
@@ -137,37 +144,5 @@ public class GameStatusService {
         return answer;
     }
 
-
-
-//    public List<Board> restoreStatusGameFromDataBase(long userId) {
-//        GameStatus gameStatus = gameStatusRepoService.getSavedStateGame(userId).getGameStatus();
-//        StatePreperationGame stateGameSaveDB = gameStatus.getState();
-//        List<Board> listBoard = gameStatus.getBoardsStatus();
-//        if(stateGameSaveDB.equals(StatePreperationGame.REJECTED) || stateGameSaveDB.equals(StatePreperationGame.FINISHED)){
-//            resetGame();
-//            return listBoard;
-//        } else {
-//            boardPlayer1 = listBoard.get(0);
-//            boardPlayer2 = listBoard.get(1);
-//            //dlaczego muszę kopiować nowe wartości do list, jeśli przypisuje do referencji boardPlayer1 i 2 nowe obiekty
-//            //, a te refenracje są zapisane w liscie boardList
-//            return boardList = new ArrayList<>(listBoard);
-//        }
-//    }
-
-//    public Boolean statusGameInServerIsProperForGame(long userId) {
-//        GameStatus gameStatus = gameStatusRepoService.getSavedStateGame(userId).getGameStatus();
-//        List<Board> boardsFromDataBase = gameStatus.getBoardsStatus();
-//
-//        return boardList.equals(boardsFromDataBase);
-//    }
-//    public void resetGame() {
-//        boardPlayer1.getShips().clear();
-//        boardPlayer1.getOpponentShots().clear();
-//        boardPlayer1.getHittedShip().clear();
-//        boardPlayer2.getShips().clear();
-//        boardPlayer2.getOpponentShots().clear();
-//        boardPlayer2.getHittedShip().clear();
-//    }
 
 }

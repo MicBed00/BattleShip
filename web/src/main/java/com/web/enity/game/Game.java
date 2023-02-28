@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -18,7 +20,7 @@ public class Game {
     @Column
     private Timestamp date;
     @ManyToMany(mappedBy = "games")
-    private Set<User> users = new HashSet<>();
+    private List<User> users = new ArrayList<>();
 
     public Game() {}
 
@@ -26,11 +28,11 @@ public class Game {
         this.date = date;
     }
 
-    public Set<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 

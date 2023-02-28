@@ -1,4 +1,4 @@
-var boardsList;
+var board;
 var userId = document.getElementById("user_id").value;
 var gameId = document.getElementById("game_id").value;
 
@@ -15,16 +15,14 @@ function adderShip(event) {
     xstart = col.cellIndex;
 
     new BattleShipClient().addShip(length, xstart, ystart, position, userId, gameId, (status, responseBody) => {
-
-        //ten warunek chyba jest niepotrzebny bo numer status sprawdzam w call
         if (status >= 200 && status <= 299) {
             resetParam()
-            alert("Response Body " + responseBody);
-            new BattleShipClient().getStatusGameFromDataBase(gameId, (status, responseBody) => {
+
+            new BattleShipClient().getBoard(gameId, userId,(status, responseBody) => {
                 if (status >= 200 && status <= 299) {
 
-                    boardsList = responseBody;
-                    configurationGame(boardsList)
+                    board = responseBody;
+                    configurationGame(board)
                 }
 
             }, (status, responseBody) => {
@@ -50,35 +48,47 @@ function resetParam() {
 
 function configurationGame(boardList) {
     //wymyślić inny warunek dla odblokowania przycisku
-    if (checkIfStillBoardPlayerOne(boardsList)) {
-        renderShip(boardList[0])
+    renderShip(boardList)
 
-        if (boardList[0].ships.length === shipNumber) {
-            document.getElementById("renderTable").style.pointerEvents = "none";
-            document.getElementById("accept").disabled = false;
+    if (boardList.ships.length === shipNumber) {
+        document.getElementById("renderTable").style.pointerEvents = "none";
+        document.getElementById("accept").disabled = false;
 
-            document.getElementById("accept").addEventListener("click", function () {
-                renderShip(null);
-                document.getElementById("renderTable").style.pointerEvents = "auto";
-                document.getElementsByClassName("button").disabled = false;
-                document.getElementById("accept").disabled = true;
-                document.getElementById("ownerBoard").innerText = "Board's player 2";
-            }, false);
-        }
-    } else if (checkIfBoardPlayerTwoIsNotFull(boardsList)) {
-        document.getElementById("ownerBoard").innerText = "Board's player 2";
-        renderShip(boardList[1])
-
-        if (boardList[1].ships.length === shipNumber) {
-            document.getElementById("renderTable").style.pointerEvents = "none";
-            document.getElementById("accept").disabled = false;
-
-            document.getElementById("accept").addEventListener("click", function () {
-                document.getElementById("accept").disabled = true;
-                location.replace("http://localhost:8080/view/added_Ship");
-            }, false);
-        }
+        document.getElementById("accept").addEventListener("click", function () {
+            document.getElementById("accept").disabled = true;
+            location.replace("http://localhost:8080/view/added_Ship");
+        }, false);
     }
+
+    // if (checkIfStillBoardPlayerOne(board)) {
+    //     renderShip(boardList[0])
+    //
+    //     if (boardList[0].ships.length === shipNumber) {
+    //         document.getElementById("renderTable").style.pointerEvents = "none";
+    //         document.getElementById("accept").disabled = false;
+    //
+    //         document.getElementById("accept").addEventListener("click", function () {
+    //             renderShip(null);
+    //             document.getElementById("renderTable").style.pointerEvents = "auto";
+    //             document.getElementsByClassName("button").disabled = false;
+    //             document.getElementById("accept").disabled = true;
+    //             document.getElementById("ownerBoard").innerText = "Board's player 2";
+    //         }, false);
+    //     }
+    // } else if (checkIfBoardPlayerTwoIsNotFull(board)) {
+    //     document.getElementById("ownerBoard").innerText = "Board's player 2";
+    //     renderShip(boardList[1])
+    //
+    //     if (boardList[1].ships.length === shipNumber) {
+    //         document.getElementById("renderTable").style.pointerEvents = "none";
+    //         document.getElementById("accept").disabled = false;
+    //
+    //         document.getElementById("accept").addEventListener("click", function () {
+    //             document.getElementById("accept").disabled = true;
+    //             location.replace("http://localhost:8080/view/added_Ship");
+    //         }, false);
+    //     }
+    // }
 }
 
 
@@ -93,15 +103,25 @@ function checkIfStillBoardPlayerOne(boardslist) {
 }
 
 function resumeGame() {
-            new BattleShipClient().getStatusGameFromDataBase(gameId, (status, responseBody) => {
-                if (status >= 200 && status <= 299) {
-                    //renderowanie na tablicy wcześniej dodanych statków
-                    boardsList = responseBody;
-                    configurationGame(boardsList)
-                    if(responseBody[0].ships.length > 0)
-                        document.getElementById("backAction").disabled = false;
-                }
-            })
+            // new BattleShipClient().getStatusGameFromDataBase(gameId, (status, responseBody) => {
+            //     if (status >= 200 && status <= 299) {
+            //         //renderowanie na tablicy wcześniej dodanych statków
+            //         board = responseBody;
+            //         configurationGame(board)
+            //         if(responseBody[0].ships.length > 0)
+            //             document.getElementById("backAction").disabled = false;
+            //     }
+            // })
+
+    new BattleShipClient().getBoard(gameId, userId, (status, responseBody) => {
+        if (status >= 200 && status <= 299) {
+            //renderowanie na tablicy wcześniej dodanych statków
+            board = responseBody;
+            configurationGame(board)
+            if(responseBody.ships.length > 0)
+                document.getElementById("backAction").disabled = false;
+        }
+    })
 }
 
 function startNewGame() {
@@ -129,9 +149,9 @@ function startNewGame() {
 document.getElementById("backAction").addEventListener("click", function () {
     new BattleShipClient().getStatusGameFromDataBase(userId,(status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            boardsList = responseBody;
+            board = responseBody;
 
-            if (checkIfStillBoardPlayerOne(boardsList)) {
+            if (checkIfStillBoardPlayerOne(board)) {
                 new BattleShipClient().deleteLastAddedShip(userId, gameId, 0, (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         document.getElementById("renderTable").style.pointerEvents = "auto";

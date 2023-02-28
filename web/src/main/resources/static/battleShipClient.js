@@ -24,13 +24,17 @@ class BattleShipClient {
         this.get("/json/listBoard/"+gameId, null, null, onSuccess, onError);
     }
 
+    getBoard(gameId, userId, onSuccess, onError) {
+        this.get("/json/board/"+gameId+"/"+userId, null, null, onSuccess, onError);
+    }
+
 
     checkIfOpponentAppears(userId, onSuccess, onError) {
         this.get("/json/opponent/"+userId, null, null, onSuccess, onError);
     }
 
-    approveGame(userId, onSuccess, onError) {
-        this.get("/json/approve/"+userId, null, null, onSuccess, onError);
+    changeState(userId, state, onSuccess, onError) {
+        this.get("/json/approve/"+userId+"/"+state, null, null, onSuccess, onError);
     }
 
     saverNewGame(userId, onSuccess, onError) {
@@ -52,9 +56,9 @@ class BattleShipClient {
             this.post("/json/game/boards/"+gameId, JSON.stringify(shootObject), null, onSuccess, onError)
     }
 
-    // restoringStateBoardListOnServer(userId, onSuccess, onError) {
-    //     this.post("/json/setupBoard/"+userId, null, null, onSuccess, onError);
-    // }
+    rejectGame(userId, onSuccess, onError) {
+        this.get("/json/reject/"+userId, null, null, onSuccess, onError);
+    }
 
     getterStatusGame(userId, onSuccess, onError) {
         this.get("/json/game/boards/isFinished/"+userId, null, null, onSuccess, onError);
@@ -124,6 +128,7 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
+
 
 }
 

@@ -4,7 +4,9 @@ import com.web.enity.game.Game;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,13 +38,13 @@ public class User {
             joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name="game_id", referencedColumnName = "id")
     )
-    private Set<Game> games = new HashSet<>();
+    private List<Game> games = new ArrayList<>();
 
-    public Set<Game> getGames() {
+    public List<Game> getGames() {
         return games;
     }
 
-    public void setGames(Set<Game> games) {
+    public void setGames(List<Game> games) {
         this.games = games;
     }
 
