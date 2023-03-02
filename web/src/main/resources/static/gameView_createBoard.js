@@ -23,7 +23,7 @@ function createBoard(diff) {
             buttonShot.id = "button"+diff;
             buttonShot.addEventListener("click", function(event) {
                 shotAtShip(event);
-            }, false);
+            }, true);
             cellShot.appendChild(buttonShot);
 
             rowShot.appendChild(cellShot);
@@ -33,3 +33,4 @@ function createBoard(diff) {
     tableShot.appendChild(tbodyShot);
     return tableShot;
 }
+

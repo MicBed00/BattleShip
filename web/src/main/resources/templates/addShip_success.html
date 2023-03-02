@@ -9,13 +9,19 @@
 <body>
     <div align="center">
         <h1 th:text="#{game}">Start game!</h1>
-        <a href="/view/game">
             <button id = "game" class="GFG">
                 Click here to continue
             </button>
-        </a>
     </div>
+    <input type=hidden id="game_id" th:value="${gameId}">
+<script>
+    var gameId = document.getElementById("game_id").value;
 
+    document.getElementById("game").addEventListener("click", function () {
+        window.location.href = "/view/game/" + gameId;
+    })
+
+</script>
 </body>
 </html>
 

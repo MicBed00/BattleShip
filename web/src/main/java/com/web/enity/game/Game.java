@@ -1,5 +1,6 @@
 package com.web.enity.game;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.web.enity.user.User;
 import jakarta.persistence.*;
 
@@ -20,6 +21,7 @@ public class Game {
     @Column
     private Timestamp date;
     @ManyToMany(mappedBy = "games")
+    @JsonBackReference
     private List<User> users = new ArrayList<>();
 
     public Game() {}

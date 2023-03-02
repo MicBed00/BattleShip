@@ -10,7 +10,7 @@
 <body>
 
     <div id="container">
-        <div id="boardPlayer1"><h3>Board's Player 1</h3></div>
+        <div id="boardPlayer1" aria-disabled="true"><h3>Board's Player 1</h3></div>
 
         <div id="boardPlayer2"><h3>Board's Player 2</h3></div>
     </div>
@@ -23,6 +23,7 @@
         </div>
     </div>
     <input type=hidden id="user_id" th:value="${userId}">
+    <input type=hidden id="game_id" th:value="${gameId}">
 <div style="clear:both;"></div>
 
 <script th:src="@{/battleShipClient.js}"></script>

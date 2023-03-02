@@ -51,6 +51,17 @@ public class GameControllerJson {
     public ResponseEntity<List<Board>> getListBoard(@PathVariable long gameId) {
         return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
     }
+    @GetMapping(value = "/users/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<User>> usersId(@PathVariable long gameId) {
+        List<User> users = gameRepoService.getGame(gameId).getUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping(value = "/games/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Game> games(@PathVariable long gameId) {
+//        List<User> users = gameRepoService.getGame(gameId).getUsers();
+        return ResponseEntity.ok(gameRepoService.getGame(gameId));
+    }
 
     @GetMapping(value = "/board/{gameId}/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Board> getListBoard(@PathVariable long gameId, @PathVariable long userId) {
@@ -66,23 +77,19 @@ public class GameControllerJson {
         return ResponseEntity.ok((long)statusGame.getGame().getId());
     }
 
-    @GetMapping(value = "/game/boards/isFinished/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> getList(@PathVariable int userId, @PathVariable long gameId) {
-        if(gameStatusService.checkIfAllShipsAreHitted(gameId))
+    @GetMapping(value = "/game/status-isFinished/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> statusFinieshed(@PathVariable int userId, @PathVariable long gameId) {
+        boolean isFinished = gameStatusService.checkIfAllShipsAreHitted(gameId);
+        if(isFinished)
             gameStatusRepoService.updateStatePreperationGame(userId, "FINISHED");
-        return ResponseEntity.ok(gameStatusService.checkIfAllShipsAreHitted(gameId));
+        return ResponseEntity.ok(isFinished);
     }
 
-    @GetMapping(value = "/game/boards/phaseGame/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StateGame> getPhaseGame(@PathVariable int userId) {
-        return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getState());
-    }
     @GetMapping(value = "/statusGame/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StateGame> getPhaseGame(@PathVariable long gameId) {
+    public ResponseEntity<StateGame> statusesGames(@PathVariable long gameId) {
         StatusGame statusGame = gameStatusRepoService.getStatusGame(gameId);
         return ResponseEntity.ok(statusGame.getGameStatus().getState());
     }
-
 
     @GetMapping(value = "/request/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> requestToJoinGame( @PathVariable long gameId) {

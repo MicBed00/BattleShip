@@ -8,7 +8,7 @@ newGame.disabled = false;
 gameSelector.disabled = false;
 document.getElementById("joinGame").addEventListener("click", requestToJoinTheGame);
 document.getElementById("ownGame").addEventListener("click", createNewGame);
-//zmienna intervalId
+
 var intervalId;
 var gameIdClient;
 
@@ -35,9 +35,7 @@ function requestToJoinTheGame() {
 
     new BattleShipClient().requestJoinToGame(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            // var gameIdReq = responseBody;
             intervalId = setInterval(waitForApprove, 1000);
-
         }
     }, (status, responseBody) => {
         alert("Błąd przy wysyłaniu prośby o dołączenie do gry " + responseBody)
@@ -48,7 +46,6 @@ function waitForApprove() {
     var gameId = document.getElementById("gameSelector").value;
     new BattleShipClient().checkStatusGame(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            alert("Jestem w check status" + responseBody)
             if (responseBody === "APPROVED") {
                 // Stop the interval after 100 ms
                 setTimeout(function () {

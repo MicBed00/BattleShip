@@ -1,5 +1,6 @@
 package com.web.enity.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.web.enity.game.Game;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ public class User {
             joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name="role_id", referencedColumnName = "id")
     )
+    @JsonManagedReference
     private Set<UserRole> roles = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)

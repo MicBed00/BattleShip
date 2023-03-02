@@ -7,7 +7,6 @@ function adderShip(event) {
     var position = document.getElementById("orientation").value;
     var xstart;
     var target = event.target, col, row;
-    var id;
 
     col = target.parentElement;
     row = col.parentElement;
@@ -56,7 +55,8 @@ function configurationGame(boardList) {
 
         document.getElementById("accept").addEventListener("click", function () {
             document.getElementById("accept").disabled = true;
-            location.replace("http://localhost:8080/view/added_Ship");
+            window.location.href = "/view/added_Ship/" + gameId;
+            // location.replace("http://localhost:8080/view/added_Ship");
         }, false);
     }
 
@@ -99,7 +99,6 @@ function checkIfBoardPlayerTwoIsNotFull(boardsList) {
 
 function checkIfStillBoardPlayerOne(boardslist) {
     return boardslist[0].ships.length <= shipNumber && boardslist[1].ships.length === 0;
-    // return boardslist.curretnPlayer === 1;
 }
 
 function resumeGame() {

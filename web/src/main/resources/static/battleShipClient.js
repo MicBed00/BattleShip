@@ -42,12 +42,14 @@ class BattleShipClient {
 
     }
 
+    getUsers(gameId, onSuccess, onError) {
+        this.get("/json/users/"+gameId, null, null, onSuccess, onError);
+    }
+
     deleteLastAddedShip(userId, gameId, indexBoard, onSuccess, onError) {
         this.delete("/json/deleteShip/"+userId+"/"+gameId+"/"+indexBoard, null, null, onSuccess, onError);
     }
-    redirectToAddShip(gameId, onSuccess, onError) {
-        this.get("/view/getParamGame/"+gameId, null, null, onSuccess, onError);
-    }
+
     shooterShip(x, y, gameId, onSuccess, onError) {
             var shootObject = {
                 x: x,
@@ -56,12 +58,16 @@ class BattleShipClient {
             this.post("/json/game/boards/"+gameId, JSON.stringify(shootObject), null, onSuccess, onError)
     }
 
+    games(gameId, onSuccess, onError) {
+        this.get("/json/games/"+currentPlayerId, null, null, onSuccess, onError);
+    }
+
     rejectGame(userId, onSuccess, onError) {
         this.get("/json/reject/"+userId, null, null, onSuccess, onError);
     }
 
-    getterStatusGame(userId, onSuccess, onError) {
-        this.get("/json/game/boards/isFinished/"+userId, null, null, onSuccess, onError);
+    getterStatusGame(userId, gameId, onSuccess, onError) {
+        this.get("/json/game/status-isFinished/"+userId+"/"+gameId, null, null, onSuccess, onError);
     }
 
 
@@ -128,6 +134,7 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
+
 
 
 }
