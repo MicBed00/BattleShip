@@ -9,7 +9,7 @@ var currentBoard = board1;
 var currentPlayerId = document.getElementById("user_id").value;
 var gameId = document.getElementById("game_id").value;
 var intervalId;
-var indexUser;
+
 
 checkIfIsFinished();
 // document.getElementById("id_resumeGame").hidden = false;
@@ -18,55 +18,56 @@ resumeGame();
 function resumeGame() {
     document.getElementById("id_resumeGame").hidden = true;
     configuration();
-    // disabledBoard();
-    intervalId = setInterval(listenerShots, 1000);
-
+    disabledOwnerBoard();
+    intervalId = setInterval(listenerShots, 500);
 }
 
-function disabledBoard() {
+function disabledOwnerBoard() {
     new BattleShipClient().getUsers(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
             var userId = responseBody[0].id;
             if (userId == currentPlayerId) {
-                disableButtonListeners("tableBoard" + ply1);
-                indexUser = 0;
+                board1.style.pointerEvents = "none";
+
             } else {
-                disableButtonListeners("tableBoard" + ply2);
-                indexUser = 2;
+                board2.style.pointerEvents = "none";
             }
         }
     }, (status, responseBody) => {
+        alert("Błąd "+ responseBody);
 
     })
 }
 
-function disableButtonListeners(tableId) {
-    const table = document.getElementById(tableId);
-    const buttons = table.getElementsByTagName("button");
-    for (let i = 0; i < buttons.length; i++) {
-        const button = buttons[i];
-        button.removeEventListener("click", shotAtShip, true);
+function boardAccessControl(boardList) {
+    var numberOppShot1 = boardList[0].opponentShots.length;
+    var numberOppShot2 = boardList[1].opponentShots.length;
+
+    if(numberOppShot1 === numberOppShot2) {
+        board1.style.pointerEvents = "none";
+        board2.style.pointerEvents = "auto";
+    } else {
+        board1.style.pointerEvents = "auto";
+        board2.style.pointerEvents = "none";
     }
+    disabledOwnerBoard();
 }
 
 function configuration() {
     new BattleShipClient().getStatusGameFromDataBase(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
+            boardAccessControl(responseBody);
             renderShot(responseBody[0]);
             renderShot(responseBody[1]);
         }
     })
 }
-//TODO przygotować funkcję, która będzie porównywała rozmiar zbioru opponentShots i na tej podstawie
-// blokowała diva w którym jest tablica przeciwnka. Dzięki temu będzie można zachować turowość gry i będzie
-//można oddać strzał bez uprzedzania ruchu przeciwnika. Zakładam, że zaczyna zawsze gracz, który tworzył game
-// więc w List będzie zapisany jako pierwszy
-// Funkcja ta również będzie musiała nasłuchiwać, dlatego może będę mógł wykorzystać tego lisnera bo w pierwszym requesie dostaje
-// listę Boardów i z nich mogę wyciągnąć opponents shot
+
 function listenerShots() {
     new BattleShipClient().getStatusGameFromDataBase(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
             var boardList = responseBody;
+            boardAccessControl(boardList);
                 new BattleShipClient().getUsers(gameId, (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         var userId = responseBody[0].id;
@@ -85,13 +86,11 @@ function listenerShots() {
     })
 }
 
+
 function startNewGame() {
     document.getElementById("id_resumeGame").hidden = true;
     renderShot(null); //jeśli ostatnia rozgrywka została zakończona to zaczynamy z czystą planszą
 }
-
-
-
 
 function shotAtShip(event) {
     var target = event.target, col, row, shotX, shotY;
@@ -146,24 +145,6 @@ function renderBoards() {
     document.getElementById("boardPlayer1").appendChild(board1);
     document.getElementById("boardPlayer2").appendChild(board2);
 }
-
-// function renderShot(responseBody) {
-//     if(responseBody != null) {
-//         var boardShot = currentBoard === board1 ? board2 : board1;
-//         var index = currentBoard === board1 ? 1 : 0;
-//         //TODO do przypomnienia sobie ta składnia z if
-//         for(const shot of responseBody[index].opponentShots) {
-//             //TODO zmienić w warunku if "HIT" na daną zaciąganą z serwera
-//             if(shot.state === "HIT") {
-//                 boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0).style.backgroundColor = "red";
-//             } else if(shot.state === "MISSED") {
-//                 var ox = boardShot.getElementsByClassName(shot.x + "_" +shot.y).item(0);// boardShot.getElementsByClassName(shot.x + "_" +shot.y) - zwraca kolekcję htmlcollection
-//                 ox.style.backgroundColor = "black";
-//             }
-//         }
-//     }
-//     checkIfIsFinished();
-// }
 
 function renderShot(responseBody) {
     if (responseBody != null) {

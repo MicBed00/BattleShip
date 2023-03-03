@@ -8,6 +8,7 @@ function createBoard(diff) {
     const tableShot = document.createElement("table");
     tableShot.id ="tableBoard"+diff;
     tableShot.className = "tableShot";
+    tableShot.style.pointerEvents = "auto";
     const tbodyShot = document.createElement("tbody");
     for(let i = 0; i < 10; i++) {
 
