@@ -6,6 +6,7 @@ import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
+import dataConfig.ShipLimits;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,4 +76,16 @@ public class GameStatusRepoService {
         return repoStatusGame.save(savedStateGame);
     }
 
+    public void checkIfTwoPlayersArePreparedWhenChangingState(String state, long userId) {
+        StatusGame savedStateGame = getSavedStateGame(userId);
+        List<Board> boardsStatus = savedStateGame.getGameStatus().getBoardsStatus();
+        int ply1Ships = boardsStatus.get(0).getShips().size();
+        int ply2Ships = boardsStatus.get(1).getShips().size();
+
+        if(ply1Ships == ShipLimits.SHIP_LIMIT.getQty()
+           && ply2Ships == ShipLimits.SHIP_LIMIT.getQty()) {
+
+            updateStatePreperationGame(userId, state);
+        }
+    }
 }

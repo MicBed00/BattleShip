@@ -92,7 +92,11 @@ class BattleShipClient {
     }
 
     updateStatusGame(userId,status, onSuccess, onError) {
-        this.post("/json/rejected/"+userId, status, null, onSuccess, onError);
+        this.post("/json/update-state/"+userId, status, null, onSuccess, onError);
+    }
+
+    preparedStatusGame(userId,status, onSuccess, onError) {
+        this.post("/json/update-prepared/"+userId, status, null, onSuccess, onError);
     }
 
     delete(path, body, progressUpdate, success, error) {

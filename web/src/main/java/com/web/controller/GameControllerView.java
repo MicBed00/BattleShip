@@ -60,6 +60,9 @@ public class GameControllerView {
 
     @GetMapping("/added_Ship/{gameId}")
     public String addedShip(@PathVariable Long gameId, Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUser(username);
+        gameStatusRepoService.checkIfTwoPlayersArePreparedWhenChangingState("PREPARED", user.getId());
         model.addAttribute("gameId", gameId);
         return "addShip_success";
     }
@@ -69,7 +72,6 @@ public class GameControllerView {
         //TODO update endpoint getBoards /game
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUser(username);
-        gameStatusRepoService.updateStatePreperationGame(user.getId(), "PREPARED");
         model.addAttribute("userId", user.getId());
         model.addAttribute("gameId", gameId);
         return "game";

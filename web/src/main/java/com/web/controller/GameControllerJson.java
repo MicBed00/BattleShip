@@ -130,10 +130,16 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
     }
 
-    @PostMapping(value = "/rejected/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/update-state/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateStatusGame(@RequestBody String status, @PathVariable long userId) {
-        gameStatusRepoService.updateStatePreperationGame(userId, status);
+            gameStatusRepoService.updateStatePreperationGame(userId, status);
     }
+
+    @PostMapping(value = "/update-prepared/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void statusToPrepared(@RequestBody String status, @PathVariable long userId) {
+            gameStatusRepoService.checkIfTwoPlayersArePreparedWhenChangingState(status, userId);
+    }
+
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {

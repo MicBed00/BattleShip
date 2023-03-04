@@ -28,7 +28,6 @@ function disabledOwnerBoard() {
             var userId = responseBody[0].id;
             if (userId == currentPlayerId) {
                 board1.style.pointerEvents = "none";
-
             } else {
                 board2.style.pointerEvents = "none";
             }

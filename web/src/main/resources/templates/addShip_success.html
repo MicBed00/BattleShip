@@ -5,21 +5,68 @@
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Added ship form</title>
+    <style>
+        body {
+            background-color: #003366;
+            background-image: url('https://cdn.pixabay.com/photo/2013/11/22/10/07/sea-215952_1280.jpg');
+            background-repeat: repeat-x;
+            background-position: bottom;
+            background-size: cover;
+            color: white;
+        }
+        @keyframes loading {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading {
+            display: inline-block;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: loading 1s linear infinite;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
 </head>
 <body>
-    <div align="center">
-        <h1 th:text="#{game}">Start game!</h1>
-            <button id = "game" class="GFG">
-                Click here to continue
-            </button>
-    </div>
-    <input type=hidden id="game_id" th:value="${gameId}">
+<div align="center">
+    <h1 th:text="#{game}">Please wait for second player</h1>
+    <div id="loading" class="loading"></div>
+    <div id="message">Please wait for second player</div>
+</div>
+<input type=hidden id="game_id" th:value="${gameId}">
+<script th:src="@{/battleShipClient.js}"></script>
 <script>
     var gameId = document.getElementById("game_id").value;
+    var intervalId;
+    waiting();
 
-    document.getElementById("game").addEventListener("click", function () {
-        window.location.href = "/view/game/" + gameId;
-    })
+    function waiting() {
+        intervalId = setInterval(waitForSecondPlayer, 1000);
+    }
+
+    function waitForSecondPlayer() {
+        new BattleShipClient().checkStatusGame(gameId, (status, responseBody) => {
+            if (status >= 200 && status <= 299)
+                if (responseBody === "PREPARED") {
+                    setTimeout(function () {
+                        clearInterval(intervalId);
+                    }, 100);
+                    window.location.href = "/view/game/" + gameId;
+                }
+        }, (status, responseBody) => {
+        })
+    }
 
 </script>
 </body>

@@ -55,8 +55,7 @@ function configurationGame(boardList) {
 
         document.getElementById("accept").addEventListener("click", function () {
             document.getElementById("accept").disabled = true;
-            window.location.href = "/view/added_Ship/" + gameId;
-            // location.replace("http://localhost:8080/view/added_Ship");
+                    window.location.href = "/view/added_Ship/" + gameId;
         }, false);
     }
 
