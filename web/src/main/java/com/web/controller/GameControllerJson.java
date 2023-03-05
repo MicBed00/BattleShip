@@ -36,7 +36,7 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/addShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> addShiptoList(@RequestBody Ship ship, @PathVariable long userId, @PathVariable long gameId) throws BattleShipException {
+    public ResponseEntity<Boolean> addShip(@RequestBody Ship ship, @PathVariable long userId, @PathVariable long gameId) throws BattleShipException {
         List<Board> boardsList = gameStatusService.addShipToList(ship, gameId, userId);
         return ResponseEntity.ok( gameStatusRepoService.saveGameStatusToDataBase(boardsList, StateGame.IN_PROCCESS, gameId));
     }
@@ -48,7 +48,7 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameId);
     }
     @GetMapping(value = "/listBoard/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> getListBoard(@PathVariable long gameId) {
+    public ResponseEntity<List<Board>> listBoards(@PathVariable long gameId) {
         return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
     }
     @GetMapping(value = "/users/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +64,7 @@ public class GameControllerJson {
     }
 
     @GetMapping(value = "/board/{gameId}/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> getListBoard(@PathVariable long gameId, @PathVariable long userId) {
+    public ResponseEntity<Board> listBoards(@PathVariable long gameId, @PathVariable long userId) {
         return ResponseEntity.ok(gameStatusService.getBoard(gameId, userId));
     }
     @GetMapping(value = "/opponent/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,15 +78,15 @@ public class GameControllerJson {
     }
 
     @GetMapping(value = "/game/status-isFinished/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> statusFinieshed(@PathVariable int userId, @PathVariable long gameId) {
+    public ResponseEntity<Boolean> statusFinished(@PathVariable int userId, @PathVariable long gameId) {
         boolean isFinished = gameStatusService.checkIfAllShipsAreHitted(gameId);
         if(isFinished)
             gameStatusRepoService.updateStatePreperationGame(userId, "FINISHED");
         return ResponseEntity.ok(isFinished);
     }
 
-    @GetMapping(value = "/statusGame/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StateGame> statusesGames(@PathVariable long gameId) {
+    @GetMapping(value = "/status-game/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StateGame> statusesGame(@PathVariable long gameId) {
         StatusGame statusGame = gameStatusRepoService.getStatusGame(gameId);
         return ResponseEntity.ok(statusGame.getGameStatus().getState());
     }
@@ -100,7 +100,7 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/game/boards/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> addShot(@RequestBody Shot shot, @PathVariable long gameId) {
+    public ResponseEntity<List<Board>> shots(@RequestBody Shot shot, @PathVariable long gameId) {
         List<Board> boardListAfterShot = gameStatusService.addShotAtShip(shot, gameId);
         gameStatusRepoService.saveGameStatusToDataBase(boardListAfterShot, StateGame.PREPARED, gameId);
         return ResponseEntity.ok(boardListAfterShot);
@@ -121,12 +121,11 @@ public class GameControllerJson {
         return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId));
     }
 
+    //TODO usuwanie nie działa do poprawy
     @Transactional
-    @DeleteMapping(value = "/deleteShip/{userId}/{gameId}/{indexBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> deleteLastShip(@PathVariable int userId,
-                                                      @PathVariable long gameId,
-                                                      @PathVariable int indexBoard) {
-        gameStatusRepoService.deleteLastShip(indexBoard, gameId);
+    @DeleteMapping(value = "/deleteShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> deleteShips(@PathVariable int userId, @PathVariable long gameId) {
+        gameStatusRepoService.deleteShip(userId, gameId);
         return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
     }
 
@@ -137,7 +136,7 @@ public class GameControllerJson {
 
     @PostMapping(value = "/update-prepared/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void statusToPrepared(@RequestBody String status, @PathVariable long userId) {
-            gameStatusRepoService.checkIfTwoPlayersArePreparedWhenChangingState(status, userId);
+            gameStatusRepoService.checkIfTwoPlayersArePreparedThenChangingState(status, userId);
     }
 
 

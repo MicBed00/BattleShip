@@ -37,6 +37,8 @@ class GameStatusRepoServiceTest {
     private GameStatusService gameStatusService;
     @Mock
     private UserService userService;
+    @Mock
+    private GameRepo gameRepo;
     private AutoCloseable autoCloseable;
     private GameStatusRepoService gameStatusRepoService;
 
@@ -44,7 +46,7 @@ class GameStatusRepoServiceTest {
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
         gameStatusRepoService = new GameStatusRepoService(repoStartGame, gameStatusService
-                                                        , repoStatusGame, userService);
+                                                          ,repoStatusGame, userService);
     }
 
     @AfterEach
@@ -59,18 +61,22 @@ class GameStatusRepoServiceTest {
         list.add(new Board());
         list.add(new Board());
         int currentPlayer = 1;
-        given(gameStatusService.getCurrentPlayer()).willReturn(currentPlayer);
+        long gameId = 1;
+        given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPlayer);
         long userId = 1;
         given(userService.getUserId()).willReturn(userId);
         Game game = new Game(Timestamp.valueOf(LocalDateTime.now()));
         game.setId(1);
-        given(userService.getLastUserGames(userId)).willReturn(game);
+        gameRepo.save(game);
+        given(gameRepo.findById(gameId).orElseThrow(
+                () -> new NoSuchElementException("Brak gry w bazie")
+        )).willReturn(game);
 
         //when
-        gameStatusRepoService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS);
+        gameStatusRepoService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS, gameId);
 
         //then
-        verify(gameStatusService, times(1)).getCurrentPlayer();
+        verify(gameStatusService, times(1)).getCurrentPlayer(gameId);
         verify(userService, times(1)).getUserId();
         verify(repoStatusGame, times(1)).save(any(StatusGame.class));
     }
@@ -80,15 +86,14 @@ class GameStatusRepoServiceTest {
         //given
         int index = 1;
         long gameId = 1;
-        given(repoStartGame.findMaxId()).willReturn(Optional.of(gameId));
+//        given(repoStartGame.findMaxId()).willReturn(Optional.of(gameId));
 
         //when
-        gameStatusRepoService.deleteLastShip(index);
+        gameStatusRepoService.deleteShip(index, gameId);
 
         //then
-        verify(repoStartGame).findMaxId();
+//        verify(repoStartGame).findMaxId();
         verify(repoStatusGame).deleteLast(gameId);
-        verify(gameStatusService).deleteShipFromServer(index);
     }
 
     @Test
@@ -101,11 +106,10 @@ class GameStatusRepoServiceTest {
         //when
         //then
         NoSuchElementException e = assertThrows(NoSuchElementException.class, () -> {
-            gameStatusRepoService.deleteLastShip(index);
+            gameStatusRepoService.deleteShip(index, gameId);
         });
         assertEquals("User has not yet added the ship", e.getMessage());
         verify(repoStatusGame, never()).deleteLast(gameId);
-        verify(gameStatusService, never()).deleteShipFromServer(index);
     }
 
     @Test
@@ -169,8 +173,7 @@ class GameStatusRepoServiceTest {
         //when
         gameStatusRepoService.updateStatePreperationGame(1, state);
 
-        //then
-        //TODO jak sprawdzić czy nastąpił update statusu
+        //theb
         verify(repoStatusGame, times(1)).save(any(StatusGame.class));
     }
 }

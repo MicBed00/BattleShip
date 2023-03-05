@@ -41,10 +41,6 @@ public class GameControllerView {
         model.addAttribute("waitingGames", gameRepoService.getGamesWatingForUser());
         return "welcomeView";
     }
-    @GetMapping(value = "/startGame")
-    public String startGame() {
-        return "redirect:/view/getParamGame";
-    }
 
     @GetMapping(value = "/getParamGame/{gameId}")
     public String getParametersGame(@PathVariable long gameId, Model model) {
@@ -62,7 +58,7 @@ public class GameControllerView {
     public String addedShip(@PathVariable Long gameId, Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUser(username);
-        gameStatusRepoService.checkIfTwoPlayersArePreparedWhenChangingState("PREPARED", user.getId());
+        gameStatusRepoService.checkIfTwoPlayersArePreparedThenChangingState("PREPARED", user.getId());
         model.addAttribute("gameId", gameId);
         return "addShip_success";
     }

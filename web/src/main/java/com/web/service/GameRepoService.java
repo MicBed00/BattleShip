@@ -56,7 +56,6 @@ public class GameRepoService {
         logInUser.getGames().add(game);
         game.getUsers().add(logInUser);
         gameRepo.save(game);
-        gameStatusRepoService.updateStatePreperationGame(userId,"IN_PROCCESS");
         return game.getId();
     }
 

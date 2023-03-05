@@ -79,11 +79,11 @@ public class UserService {
     public Game getLastUserGames(long userId) {
         User user = getLogInUser(userId);
         //TODO rozpatrzeć przypadek braku gry w bazie metoda getLastUserGames()
-        List<Game> setGames = user.getGames();
-        if(setGames.size() == 0) {
-            throw new NoSuchElementException("User has not yet added the ship");
+        List<Game> ListGames = user.getGames();
+        if(ListGames.size() == 0) {
+            throw new NoSuchElementException("User has not game");
         } else {
-            List<Game> games = new ArrayList<>(setGames);
+            List<Game> games = new ArrayList<>(ListGames);
             games.sort((game1, game2) -> game2.getDate().compareTo(game1.getDate()));
             return games.get(0);
         }

@@ -49,6 +49,17 @@ public class ServiceGameControllerJsonTest {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         return restTemplate.postForEntity(buildUrl("/login", port), request, String.class);
     }
+    public ResponseEntity<Long> addSecondPlayerToGame(long userIdPly2, long gameId, TestRestTemplate restTemplate, int port) {
+        HttpHeaders headers = setupHeadersRequestToGameController("/view/welcomeView", "meta",
+                "content", restTemplate, port);
+
+        HttpEntity<Void> requestWithToken = new HttpEntity<>(headers);
+        return restTemplate.exchange(
+                  buildUrl("/json/addSecondPlayer/"+userIdPly2+"/"+gameId, port)
+                , HttpMethod.POST
+                , requestWithToken
+                , Long.class);
+    }
 
     private String login(TestRestTemplate restTemplate, int port) {
         ResponseEntity<String> response = executeLogin(restTemplate, port);
@@ -61,7 +72,7 @@ public class ServiceGameControllerJsonTest {
 
     public ResponseEntity<String> addNewGameWithStatusGameForUser(long userId, TestRestTemplate restTemplate, int port) {
         String sessionCookie = login(restTemplate, port);
-        CsrfToken token = extractCSRFToken("/view/getParamGame", "meta", "content", sessionCookie, restTemplate, port);
+        CsrfToken token = extractCSRFToken("/view/welcomeView", "meta", "content", sessionCookie, restTemplate, port);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Cookie", sessionCookie);
@@ -69,11 +80,9 @@ public class ServiceGameControllerJsonTest {
 
         //TODO test jednostkowy na pobranie z bazy uzytkownika i zwrócenie id z tabeli
         HttpEntity<Void> request = new HttpEntity<>(headers);
-        return restTemplate
-                .postForEntity(buildUrl("/json/game/save/" + userId, port),
+        return restTemplate.postForEntity(buildUrl("/json/game/save/" + userId, port),
                         request,
                         String.class);
-
     }
 
     public HttpHeaders setupHeadersRequestToGameController(String viewUrl, String tagCsrf, String attrCsrf, TestRestTemplate restTemplate, int port) {

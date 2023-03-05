@@ -67,9 +67,5 @@ class CustomUserDetailsServiceTest {
         //then
         assertEquals(userDetails.getUsername(), user.getEmail());
         verify(userRepo, times(1)).findByEmail(userName);
-
-
-
-
     }
 }

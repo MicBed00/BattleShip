@@ -15,6 +15,7 @@ import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,7 +70,7 @@ class GameRepoServiceTest {
         //given
         long userId = 1L;
         User user = new User();
-        Set<Game> games = user.getGames();
+        List<Game> games = user.getGames();
         when(userService.getLogInUser(userId)).thenReturn(user);
 
         //when

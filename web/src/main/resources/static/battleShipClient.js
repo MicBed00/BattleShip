@@ -46,8 +46,8 @@ class BattleShipClient {
         this.get("/json/users/"+gameId, null, null, onSuccess, onError);
     }
 
-    deleteLastAddedShip(userId, gameId, indexBoard, onSuccess, onError) {
-        this.delete("/json/deleteShip/"+userId+"/"+gameId+"/"+indexBoard, null, null, onSuccess, onError);
+    deleteLastAddedShip(userId, gameId, onSuccess, onError) {
+        this.delete("/json/deleteShip/"+userId+"/"+gameId, null, null, onSuccess, onError);
     }
 
     shooterShip(x, y, gameId, onSuccess, onError) {
@@ -77,7 +77,7 @@ class BattleShipClient {
 
 
     checkStatusGame(gameId, onSuccess, onError) {
-        this.get("/json/statusGame/"+gameId, null, null, onSuccess, onError);
+        this.get("/json/status-game/"+gameId, null, null, onSuccess, onError);
     }
 
     getPhaseGame(id, onSuccess, onError) {

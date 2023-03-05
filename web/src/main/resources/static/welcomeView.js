@@ -71,8 +71,14 @@ function joinToGame() {
     var gameId = document.getElementById("gameSelector").value;
     new BattleShipClient().addSecondPlayerToGame(userId, gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            gameIdClient = responseBody;
-            window.location.href = "/view/getParamGame/" + gameId;
+            new BattleShipClient().changeState(userId, "IN_PROCCESS",(status, responseBody) => {
+                if (status >= 200 && status <= 299) {
+                    gameIdClient = responseBody;
+                    window.location.href = "/view/getParamGame/" + gameId;
+                }
+            }, (status, responseBody) => {
+                alert("Błąd");
+            })
         }
     }, (status, responseBody) => {
         alert("Błąd przy dodawaniu gry " + responseBody)

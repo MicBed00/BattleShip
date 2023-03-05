@@ -148,9 +148,7 @@ document.getElementById("backAction").addEventListener("click", function () {
     new BattleShipClient().getStatusGameFromDataBase(userId,(status, responseBody) => {
         if (status >= 200 && status <= 299) {
             board = responseBody;
-
-            if (checkIfStillBoardPlayerOne(board)) {
-                new BattleShipClient().deleteLastAddedShip(userId, gameId, 0, (status, responseBody) => {
+                new BattleShipClient().deleteLastAddedShip(userId, gameId,  (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementById("accept").disabled = true;
@@ -164,20 +162,7 @@ document.getElementById("backAction").addEventListener("click", function () {
                     alert("Błąd " + status);
                 })
 
-            } else {
-                new BattleShipClient().deleteLastAddedShip(userId, gameId,1, (status, responseBody) => {
-                    if (status >= 200 && status <= 299) {
-                        document.getElementById("renderTable").style.pointerEvents = "auto";
-                        document.getElementById("accept").disabled = true;
-                        renderShip(responseBody[1]);
-                        if(responseBody[1].ships.length === 0) {
-                            document.getElementById("backAction").disabled = true;
-                        }
-                    }
-                }, (status, responseBody) => {
-                    alert("Błąd " + status);
-                })
-            }
+
         }
 
     }, (status, responseBody) => {

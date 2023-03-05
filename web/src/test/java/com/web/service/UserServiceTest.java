@@ -171,7 +171,7 @@ class UserServiceTest {
         game1.setId(1);
         Game game2 = new Game(Timestamp.valueOf(LocalDateTime.now()));
         game2.setId(2);
-        Set<Game> games = new HashSet<>();
+        List<Game> games = new ArrayList<>();
         games.add(game1);
         games.add(game2);
 

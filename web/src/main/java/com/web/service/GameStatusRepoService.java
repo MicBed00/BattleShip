@@ -4,6 +4,7 @@ import board.Board;
 import board.StateGame;
 import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
+import com.web.enity.user.User;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
 import dataConfig.ShipLimits;
@@ -11,9 +12,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import serialization.GameStatus;
+import ship.Ship;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import static org.apache.catalina.security.SecurityUtil.remove;
 
 @Service
 public class GameStatusRepoService {
@@ -39,7 +44,9 @@ public class GameStatusRepoService {
     public boolean saveGameStatusToDataBase(List<Board> boardsList, StateGame state, long gameId) {
         int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
         GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
-        Game game = gameRepo.findById(gameId).get();
+        Game game = gameRepo.findById(gameId).orElseThrow(
+                () -> new NoSuchElementException("Brak gry w bazie")
+        );
         StatusGame statusGame = new StatusGame(gameStatus, game);
 
         return repoStatusGame.save(statusGame) != null;
@@ -51,11 +58,27 @@ public class GameStatusRepoService {
     }
 
     @Transactional
-    public void deleteLastShip(int indexBoard, long gameId) {
-//        Long gameId = repoStartGame.findMaxId().orElseThrow(
-//                () -> new NoSuchElementException("User has not yet added the ship")
-//        );
-        repoStatusGame.deleteLast(gameId);
+    public void deleteShip(long userId, long gameId) {
+        Game game = gameRepo.findById(gameId).orElseThrow(
+                () -> new NoSuchElementException("Can't find game")
+        );
+        List<User> users = game.getUsers();
+        StatusGame statusGame = getStatusGame(gameId);
+
+        List<Board> boards = statusGame.getGameStatus().getBoardsStatus();
+        StateGame state = statusGame.getGameStatus().getState();
+        int lastShip;
+        if(users.get(0).getId() == userId) {
+            lastShip = boards.get(0).getShips().size() - 1;
+            List<Ship> ships = statusGame.getGameStatus().getBoardsStatus().get(0).getShips();
+            ships.remove(lastShip);
+        } else {
+            lastShip = boards.get(1).getShips().size() - 1;
+            statusGame.getGameStatus().getBoardsStatus().get(1).getShips().remove(lastShip);
+        }
+        int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
+        GameStatus gameStatus = new GameStatus(boards, currentPlayer, state);
+        repoStatusGame.save(new StatusGame(gameStatus,game));
     }
 
     public StatusGame getStatusGame(long idGame) {
@@ -76,7 +99,7 @@ public class GameStatusRepoService {
         return repoStatusGame.save(savedStateGame);
     }
 
-    public void checkIfTwoPlayersArePreparedWhenChangingState(String state, long userId) {
+    public void checkIfTwoPlayersArePreparedThenChangingState(String state, long userId) {
         StatusGame savedStateGame = getSavedStateGame(userId);
         List<Board> boardsStatus = savedStateGame.getGameStatus().getBoardsStatus();
         int ply1Ships = boardsStatus.get(0).getShips().size();
@@ -84,7 +107,6 @@ public class GameStatusRepoService {
 
         if(ply1Ships == ShipLimits.SHIP_LIMIT.getQty()
            && ply2Ships == ShipLimits.SHIP_LIMIT.getQty()) {
-
             updateStatePreperationGame(userId, state);
         }
     }
