@@ -62,12 +62,13 @@ public class GameStatusService {
     @Transactional
     public List<Board> addShipToList(Ship ship, long gameId, long userId) {
         List<Board> boardList = getBoardList(gameId);
-        List<User> users = gameRepoService.getGame(gameId).getUsers();
+        Game game = gameRepoService.getGame(gameId);
+        Long idOwner = game.getIdOwner();
 
         if (ship.getLength() > 0 && ship.getPosition() != null) {
-            if (users.get(0).getId() == userId) {
+            if (idOwner == userId) {
                 addShipToBoard(boardList.get(0), ship);
-            } else if (users.get(1).getId() == userId) {
+            } else {
                 addShipToBoard(boardList.get(1), ship);
             }
         }
@@ -77,16 +78,17 @@ public class GameStatusService {
     public List<Board> getBoardList(long gameId) {
         return gameStatusRepoService.getStatusGame(gameId).getGameStatus().getBoardsStatus();
     }
+
     public Board getBoard(long gameId, long userId) {
         List<Board> boardList = getBoardList(gameId);
-        List<User> users = gameRepoService.getGame(gameId).getUsers();
+        Game game = gameRepoService.getGame(gameId);
+        Long owner = game.getIdOwner();
 
-            if (users.get(0).getId() == userId) {
-                return boardList.get(0);
-            } else if (users.get(1).getId() == userId) {
-                return boardList.get(1);
-            }
-        return null;
+        if (owner == userId) {
+            return boardList.get(0);
+        } else {
+            return boardList.get(1);
+        }
     }
 
     private void addShipToBoard(Board boardPlayer, Ship ship) {

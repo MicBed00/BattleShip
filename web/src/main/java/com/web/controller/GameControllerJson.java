@@ -59,7 +59,6 @@ public class GameControllerJson {
 
     @GetMapping(value = "/games/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Game> games(@PathVariable long gameId) {
-//        List<User> users = gameRepoService.getGame(gameId).getUsers();
         return ResponseEntity.ok(gameRepoService.getGame(gameId));
     }
 
@@ -122,7 +121,7 @@ public class GameControllerJson {
     }
 
     //TODO usuwanie nie działa do poprawy
-    @Transactional
+
     @DeleteMapping(value = "/deleteShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> deleteShips(@PathVariable int userId, @PathVariable long gameId) {
         gameStatusRepoService.deleteShip(userId, gameId);

@@ -22,6 +22,7 @@ function resumeGame() {
     intervalId = setInterval(listenerShots, 500);
 }
 
+//TODO z javy muszę w modulu zwracać ownera i na tej podstawie udostępniać tablicę uzytkowników do strzelania
 function disabledOwnerBoard() {
     new BattleShipClient().getUsers(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {

@@ -31,7 +31,7 @@ public class GameRepoService {
     @Transactional
     public void saveNewGame(long userId) {
         User user = userService.getLogInUser(userId);
-        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()));
+        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
         user.getGames().add(game);
         game.getUsers().add(user);
         gameRepo.save(game);

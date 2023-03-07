@@ -23,4 +23,5 @@
         <include file="changeset/12_implement_association_table_usergames.sql" relativeToChangelogFile="true"/>
         <include file="changeset/13_edit_name_table_usergames.sql" relativeToChangelogFile="true"/>
         <include file="changeset/14_create_table_persistent_logins.sql" relativeToChangelogFile="true"/>
+        <include file="changeset/15_add_newColumn_toTable_games.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

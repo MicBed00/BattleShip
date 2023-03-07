@@ -56,7 +56,7 @@ public class GameStatusRepoService {
         StatusGame statusGame = new StatusGame(gameStatus, game);
         repoStatusGame.save(statusGame);
     }
-
+    //TODO nie wiem czemu games zwraca mi ArrayList userów uporządkowanych niezgodnie z kolejnością dodawania do listy????
     @Transactional
     public void deleteShip(long userId, long gameId) {
         Game game = gameRepo.findById(gameId).orElseThrow(

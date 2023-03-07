@@ -7,9 +7,7 @@ import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity
@@ -18,6 +16,8 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name="owner_game")
+    private Long ownerGame;
     @Column
     private Timestamp date;
     @ManyToMany(mappedBy = "games")
@@ -26,12 +26,21 @@ public class Game {
 
     public Game() {}
 
-    public Game(Timestamp date) {
+    public Game(Timestamp date, Long ownerGme) {
         this.date = date;
+        this.ownerGame = ownerGame;
     }
 
     public List<User> getUsers() {
         return users;
+    }
+
+    public Long getIdOwner() {
+        return ownerGame;
+    }
+
+    public void setIdOwner(Long ownerGameId) {
+        this.ownerGame = ownerGameId;
     }
 
     public void setUsers(List<User> users) {
