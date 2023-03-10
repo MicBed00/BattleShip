@@ -10,14 +10,16 @@
 </head>
 <body>
 <div class="container">
-    <h1 class="login-header">Battle Ship</h1>
+    <h1 class="login-header" th:text="#{name}"></h1>
     <h2 class="login-header">Zaloguj się</h2>
     <i class="fa-solid fa-lock fa-5x lock-icon"></i>
 <!--    th:action="@{/login}" w formularzu wprowadza automatycznie ochornę przed atakiem CSRF-->
     <form class="login-form" th:action="@{/login}" method="post">
-        <input name="username" placeholder="podaj email" class="form-item">
-        <input name="password" placeholder="hasło" type="password" class="form-item">
+
+        <input name="username" placeholder="podaj email" type="email" class="form-item" required>
+        <input name="password" placeholder="hasło" type="password" class="form-item" required>
         <button type="submit" class="form-item">Zaloguj się</button>
+
         <div>
             <input type="checkbox" name="remember-me"/>
             <label>Zapamiętaj mnie</label>

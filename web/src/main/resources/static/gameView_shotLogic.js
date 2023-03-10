@@ -22,19 +22,18 @@ function resumeGame() {
     intervalId = setInterval(listenerShots, 500);
 }
 
-//TODO z javy muszę w modulu zwracać ownera i na tej podstawie udostępniać tablicę uzytkowników do strzelania
 function disabledOwnerBoard() {
-    new BattleShipClient().getUsers(gameId, (status, responseBody) => {
+    new BattleShipClient().getOwnerGame(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            var userId = responseBody[0].id;
-            if (userId == currentPlayerId) {
+            var ownerGame = responseBody;
+            if (ownerGame == currentPlayerId) {
                 board1.style.pointerEvents = "none";
             } else {
                 board2.style.pointerEvents = "none";
             }
         }
     }, (status, responseBody) => {
-        alert("Błąd "+ responseBody);
+        alert("Błąd " + responseBody);
 
     })
 }
@@ -43,7 +42,7 @@ function boardAccessControl(boardList) {
     var numberOppShot1 = boardList[0].opponentShots.length;
     var numberOppShot2 = boardList[1].opponentShots.length;
 
-    if(numberOppShot1 === numberOppShot2) {
+    if (numberOppShot1 === numberOppShot2) {
         board1.style.pointerEvents = "none";
         board2.style.pointerEvents = "auto";
     } else {
@@ -68,20 +67,20 @@ function listenerShots() {
         if (status >= 200 && status <= 299) {
             var boardList = responseBody;
             boardAccessControl(boardList);
-                new BattleShipClient().getUsers(gameId, (status, responseBody) => {
-                    if (status >= 200 && status <= 299) {
-                        var userId = responseBody[0].id;
-                            if (userId == currentPlayerId) {
-                                currentBoard = board1;
-                                renderShot(boardList[0]);
-                            } else {
-                                currentBoard = board2;
-                                renderShot(boardList[1]);
-                            }
+            new BattleShipClient().getOwnerGame(gameId, (status, responseBody) => {
+                if (status >= 200 && status <= 299) {
+                    var ownerGame = responseBody;
+                    if (ownerGame == currentPlayerId) {
+                        currentBoard = board1;
+                        renderShot(boardList[0]);
+                    } else {
+                        currentBoard = board2;
+                        renderShot(boardList[1]);
                     }
-                }, (status, responseBody) => {
-                    alert("Błąd "+ responseBody);
-                })
+                }
+            }, (status, responseBody) => {
+                alert("Błąd " + responseBody);
+            })
         }
     })
 }
@@ -104,11 +103,11 @@ function shotAtShip(event) {
     new BattleShipClient().shooterShip(shotX, shotY, gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
             var boardList = responseBody;
-            new BattleShipClient().getUsers(gameId, (status, responseBody) => {
+            new BattleShipClient().getOwnerGame(gameId, (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
-                    var userId = responseBody[0].id;
+                    var ownerGame = responseBody;
 
-                    if (userId == currentPlayerId) {
+                    if (ownerGame == currentPlayerId) {
                         currentBoard = board2;
                         renderShot(boardList[1], target);
                     } else {

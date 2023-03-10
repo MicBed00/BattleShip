@@ -43,7 +43,6 @@ public class GameRepoService {
     }
 
     public List<Integer> getGamesWatingForUser() {
-        //TODO wyznaczenie grier na podstawie state wyciągnietego z bazy
        return gameRepo.findAll().stream()
                 .filter(game -> game.getUsers().size() == 1)
                 .map(Game::getId)

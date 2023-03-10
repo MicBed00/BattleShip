@@ -1,5 +1,9 @@
 package com.web.controller;
 
+import board.Board;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.util.List;
 
 @Configuration
 public class ServiceGameControllerJsonTest {
@@ -78,11 +84,15 @@ public class ServiceGameControllerJsonTest {
         headers.set("Cookie", sessionCookie);
         headers.set("X-CSRF-TOKEN", token.token);
 
-        //TODO test jednostkowy na pobranie z bazy uzytkownika i zwrócenie id z tabeli
         HttpEntity<Void> request = new HttpEntity<>(headers);
         return restTemplate.postForEntity(buildUrl("/json/game/save/" + userId, port),
                         request,
                         String.class);
+    }
+
+    public List<Board> deserialiJsonToList(String responseBody) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.readValue(responseBody, new TypeReference<List<Board>>() {});
     }
 
     public HttpHeaders setupHeadersRequestToGameController(String viewUrl, String tagCsrf, String attrCsrf, TestRestTemplate restTemplate, int port) {

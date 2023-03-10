@@ -56,19 +56,19 @@ public class GameStatusRepoService {
         StatusGame statusGame = new StatusGame(gameStatus, game);
         repoStatusGame.save(statusGame);
     }
-    //TODO nie wiem czemu games zwraca mi ArrayList userów uporządkowanych niezgodnie z kolejnością dodawania do listy????
+
     @Transactional
     public void deleteShip(long userId, long gameId) {
         Game game = gameRepo.findById(gameId).orElseThrow(
                 () -> new NoSuchElementException("Can't find game")
         );
-        List<User> users = game.getUsers();
+        Long owner = game.getOwnerGame();
         StatusGame statusGame = getStatusGame(gameId);
 
         List<Board> boards = statusGame.getGameStatus().getBoardsStatus();
         StateGame state = statusGame.getGameStatus().getState();
         int lastShip;
-        if(users.get(0).getId() == userId) {
+        if(owner == userId) {
             lastShip = boards.get(0).getShips().size() - 1;
             List<Ship> ships = statusGame.getGameStatus().getBoardsStatus().get(0).getShips();
             ships.remove(lastShip);

@@ -51,10 +51,9 @@ public class GameControllerJson {
     public ResponseEntity<List<Board>> listBoards(@PathVariable long gameId) {
         return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
     }
-    @GetMapping(value = "/users/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> usersId(@PathVariable long gameId) {
-        List<User> users = gameRepoService.getGame(gameId).getUsers();
-        return ResponseEntity.ok(users);
+    @GetMapping(value = "/owner/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> usersId(@PathVariable long gameId) {
+        return ResponseEntity.ok(gameRepoService.getGame(gameId).getOwnerGame());
     }
 
     @GetMapping(value = "/games/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -120,12 +119,10 @@ public class GameControllerJson {
         return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId));
     }
 
-    //TODO usuwanie nie działa do poprawy
-
     @DeleteMapping(value = "/deleteShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Board>> deleteShips(@PathVariable int userId, @PathVariable long gameId) {
+    public ResponseEntity<Board> deleteShips(@PathVariable int userId, @PathVariable long gameId) {
         gameStatusRepoService.deleteShip(userId, gameId);
-        return ResponseEntity.ok(gameStatusRepoService.getSavedStateGame(userId).getGameStatus().getBoardsStatus());
+        return ResponseEntity.ok(gameStatusService.getBoard(gameId, userId));
     }
 
     @PostMapping(value = "/update-state/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)

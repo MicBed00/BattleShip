@@ -78,7 +78,6 @@ public class UserService {
 
     public Game getLastUserGames(long userId) {
         User user = getLogInUser(userId);
-        //TODO rozpatrzeć przypadek braku gry w bazie metoda getLastUserGames()
         List<Game> ListGames = user.getGames();
         if(ListGames.size() == 0) {
             throw new NoSuchElementException("User has not game");

@@ -1,11 +1,18 @@
 package com.web.controller;
 
+import java.io.IOException;
 import java.lang.Void;
 
+import board.Board;
 import board.Shot;
 import board.StateGame;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.service.GameStatusService;
 import dataConfig.Position;
+import exceptions.ShipLimitExceedException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,11 +23,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+import serialization.GameStatus;
+import serialization.Reader;
 import ship.Ship;
 
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -99,53 +114,54 @@ public class GameControllerJsonTest {
 
 
     //TODO test zawsze przechodzi
-//    @DirtiesContext
-//    @Test
-//    void shouldThrowExceptionShipLimitExceedFor1MastedShipsWhenAddedToManyShips() {
-//        //given
-//        HttpHeaders headers = configTests.setupHeadersRequestToGameController("/view/getParamGame", "meta", "content", restTemplate, port);
-//        long userId = 1;
-//        configTests.addNewGameWithStatusGameForUser(userId,restTemplate, port);
-//
-//        //when
-//        Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
-//        HttpEntity<Ship> requestShip1 = new HttpEntity<>(ship1, headers);
-//        restTemplate
-//                .postForEntity(configTests.buildUrl("/json/addShip", port)
-//                       , requestShip1
-//                        , String.class);
-//        Ship ship2 = new Ship(1, 3, 4, Position.VERTICAL);
-//        HttpEntity<Ship> requestShip2 = new HttpEntity<>(ship2, headers);
-//        restTemplate
-//                .postForEntity(configTests.buildUrl("/json/addShip", port)
-//                        , requestShip2
-//                        , String.class);
-//        Ship ship3 = new Ship(1, 7, 7, Position.VERTICAL);
-//        HttpEntity<Ship> requestShip3 = new HttpEntity<>(ship3, headers);
-//        restTemplate
-//                .postForEntity(configTests.buildUrl("/json/addShip", port)
-//                        , requestShip3
-//                        , String.class);
-//        Ship ship4 = new Ship(1, 0, 7, Position.VERTICAL);
-//        HttpEntity<Ship> requestShip4 = new HttpEntity<>(ship4, headers);
-//        restTemplate
-//                .postForEntity(configTests.buildUrl("/json/addShip", port)
-//                        , requestShip4
-//                        , String.class);
-//
-//        try {
-//            Ship ship5 = new Ship(1, 8, 0, Position.VERTICAL);
-//            HttpEntity<Ship> requestShip5 = new HttpEntity<>(ship5, headers);
-//            ResponseEntity<String> responseException = restTemplate
-//                    .postForEntity(configTests.buildUrl("/json/addShip", port)
-//                            , requestShip5
-//                            , String.class);
-//        }catch(ShipLimitExceedException e) {
-//            assertThat(e)
-//                    .isInstanceOf(ShipLimitExceedException.class)
-//                    .hasMessageContaining("1 masted ships limit has been reached. Press enter and re-enter the data");
-//        }
-//    }
+    @DirtiesContext
+    @Test
+    void shouldThrowExceptionShipLimitExceedFor1MastedShipsWhenAddedToManyShips() {
+        //given
+        long userIdPly1 = 1;
+        long userIdPly2 = 2;
+        long gameId = 1;
+        HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/getParamGame/" + gameId, "meta"
+                , "content", restTemplate, port);
+        serviceTests.addNewGameWithStatusGameForUser(userIdPly1, restTemplate, port);
+        serviceTests.addSecondPlayerToGame(userIdPly2, gameId, restTemplate, port);
+        //when
+        Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
+        HttpEntity<Ship> requestShip1 = new HttpEntity<>(ship1, headers);
+        restTemplate
+                .postForEntity(serviceTests.buildUrl("/json/addShip/"+userIdPly1+"/"+gameId, port)
+                        , requestShip1
+                        , String.class);
+        Ship ship2 = new Ship(1, 3, 4, Position.VERTICAL);
+        HttpEntity<Ship> requestShip2 = new HttpEntity<>(ship2, headers);
+        restTemplate
+                .postForEntity(serviceTests.buildUrl("/json/addShip/"+userIdPly1+"/"+gameId, port)
+                        , requestShip2
+                        , String.class);
+        Ship ship3 = new Ship(1, 7, 7, Position.VERTICAL);
+        HttpEntity<Ship> requestShip3 = new HttpEntity<>(ship3, headers);
+        restTemplate
+                .postForEntity(serviceTests.buildUrl("/json/addShip/"+userIdPly1+"/"+gameId, port)
+                        , requestShip3
+                        , String.class);
+        Ship ship4 = new Ship(1, 0, 7, Position.VERTICAL);
+        HttpEntity<Ship> requestShip4 = new HttpEntity<>(ship4, headers);
+                restTemplate
+                .postForEntity(serviceTests.buildUrl("/json/addShip/"+userIdPly1+"/"+gameId, port)
+                        , requestShip4
+                        , String.class);
+
+        Ship ship5 = new Ship(1, 8, 0, Position.VERTICAL);
+        HttpEntity<Ship> requestShip5 = new HttpEntity<>(ship5, headers);
+        ResponseEntity<String> responseException = restTemplate
+                    .postForEntity(serviceTests.buildUrl("/json/addShip/"+userIdPly1+"/"+gameId, port)
+                            , requestShip5
+                            , String.class);
+
+       //then
+        assertThat(responseException.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseException.getBody()).isEqualTo("exceptions.ShipLimitExceedException: 1 masted ships limit has been reached. Press enter and re-enter the data");
+    }
 
     @DirtiesContext
     @Test
@@ -479,12 +495,9 @@ public class GameControllerJsonTest {
         assertThat(response.getBody()).isEqualTo(StateGame.FINISHED);
     }
 
-    //TODO pytanie: Co w sytuacji gdy logika programu nie powinna
-    // dopuścić do wywołania tej metody w przypadku gdy nie ma statusu gry w tabeli -> wtedy jest przekierowanie na inny endpoint.
-    //Czy testuję się takie metody pod kątem, gdy nie ma statusu gry w tabeli?
     @DirtiesContext
     @Test
-    void shouldReturnStatusGame() {
+    void shouldReturnStatusGame() throws IOException {
         //given
         long gameId = 1;
         HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/getParamGame/"+gameId, "meta"
@@ -500,9 +513,8 @@ public class GameControllerJsonTest {
                 , String.class);
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()
-                .equals("[{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}" +
-                        ",{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}]")).isTrue();
+        assertThat(serviceTests.deserialiJsonToList(response.getBody())
+                .equals(List.of(new Board(), new Board()))).isTrue();
     }
 
     @DirtiesContext
@@ -518,7 +530,6 @@ public class GameControllerJsonTest {
         serviceTests.addSecondPlayerToGame(userIdPly2, gameId, restTemplate, port);
 
         //when
-        long indexBoard = 0;
         Ship ship = new Ship(3, 1, 1, Position.VERTICAL);
         HttpEntity<Ship> requestWithToken = new HttpEntity<>(ship, headers);
         ResponseEntity<String> response1 = restTemplate.postForEntity(serviceTests
@@ -528,18 +539,16 @@ public class GameControllerJsonTest {
         Map<String, Long> map = new HashMap<>();
         map.put("userId", userIdPly1);
         map.put("gameId", gameId);
-        map.put("indexBoard", indexBoard);
         HttpEntity<Map<String, Long>> request = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplate.exchange(serviceTests
-                        .buildUrl("/json/deleteShip/"+userIdPly1+"/"+gameId+"/"+indexBoard, port)
+                        .buildUrl("/json/deleteShip/"+userIdPly1+"/"+gameId, port)
                 , HttpMethod.DELETE
                 , request
                 , String.class);
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()
-                .equals("[{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}" +
-                        ",{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}]")).isTrue();
+                .equals("{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}")).isTrue();
     }
 
     @DirtiesContext
@@ -590,27 +599,6 @@ public class GameControllerJsonTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-//    @DirtiesContext
-//    @Test
-//    void shouldThrowExceptionWhenTryGetGameViewWithoutGameStarted() {
-//        //given
-//        long gameId = 1;
-//        HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/added_Ship/"+gameId, "meta"
-//                                                                                , "content", restTemplate, port);
-//        //when
-//        try {
-//            HttpEntity<Void> request = new HttpEntity<>(headers);
-//            ResponseEntity<String> response = restTemplate.exchange(serviceTests.buildUrl("/view/added_Ship/"+gameId, port)
-//                    , HttpMethod.GET
-//                    , request
-//                    , String.class);
-//
-//        } catch (NoSuchElementException e) {
-//            assertThat(e)
-//                    .isInstanceOf(NoSuchElementException.class)
-//                    .hasMessageContaining("User has not game");
-//        }
-//    }
 
     @DirtiesContext
     @Test
@@ -726,15 +714,21 @@ public class GameControllerJsonTest {
 
     @DirtiesContext
     @Test
-    void shouldAddShotToOneBoard() {
+    void shouldAddShotToOneBoard() throws JsonProcessingException {
         //given
         long userId = 1;
         long gameId = 1;
+        Board board1 = new Board();
+        Board board2 = new Board();
+        List<Board> boardList = new ArrayList<>();
         serviceTests.addNewGameWithStatusGameForUser(userId, restTemplate, port);
         HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/game/"+gameId, "meta"
                                                                                     , "content", restTemplate, port);
         //when
         Shot shot = new Shot(2, 4);
+        board2.getOpponentShots().add(shot);
+        boardList.add(board1);
+        boardList.add(board2);
         HttpEntity<Shot> request = new HttpEntity<>(shot, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(serviceTests.buildUrl("/json/game/boards/"+gameId, port)
                 , request
@@ -742,22 +736,31 @@ public class GameControllerJsonTest {
 
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().equals("[{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}" +
-                ",{\"ships\":[],\"opponentShots\":[{\"x\":2,\"y\":4,\"state\":\"MISSED\"}],\"hittedShip\":[]}]")).isTrue();
+        assertThat(serviceTests.deserialiJsonToList(response.getBody()).equals(boardList)).isTrue();
     }
 
     @DirtiesContext
     @Test
-    void shouldAddShotToTwoBoard() {
+    void shouldAddShotToTwoBoard() throws JsonProcessingException {
         //given
         long userId = 1;
         long gameId = 1;
+        Board board1 = new Board();
+        Board board2 = new Board();
+        List<Board> boardListOneShot = new ArrayList<>();
+        List<Board> boardListTwoShots = new ArrayList<>();
         serviceTests.addNewGameWithStatusGameForUser(userId, restTemplate, port);
         HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/game/"+gameId, "meta"
                                                                                     , "content", restTemplate, port);
         //when
         Shot shot = new Shot(2, 4);
+        board2.getOpponentShots().add(shot);
+        boardListOneShot.add(new Board());
+        boardListOneShot.add(board2);
         Shot shot1 = new Shot(2, 4);
+        board1.getOpponentShots().add(shot1);
+        boardListTwoShots.add(board1);
+        boardListTwoShots.add(board2);
 
         HttpEntity<Shot> requestFirstShot = new HttpEntity<>(shot, headers);
         ResponseEntity<String> responseFirstShot = restTemplate.postForEntity(serviceTests.buildUrl("/json/game/boards/"+gameId, port)
@@ -769,11 +772,9 @@ public class GameControllerJsonTest {
                 , String.class);
         //then
         assertThat(responseFirstShot.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseFirstShot.getBody().equals("[{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}" +
-                ",{\"ships\":[],\"opponentShots\":[{\"x\":2,\"y\":4,\"state\":\"MISSED\"}],\"hittedShip\":[]}]")).isTrue();
+        assertThat(serviceTests.deserialiJsonToList(responseFirstShot.getBody()).equals(boardListOneShot)).isTrue();
         assertThat(responseSecondShot.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseSecondShot.getBody().equals("[{\"ships\":[],\"opponentShots\":[{\"x\":2,\"y\":4,\"state\":\"MISSED\"}],\"hittedShip\":[]}" +
-                ",{\"ships\":[],\"opponentShots\":[{\"x\":2,\"y\":4,\"state\":\"MISSED\"}],\"hittedShip\":[]}]")).isTrue();
+        assertThat(serviceTests.deserialiJsonToList(responseSecondShot.getBody()).equals(boardListTwoShots)).isTrue();
     }
 
 

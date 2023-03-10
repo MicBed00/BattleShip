@@ -18,8 +18,8 @@
             <option th:each="game : ${waitingGames}" th:value="${game}" th:text="'game id ' + ${game}"></option>
         </select>
         <div class="buttonContainer">
-            <button class="joinButton" id="joinGame" disabled>Join to game</button>
-            <button class="ownGameButton" id="ownGame" disabled>Create new game</button>
+            <button class="joinButton" id="joinGame" th:text="#{joinToGame}" disabled></button>
+            <button class="ownGameButton" id="ownGame" th:text="#{createGame}" disabled>Create new game</button>
         </div>
     </div>
 </div>

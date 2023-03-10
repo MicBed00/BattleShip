@@ -42,8 +42,8 @@ class BattleShipClient {
 
     }
 
-    getUsers(gameId, onSuccess, onError) {
-        this.get("/json/users/"+gameId, null, null, onSuccess, onError);
+    getOwnerGame(gameId, onSuccess, onError) {
+        this.get("/json/owner/"+gameId, null, null, onSuccess, onError);
     }
 
     deleteLastAddedShip(userId, gameId, onSuccess, onError) {

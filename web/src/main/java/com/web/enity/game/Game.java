@@ -26,21 +26,21 @@ public class Game {
 
     public Game() {}
 
-    public Game(Timestamp date, Long ownerGme) {
+    public Game(Timestamp date, Long ownerGame) {
         this.date = date;
+        this.ownerGame = ownerGame;
+    }
+
+    public Long getOwnerGame() {
+        return ownerGame;
+    }
+
+    public void setOwnerGame(Long ownerGame) {
         this.ownerGame = ownerGame;
     }
 
     public List<User> getUsers() {
         return users;
-    }
-
-    public Long getIdOwner() {
-        return ownerGame;
-    }
-
-    public void setIdOwner(Long ownerGameId) {
-        this.ownerGame = ownerGameId;
     }
 
     public void setUsers(List<User> users) {

@@ -63,7 +63,7 @@ public class GameStatusService {
     public List<Board> addShipToList(Ship ship, long gameId, long userId) {
         List<Board> boardList = getBoardList(gameId);
         Game game = gameRepoService.getGame(gameId);
-        Long idOwner = game.getIdOwner();
+        Long idOwner = game.getOwnerGame();
 
         if (ship.getLength() > 0 && ship.getPosition() != null) {
             if (idOwner == userId) {
@@ -82,7 +82,7 @@ public class GameStatusService {
     public Board getBoard(long gameId, long userId) {
         List<Board> boardList = getBoardList(gameId);
         Game game = gameRepoService.getGame(gameId);
-        Long owner = game.getIdOwner();
+        Long owner = game.getOwnerGame();
 
         if (owner == userId) {
             return boardList.get(0);
@@ -133,7 +133,6 @@ public class GameStatusService {
     }
 
     public List<String> checkIfOpponentAppears(long userId) {
-        //TODO tu wyciągnąc wszystkie gry usera i sprawdzić czy ma przeciwnika
         List<String> answer = new ArrayList<>();
         StatusGame savedStateGame = gameStatusRepoService.getSavedStateGame(userId);
         Game lastUserGames = userService.getLastUserGames(userId);

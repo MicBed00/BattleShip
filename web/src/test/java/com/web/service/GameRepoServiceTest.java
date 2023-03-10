@@ -3,8 +3,10 @@ package com.web.service;
 import board.Board;
 import board.StateGame;
 import com.web.enity.game.Game;
+import com.web.enity.game.StatusGame;
 import com.web.enity.user.User;
 import com.web.repositorium.GameRepo;
+import com.web.repositorium.StatusGameRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,11 +15,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Bean;
+import serialization.GameStatus;
 
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +42,10 @@ class GameRepoServiceTest {
     private GameStatusRepoService gameStatusRepoService;
     @Mock
     private UserService userService;
+
+    @Mock
+    StatusGameRepo repoStatusGame;
+
     private AutoCloseable autoCloseable;
     private GameRepoService gameRepoService;
 
@@ -48,26 +60,28 @@ class GameRepoServiceTest {
         autoCloseable.close();
     }
 
-//    @Test
-//    void shouldSaveNewGame() {
-//        //given
-//        long userId = 1;
-//        List<Board> boardList = new ArrayList<>();
-//        StateGame state = StateGame.IN_PROCCESS;
-//        User user = new User();
-//        Game startGame = new Game(Timestamp.valueOf(LocalDateTime.now()));
-//        when(userService.getLogInUser(userId)).thenReturn(user);
-//        when(gameStatusRepoService.saveGameStatusToDataBase(boardList, state)).thenReturn(true);
-//        doReturn(startGame).when(gameRepo).save(Mockito.any(Game.class));
-//
-//        //when
-//        boolean result = gameRepoService.saveNewGame(userId, boardList, state);
-//
-//        //then
-//        assertTrue(result);
-//        verify(userService, times(1)).getLogInUser(userId);
-//        verify(gameStatusRepoService, times(1)).saveGameStatusToDataBase(boardList, state);
-//    }
+    @Test
+    void shouldSaveNewGame() {
+        //given
+        long userId = 1;
+        List<Board> boardList = new ArrayList<>();
+        StateGame state = StateGame.IN_PROCCESS;
+        long owner = 1;
+        long gameId = 1;
+        User user = new User();
+        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+        Game startGame = new Game(timestamp, owner);
+        startGame.setId(1);
+        when(userService.getLogInUser(userId)).thenReturn(user);
+        doReturn(startGame).when(gameRepo).save(Mockito.any(Game.class));
+
+        //when
+        gameRepoService.saveNewGame(userId);
+
+        //then
+        verify(userService, times(1)).getLogInUser(userId);
+//        verify(gameRepo,times(1)).save(new Game(timestamp, owner));
+    }
 
     @Test
     void shouldReturnFalseForUserWithoutGames() {
@@ -85,19 +99,20 @@ class GameRepoServiceTest {
         verify(userService, times(1)).getLogInUser(userId);
     }
 
-//    @Test
-//    void shouldReturnTrueForUserWithGame() {
-//        //given
-//        long userId = 1L;
-//        User user = new User();
-//        user.getGames().add(new Game(Timestamp.valueOf(LocalDateTime.now())));
-//        when(userService.getLogInUser(userId)).thenReturn(user);
-//
-//        //when
-//        boolean result = gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId);
-//
-//        //then
-//        assertTrue(result);
-//        verify(userService, times(1)).getLogInUser(userId);
-//    }
+    @Test
+    void shouldReturnTrueForUserWithGame() {
+        //given
+        long userId = 1L;
+        long owner = 1;
+        User user = new User();
+        user.getGames().add(new Game(Timestamp.valueOf(LocalDateTime.now()), owner));
+        when(userService.getLogInUser(userId)).thenReturn(user);
+
+        //when
+        boolean result = gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId);
+
+        //then
+        assertTrue(result);
+        verify(userService, times(1)).getLogInUser(userId);
+    }
 }

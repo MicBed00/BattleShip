@@ -164,31 +164,32 @@ class UserServiceTest {
     }
 
 
-//    @Test
-//    void shouldReturnLastUserGame() {
-//        //given
-//        Game game1 = new Game(Timestamp.valueOf(LocalDateTime.now()));
-//        game1.setId(1);
-//        Game game2 = new Game(Timestamp.valueOf(LocalDateTime.now()));
-//        game2.setId(2);
-//        List<Game> games = new ArrayList<>();
-//        games.add(game1);
-//        games.add(game2);
-//
-//        long userId = 1L;
-//        User user = new User();
-//        user.setId(1L);
-//        user.setGames(games);
-//
-//        given(userRepo.findById(userId)).willReturn(Optional.of(user));
-//
-//        //then
-//        Game result = userService.getLastUserGames(userId);
-//
-//        //then
-//        assertEquals(game2, result);
-//        assertEquals(games.size(), 2);
-//    }
+    @Test
+    void shouldReturnLastUserGame() {
+        //given
+        long owener = 1;
+        Game game1 = new Game(Timestamp.valueOf(LocalDateTime.now()), owener);
+        game1.setId(1);
+        Game game2 = new Game(Timestamp.valueOf(LocalDateTime.now()), owener);
+        game2.setId(2);
+        List<Game> games = new ArrayList<>();
+        games.add(game1);
+        games.add(game2);
+
+        long userId = 1L;
+        User user = new User();
+        user.setId(1L);
+        user.setGames(games);
+
+        given(userRepo.findById(userId)).willReturn(Optional.of(user));
+
+        //then
+        Game result = userService.getLastUserGames(userId);
+
+        //then
+        assertEquals(game2, result);
+        assertEquals(games.size(), 2);
+    }
 
     @Test
     void shouldThrowExceptionIfUserDoesNotHaveGame() {

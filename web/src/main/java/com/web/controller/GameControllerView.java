@@ -65,7 +65,6 @@ public class GameControllerView {
 
     @GetMapping(value = "/game/{gameId}")
     public String getBoards(@PathVariable Long gameId, Model model) {
-        //TODO update endpoint getBoards /game
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUser(username);
         model.addAttribute("userId", user.getId());

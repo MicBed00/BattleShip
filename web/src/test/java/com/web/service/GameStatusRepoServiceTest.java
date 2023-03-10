@@ -6,6 +6,7 @@ import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
+import dataConfig.Position;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import serialization.GameStatus;
+import ship.Ship;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,22 +32,21 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class GameStatusRepoServiceTest {
     @Mock
-    private GameRepo repoStartGame;
+    private GameRepo gameRepo;
     @Mock
     private StatusGameRepo repoStatusGame;
     @Mock
     private GameStatusService gameStatusService;
     @Mock
     private UserService userService;
-    @Mock
-    private GameRepo gameRepo;
+
     private AutoCloseable autoCloseable;
     private GameStatusRepoService gameStatusRepoService;
 
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        gameStatusRepoService = new GameStatusRepoService(repoStartGame, gameStatusService
+        gameStatusRepoService = new GameStatusRepoService(gameRepo, gameStatusService
                                                           ,repoStatusGame, userService);
     }
 
@@ -54,46 +55,48 @@ class GameStatusRepoServiceTest {
         autoCloseable.close();
     }
 
-//    @Test
-//    void saveGameStatusToDataBase() {
-//        //given
-//        List<Board> list = new ArrayList<>();
-//        list.add(new Board());
-//        list.add(new Board());
-//        int currentPlayer = 1;
-//        long gameId = 1;
-//        given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPlayer);
-//        long userId = 1;
-//        given(userService.getUserId()).willReturn(userId);
-//        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()));
-//        game.setId(1);
-//        gameRepo.save(game);
-//        given(gameRepo.findById(gameId).orElseThrow(
-//                () -> new NoSuchElementException("Brak gry w bazie")
-//        )).willReturn(game);
-//
-//        //when
-//        gameStatusRepoService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS, gameId);
-//
-//        //then
-//        verify(gameStatusService, times(1)).getCurrentPlayer(gameId);
-//        verify(userService, times(1)).getUserId();
-//        verify(repoStatusGame, times(1)).save(any(StatusGame.class));
-//    }
+    @Test
+    void saveGameStatusToDataBase() {
+        //given
+        List<Board> list = new ArrayList<>();
+        list.add(new Board());
+        list.add(new Board());
+        int currentPlayer = 1;
+        long gameId = 1;
+        long ownerGame = 1;
+        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), ownerGame);
+        given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPlayer);
+        given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
+        //when
+        gameStatusRepoService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS, gameId);
+        //then
+        verify(gameStatusService, times(1)).getCurrentPlayer(gameId);
+        verify(repoStatusGame, times(1)).save(any(StatusGame.class));
+    }
 
     @Test
     void shouldDeleteLastShip() {
         //given
-        int index = 1;
+        int userId = 1;
         long gameId = 1;
-//        given(repoStartGame.findMaxId()).willReturn(Optional.of(gameId));
+        long owner = 1;
+        int currentPly = 1;
+        long idStatusGame = 1;
+        Board boardWithShip = new Board();
+        boardWithShip.getShips().add(new Ship(1,1,1, Position.VERTICAL));
+        List<Board> boardList = List.of(boardWithShip, new Board());
+        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), owner);
+        StatusGame statusGame = new StatusGame(new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS),game);
+        given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
+        given(repoStatusGame.findMaxIdByGameId(gameId)).willReturn(1L);
+        given(repoStatusGame.findById(idStatusGame)).willReturn(Optional.of(statusGame));
+        given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPly);
 
         //when
-        gameStatusRepoService.deleteShip(index, gameId);
+        gameStatusRepoService.deleteShip(userId, gameId);
 
         //then
-//        verify(repoStartGame).findMaxId();
-        verify(repoStatusGame).deleteLast(gameId);
+        assertEquals(0, boardWithShip.getShips().size());
     }
 
     @Test
@@ -101,7 +104,10 @@ class GameStatusRepoServiceTest {
         //given
         int index = 1;
         long gameId = 1;
-        given(repoStartGame.findMaxId()).willReturn(Optional.empty());
+        long owner = 1;
+        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+        Game game = new Game(timestamp, owner);
+        given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
 
         //when
         //then
@@ -173,7 +179,7 @@ class GameStatusRepoServiceTest {
         //when
         gameStatusRepoService.updateStatePreperationGame(1, state);
 
-        //theb
+        //then
         verify(repoStatusGame, times(1)).save(any(StatusGame.class));
     }
 }

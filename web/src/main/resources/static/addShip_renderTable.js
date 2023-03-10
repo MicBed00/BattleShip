@@ -44,12 +44,11 @@ function resetParam() {
     document.getElementById("backAction").disabled = false;
 }
 
-
-function configurationGame(boardList) {
+function configurationGame(board) {
     //wymyślić inny warunek dla odblokowania przycisku
-    renderShip(boardList)
+    renderShip(board)
 
-    if (boardList.ships.length === shipNumber) {
+    if (board.ships.length === shipNumber) {
         document.getElementById("renderTable").style.pointerEvents = "none";
         document.getElementById("accept").disabled = false;
 
@@ -60,7 +59,7 @@ function configurationGame(boardList) {
     }
 
     // if (checkIfStillBoardPlayerOne(board)) {
-    //     renderShip(boardList[0])
+    //     renderShip(boardList)
     //
     //     if (boardList[0].ships.length === shipNumber) {
     //         document.getElementById("renderTable").style.pointerEvents = "none";
@@ -145,18 +144,17 @@ function startNewGame() {
 }
 
 document.getElementById("backAction").addEventListener("click", function () {
-    new BattleShipClient().getStatusGameFromDataBase(userId,(status, responseBody) => {
+    new BattleShipClient().getStatusGameFromDataBase(gameId,(status, responseBody) => {
         if (status >= 200 && status <= 299) {
             board = responseBody;
                 new BattleShipClient().deleteLastAddedShip(userId, gameId,  (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         document.getElementById("renderTable").style.pointerEvents = "auto";
                         document.getElementById("accept").disabled = true;
-                        renderShip(responseBody[0]);
-                        if(responseBody[0].ships.length  === 0) {
+                        renderShip(responseBody);
+                        if(responseBody.ships.length === 0) {
                             document.getElementById("backAction").disabled = true;
                         }
-
                     }
                 }, (status, responseBody) => {
                     alert("Błąd " + status);
