@@ -79,6 +79,10 @@ class BattleShipClient {
         this.get("/json/request/"+gameId, null, null, onSuccess, onError)
     }
 
+    deleteGame(gameId, userId, onSuccess, onError) {
+        this.delete("/json/delete-game/"+userId+"/"+gameId, null, null, onSuccess, onError)
+    }
+
 
     checkStatusGame(gameId, onSuccess, onError) {
         this.get("/json/status-game/"+gameId, null, null, onSuccess, onError);
@@ -87,24 +91,11 @@ class BattleShipClient {
     checkStatusOwnGames(onSuccess, onError) {
         this.get("/json/check-state", null, null, onSuccess, onError);
     }
-    getPhaseGame(id, onSuccess, onError) {
-        this.get("/json/game/boards/phaseGame/"+id, null, null, onSuccess, onError);
-    }
-
-    getShotsFromDataBase(id, onSuccess, onError) {
-        this.get("/json/game/boards/shots/"+id, null, null, onSuccess, onError);
-    }
-    getCsrfToken(onSuccess, onError) {
-        this.get("/json/csrf", null, null, onSuccess, onError);
-    }
 
     updateStatusGame(userId,status, onSuccess, onError) {
         this.post("/json/update-state/"+userId, status, null, onSuccess, onError);
     }
 
-    preparedStatusGame(userId,status, onSuccess, onError) {
-        this.post("/json/update-prepared/"+userId, status, null, onSuccess, onError);
-    }
 
     delete(path, body, progressUpdate, success, error) {
         this.call("delete", path, null, progressUpdate, success, error);
@@ -145,6 +136,7 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
+
 
 
 }

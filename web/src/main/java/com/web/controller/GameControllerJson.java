@@ -126,9 +126,14 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
     }
     @DeleteMapping(value = "/deleteShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Board> deleteShips(@PathVariable int userId, @PathVariable long gameId) {
+    public ResponseEntity<Board> deleteShips(@PathVariable long userId, @PathVariable long gameId) {
         gameStatusRepoService.deleteShip(userId, gameId);
         return ResponseEntity.ok(gameStatusService.getBoard(gameId, userId));
+    }
+    @DeleteMapping(value = "/delete-game/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> deleteGames(@PathVariable long userId, @PathVariable long gameId) {
+        gameStatusRepoService.deleteGames(userId, gameId);
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping(value = "/update-state/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -140,7 +145,6 @@ public class GameControllerJson {
     public void statusToPrepared(@RequestBody String status, @PathVariable long userId) {
             gameStatusRepoService.checkIfTwoPlayersArePreparedThenChangingState(status, userId);
     }
-
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {

@@ -131,6 +131,28 @@ public class GameStatusRepoService {
         repoStatusGame.save(new StatusGame(gameStatus, game));
     }
 
+    @Transactional
+    public void deleteGames(Long userId, Long gameId) {
+        Game game = gameRepo.findById(gameId).orElseThrow(
+                () -> new NoSuchElementException("Can't find game")
+        );
+        User user = userService.findUserById(userId);
+        StatusGame statusGame = getStatusGame(gameId);
+        StateGame state = statusGame.getGameStatus().getState();
+        List<Board> boards = statusGame.getGameStatus().getBoardsStatus();
+
+        List<Game> games = user.getGames();
+        if(games.contains(game)) {
+         games.remove(game);
+            int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
+            GameStatus gameStatus = new GameStatus(boards, currentPlayer, state);
+            repoStatusGame.save(new StatusGame(gameStatus, game));
+        } else {
+            throw new NoSuchElementException("No game");
+        }
+    }
+
+
     public StatusGame getStatusGame(long idGame) {
         Long idStatusGame = repoStatusGame.findMaxIdByGameId(idGame);
         return repoStatusGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("User has not yet added the ship"));

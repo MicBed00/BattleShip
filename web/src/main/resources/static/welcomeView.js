@@ -5,12 +5,13 @@ var unfinishedGames = document.getElementById("unfinishedGames");
 var joinButton = document.getElementById("joinGame");
 var newGame = document.getElementById("ownGame");
 var resumeGameButton = document.getElementById("resumeGame");
+var deleteButton = document.getElementById("deleteGame");
 var locales = document.getElementById("locales");
 
 joinButton.addEventListener("click", requestToJoinTheGame);
 newGame.addEventListener("click", createNewGame);
 resumeGameButton.addEventListener("click", resumeGame);
-
+deleteButton.addEventListener("click", deleteGame);
 
 newGame.disabled = false;
 gameSelector.disabled = false;
@@ -20,11 +21,9 @@ var gameIdClient;
 intervalId = setInterval(checkIfResumeGame, 1000);
 
 function checkIfResumeGame() {
-
     new BattleShipClient().checkStatusOwnGames((status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            //zwraca id niedokończonej gry, która zmieniła status np z IN_PROCCESS to status
-            //REQUESTING,gdy drugi uczestnik gry chce tą grę dokończyć, wtedy powinno pojawić się okno z zapytaniem
+
             var userIdGameIdList = responseBody;
             //userIdGameIdList[0] idUsera, który wysyła prośbę wznowienia gry, dlatego to okno ma się wyświetlać
             if (userIdGameIdList[0] != userId && userIdGameIdList.length == 2) {
@@ -47,6 +46,19 @@ function checkIfResumeGame() {
     }, (status, responseBody) => {
 
     })
+}
+
+function deleteGame() {
+    var unfinishedGame = unfinishedGames.value;
+
+    new BattleShipClient().deleteGame(unfinishedGame, userId, (status, responseBody) => {
+        if (status >= 200 && status <= 299) {
+            location.reload()
+        }
+    }, (status, responseBody) => {
+        alert("Błąd przy przerwaniu gry " + responseBody)
+    })
+
 }
 
 function createNewGame() {
@@ -73,7 +85,7 @@ function requestToJoinTheGame() {
     new BattleShipClient().requestJoinToGame(gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
             intervalId = setInterval(function () {
-                waitForResumeGame()
+                waitForApprove()
             }, 1000);
         }
     }, (status, responseBody) => {
@@ -168,8 +180,10 @@ gameSelector.addEventListener('change', function () {
 unfinishedGames.addEventListener('change', function () {
     if (unfinishedGames.selectedIndex !== -1) {
         resumeGameButton.disabled = false;
+        deleteButton.disabled = false;
     } else {
         resumeGameButton.disabled = true;
+        deleteButton.disabled = true;
     }
 });
 
@@ -231,7 +245,7 @@ function resumeGame() {
     }, 100);
     new BattleShipClient().changeState(userId, "REQUESTING", (status, responseBody) => {
         if (status >= 200 && status <= 299) {
-            intervalId = setInterval(waitForResumeGame(), 1000);
+            intervalId = setInterval(waitForResumeGame, 1000);
         }
     }, (status, responseBody) => {
         alert("Błąd");

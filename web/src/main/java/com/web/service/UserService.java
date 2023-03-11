@@ -75,7 +75,6 @@ public class UserService {
                }
        );
     }
-
     public Game getLastUserGames(long userId) {
         User user = getLogInUser(userId);
         List<Game> ListGames = user.getGames();
@@ -86,6 +85,12 @@ public class UserService {
             games.sort((game1, game2) -> game2.getDate().compareTo(game1.getDate()));
             return games.get(0);
         }
+    }
+
+    public User findUserById(Long userId)  {
+        return userRepository.findById(userId).orElseThrow(
+                ()-> new NoSuchElementException("No user in database")
+        );
     }
 }
 
