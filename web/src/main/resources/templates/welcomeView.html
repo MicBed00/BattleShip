@@ -8,21 +8,43 @@
     <link rel="stylesheet" href="/welcomeView.css" type="text/css">
 </head>
 <body>
+
 <div align="center">
     <h1 id=title th:text="#{name}"></h1>
 
-    <h3>Choose the game with another user: </h3>
+        <div class="gameSelectorContainer">
 
-    <div class="gameSelectorContainer">
-        <select id="gameSelector" class="gameSelect" th:name="game" multiple disabled>
-            <option th:each="game : ${waitingGames}" th:value="${game}" th:text="'game id ' + ${game}"></option>
-        </select>
-        <div class="buttonContainer">
-            <button class="joinButton" id="joinGame" th:text="#{joinToGame}" disabled></button>
-            <button class="ownGameButton" id="ownGame" th:text="#{createGame}" disabled>Create new game</button>
+            <h3 th:text="#{titleTable}"></h3>
+            <select id="gameSelector" class="gameSelect" th:name="game" multiple disabled>
+                <option th:each="game : ${waitingGames}" th:value="${game}" th:text="'game id ' + ${game}"></option>
+            </select>
+
+            <div class="buttonContainer">
+                <button class="joinButton" id="joinGame" th:text="#{joinToGame}" disabled></button>
+                <button class="ownGameButton" id="ownGame" th:text="#{createGame}" disabled></button>
+            </div>
+
         </div>
+
+
+        <div class="gameSelectorContainer">
+
+            <h3 th:text="#{yourGames}"></h3>
+            <select id="unfinishedGames" class="gameSelect" th:name="activeGame" multiple disabled>
+                <option th:each="activeGame : ${usersGames}" th:value="${activeGame}"
+                        th:text="'game id ' + ${activeGame}"></option>
+            </select>
+
+            <div class="buttonContainer">
+                <button class="resumeButton" id="resumeGame" th:text="#{resumeGame}" disabled></button>
+                <button class="ownGameButton" id="deleteGame" th:text="#{deleteGame}" disabled></button>
+            </div>
+
+        </div>
+
     </div>
-</div>
+
+
 
 <div style="position: absolute; top: 10px; left: 10px;">
     <span th:text="#{lang.change}"></span>:

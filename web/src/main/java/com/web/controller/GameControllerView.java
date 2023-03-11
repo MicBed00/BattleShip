@@ -35,10 +35,10 @@ public class GameControllerView {
 
     @GetMapping(value= "/welcomeView")
     public String welcome(Model model) {
-        model.addAttribute("userId", userService
-                .getUser(SecurityContextHolder.getContext().getAuthentication().getName())
-                .getId());
+        User user = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("userId", user.getId());
         model.addAttribute("waitingGames", gameRepoService.getGamesWatingForUser());
+        model.addAttribute("usersGames", gameStatusRepoService.getUnfinishedUserGames());
         return "welcomeView";
     }
 

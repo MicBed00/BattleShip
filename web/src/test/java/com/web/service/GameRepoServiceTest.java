@@ -3,7 +3,6 @@ package com.web.service;
 import board.Board;
 import board.StateGame;
 import com.web.enity.game.Game;
-import com.web.enity.game.StatusGame;
 import com.web.enity.user.User;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
@@ -15,20 +14,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Bean;
-import serialization.GameStatus;
 
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -92,7 +84,7 @@ class GameRepoServiceTest {
         when(userService.getLogInUser(userId)).thenReturn(user);
 
         //when
-        boolean result = gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId);
+        boolean result = gameRepoService.checksUnfinishedGames(userId);
 
         //then
         assertFalse(result);
@@ -109,7 +101,7 @@ class GameRepoServiceTest {
         when(userService.getLogInUser(userId)).thenReturn(user);
 
         //when
-        boolean result = gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId);
+        boolean result = gameRepoService.checksUnfinishedGames(userId);
 
         //then
         assertTrue(result);

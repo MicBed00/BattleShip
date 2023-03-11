@@ -6,17 +6,35 @@
     left:400px;
 }
 .buttonContainer {
+    display: inline-block;
+    width: 45%;
+    flex-basis: 100px;
+    height: 100px;
+    margin: 5px;
+}
+.windowsContainer {
     display: flex;
+    width: 100%;
+    text-align: center;;
 }
 
 .ownGameButton {
     margin-left: 10px;
 }
 
-.joinButton, .ownGameButton {
+.joinButton, .ownGameButton, .resumeButton {
     margin: 30px 0 30px 15px;
 }
 .joinButton:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.resumeButton:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+.deleteGame:disabled {
     opacity: 0.5;
     cursor: default;
 }
@@ -50,12 +68,14 @@ body {
 }
 
 .gameSelectorContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: inline-block;
+    width: 45%;
+    flex-basis: 100px;
+    height: 100px;
+    margin: 5px;
 }
 
-#gameSelector {
+#gameSelector, #unfinishedGames {
     display: block;
     margin: 10px auto;
     padding: 5px;
@@ -70,7 +90,7 @@ body {
     max-width: 400px;
 }
 
-#gameSelector:focus {
+#gameSelector, #unfinishedGames:focus {
     border-color: #66afe9;
     outline: 0;
     box-shadow: 0 0 8px #66afe9;

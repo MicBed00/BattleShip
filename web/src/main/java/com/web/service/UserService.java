@@ -37,7 +37,7 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .map(UserCredentialsDtoMapper::map);
     }
-    public long getUserId() {
+    public long getLoginUserId() {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         return getUser(userEmail).getId();
     }

@@ -10,11 +10,11 @@ import com.web.service.GameRepoService;
 import com.web.service.GameStatusRepoService;
 import com.web.service.GameStatusService;
 import exceptions.BattleShipException;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import serialization.GameStatus;
 import ship.Ship;
 
 import java.util.List;
@@ -82,11 +82,14 @@ public class GameControllerJson {
             gameStatusRepoService.updateStatePreperationGame(userId, "FINISHED");
         return ResponseEntity.ok(isFinished);
     }
-
     @GetMapping(value = "/status-game/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StateGame> statusesGame(@PathVariable long gameId) {
         StatusGame statusGame = gameStatusRepoService.getStatusGame(gameId);
         return ResponseEntity.ok(statusGame.getGameStatus().getState());
+    }
+    @GetMapping(value = "/check-state", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Long>> statusesGame() {
+        return ResponseEntity.ok(gameStatusRepoService.checkIfOwnGameStatusHasChanged());
     }
 
     @GetMapping(value = "/request/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -114,11 +117,14 @@ public class GameControllerJson {
         return ResponseEntity.ok(gameStatusService.getShipLimits());
     }
 
-    @GetMapping(value="/lastGame/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> getLastShipId(@PathVariable long userId) {
-        return ResponseEntity.ok( gameRepoService.checkIfLastGameExistAndStatusIsSaved(userId));
+    @GetMapping(value="/checkGames/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> checkUnfinishedGames(@PathVariable long userId) {
+        return ResponseEntity.ok( gameRepoService.checksUnfinishedGames(userId));
     }
-
+    @GetMapping(value="/resume-game/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Board>> unfinishedGames(@PathVariable long gameId) {
+        return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
+    }
     @DeleteMapping(value = "/deleteShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Board> deleteShips(@PathVariable int userId, @PathVariable long gameId) {
         gameStatusRepoService.deleteShip(userId, gameId);

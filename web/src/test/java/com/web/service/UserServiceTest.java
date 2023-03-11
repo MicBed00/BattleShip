@@ -69,7 +69,7 @@ class UserServiceTest {
         SecurityContextHolder.setContext(securityContext);
 
         //when
-        Long id = userService.getUserId();
+        Long id = userService.getLoginUserId();
 
         //then
         assertEquals(1L, id);

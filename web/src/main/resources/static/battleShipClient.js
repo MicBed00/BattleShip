@@ -17,7 +17,7 @@ class BattleShipClient {
     }
 
     checkIfUserHasGameBefore(userId, onSuccess, onError) {
-        this.get("/json/lastGame/"+userId, null, null, onSuccess, onError);
+        this.get("/json/checkGames/"+userId, null, null, onSuccess, onError);
     }
 
     getStatusGameFromDataBase(gameId, onSuccess, onError) {
@@ -39,7 +39,11 @@ class BattleShipClient {
 
     saverNewGame(userId, onSuccess, onError) {
         this.post("/json/game/save/"+userId, null, null, onSuccess, onError)
+    }
 
+
+    resumeGame(gameId, onSuccess, onError) {
+        this.get("/json/resume-game/"+gameId, null, null, onSuccess, onError)
     }
 
     getOwnerGame(gameId, onSuccess, onError) {
@@ -80,6 +84,9 @@ class BattleShipClient {
         this.get("/json/status-game/"+gameId, null, null, onSuccess, onError);
     }
 
+    checkStatusOwnGames(onSuccess, onError) {
+        this.get("/json/check-state", null, null, onSuccess, onError);
+    }
     getPhaseGame(id, onSuccess, onError) {
         this.get("/json/game/boards/phaseGame/"+id, null, null, onSuccess, onError);
     }
@@ -138,7 +145,6 @@ class BattleShipClient {
         request.setRequestHeader('Content-type', 'application/json');
         request.send(body);
     }
-
 
 
 }

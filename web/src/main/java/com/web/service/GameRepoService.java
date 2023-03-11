@@ -38,8 +38,8 @@ public class GameRepoService {
         gameStatusRepoService.saveNewStatusGame(new GameStatus(), game);
     }
 
-    public boolean checkIfLastGameExistAndStatusIsSaved(long userId) {
-        return !userService.getLogInUser(userId).getGames().isEmpty();
+    public boolean checksUnfinishedGames(long userId) {
+        return gameStatusRepoService.getUnfinishedUserGames().size() > 0;
     }
 
     public List<Integer> getGamesWatingForUser() {
