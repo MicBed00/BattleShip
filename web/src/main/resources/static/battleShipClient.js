@@ -137,7 +137,5 @@ class BattleShipClient {
         request.send(body);
     }
 
-
-
 }
 
