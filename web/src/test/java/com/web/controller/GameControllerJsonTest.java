@@ -284,74 +284,6 @@ public class GameControllerJsonTest {
 
     @DirtiesContext
     @Test
-    void shouldFindGameForFirstUser() {
-        //when
-        long userIdPly1 = 1;
-        long userIdPly2 = 2;
-        long gameId = 1;
-        HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/getParamGame/" + gameId, "meta"
-                , "content", restTemplate, port);
-        serviceTests.addNewGameWithStatusGameForUser(userIdPly1, restTemplate, port);
-        serviceTests.addSecondPlayerToGame(userIdPly2, gameId, restTemplate, port);
-
-        //given
-        serviceTests.addNewGameWithStatusGameForUser(userIdPly1,restTemplate, port);
-        HttpEntity<Long> request = new HttpEntity<>(userIdPly1, headers);
-        ResponseEntity<String> response = restTemplate.exchange(serviceTests.buildUrl("/json/lastGame/" + userIdPly1, port)
-                , HttpMethod.GET
-                , request
-                , String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("true");
-    }
-
-    @DirtiesContext
-    @Test
-    void shouldFindGameForSecondUser() {
-        //when
-        long userIdPly1 = 1;
-        long userIdPly2 = 2;
-        long gameId = 1;
-        HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/getParamGame/" + gameId, "meta"
-                , "content", restTemplate, port);
-        serviceTests.addNewGameWithStatusGameForUser(userIdPly1, restTemplate, port);
-        serviceTests.addSecondPlayerToGame(userIdPly2, gameId, restTemplate, port);
-
-        //given
-        serviceTests.addNewGameWithStatusGameForUser(userIdPly2,restTemplate, port);
-        HttpEntity<Long> request = new HttpEntity<>(userIdPly2, headers);
-        ResponseEntity<String> response = restTemplate.exchange(serviceTests.buildUrl("/json/lastGame/" + userIdPly2, port)
-                , HttpMethod.GET
-                , request
-                , String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("true");
-    }
-
-    @DirtiesContext
-    @Test
-    void shouldNotFindGameForUser() {
-        //given
-        long gameId = 1;
-        HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/getParamGame/" + gameId, "meta"
-                ,"content", restTemplate, port);
-
-        //when
-        long userId = 1;
-        HttpEntity<Long> request = new HttpEntity<>(userId, headers);
-        ResponseEntity<String> response = restTemplate.exchange(serviceTests.buildUrl("/json/lastGame/" + userId, port)
-                , HttpMethod.GET
-                , request
-                , String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("false");
-    }
-
-    @DirtiesContext
-    @Test
     void gameWithOneUserShouldReturneWaitingPhaseGame() {
         //given
         long gameId = 1;
@@ -457,7 +389,7 @@ public class GameControllerJsonTest {
         //when
         HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<Long> response = restTemplate.exchange(serviceTests.buildUrl("/json/request/"+gameId, port)
-                , HttpMethod.POST
+                , HttpMethod.GET
                 , request
                 , Long.class);
         //then

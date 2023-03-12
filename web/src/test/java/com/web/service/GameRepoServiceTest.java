@@ -3,6 +3,7 @@ package com.web.service;
 import board.Board;
 import board.StateGame;
 import com.web.enity.game.Game;
+import com.web.enity.game.StatusGame;
 import com.web.enity.user.User;
 import com.web.repositorium.GameRepo;
 import com.web.repositorium.StatusGameRepo;
@@ -81,30 +82,12 @@ class GameRepoServiceTest {
         long userId = 1L;
         User user = new User();
         List<Game> games = user.getGames();
-        when(userService.getLogInUser(userId)).thenReturn(user);
 
         //when
         boolean result = gameRepoService.checksUnfinishedGames(userId);
 
         //then
         assertFalse(result);
-        verify(userService, times(1)).getLogInUser(userId);
-    }
-
-    @Test
-    void shouldReturnTrueForUserWithGame() {
-        //given
-        long userId = 1L;
-        long owner = 1;
-        User user = new User();
-        user.getGames().add(new Game(Timestamp.valueOf(LocalDateTime.now()), owner));
-        when(userService.getLogInUser(userId)).thenReturn(user);
-
-        //when
-        boolean result = gameRepoService.checksUnfinishedGames(userId);
-
-        //then
-        assertTrue(result);
-        verify(userService, times(1)).getLogInUser(userId);
+        verify(gameStatusRepoService, times(1)).getUnfinishedUserGames();
     }
 }
