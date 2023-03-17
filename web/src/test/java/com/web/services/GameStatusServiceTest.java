@@ -55,7 +55,7 @@ public class GameStatusServiceTest {
 
     private void addAllShipsToBoards() {
         int userId = 1;
-        gameRepoService.saveNewGame(userId);
+        gameStatusService.saveNewGame(userId);
         long gameId = 1;
         Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
         gameStatusService.addShipToList(ship1, gameId, userId);

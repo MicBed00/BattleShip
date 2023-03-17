@@ -4,6 +4,8 @@ import board.StateGame;
 import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import com.web.enity.user.User;
+import com.web.repositorium.GameRepo;
+import com.web.repositorium.StatusGameRepo;
 import dataConfig.Position;
 import dataConfig.ShipLimits;
 import board.Board;
@@ -12,8 +14,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import serialization.GameStatus;
 import ship.Ship;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -23,13 +28,23 @@ public class GameStatusService {
     private GameStatusRepoService gameStatusRepoService;
     private GameRepoService gameRepoService;
 
+    private final GameRepo gameRepo;
+    private final StatusGameRepo repoStatusGame;
+    private final GameStatusService gameStatusService;
+
     private UserService userService;
 
 
     @Autowired
     GameStatusService(@Lazy GameStatusRepoService gameStatusRepoService,
                       @Lazy GameRepoService gameRepoService,
-                      UserService userService) {
+                      UserService userService,
+                      GameRepo gameRepo,
+                      GameStatusService gameStatusService,
+                      StatusGameRepo repoStatusGame) {
+        this.gameRepo = gameRepo;
+        this.gameStatusService = gameStatusService;
+        this.repoStatusGame = repoStatusGame;
         this.gameRepoService = gameRepoService;
         this.gameStatusRepoService = gameStatusRepoService;
         this.userService = userService;
@@ -144,6 +159,53 @@ public class GameStatusService {
         }
         return answer;
     }
+
+    @Transactional
+    public boolean saveGameStatusToDataBase(List<Board> boardsList, StateGame state, long gameId) {
+        int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
+        GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
+        Game game = gameRepo.findById(gameId).orElseThrow(
+                () -> new NoSuchElementException("Brak gry w bazie")
+        );
+        StatusGame statusGame = new StatusGame(gameStatus, game);
+
+        return gameStatusRepoService.saveStatusGame(statusGame);
+    }
+
+    @Transactional
+    public void saveNewStatusGame(GameStatus gameStatus, Game game) {
+        StatusGame statusGame = new StatusGame(gameStatus, game);
+        repoStatusGame.save(statusGame);
+    }
+
+    @Transactional
+    public void saveNewGame(long userId) {
+        User user = userService.getLogInUser(userId);
+        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
+        user.getGames().add(game);
+        game.getUsers().add(user);
+        gameRepo.save(game);
+        saveNewStatusGame(new GameStatus(), game);
+    }
+
+    public List<Integer> getUnfinishedUserGames() {
+        long loginUserId = userService.getLoginUserId();
+        User logInUser = userService.getLogInUser(loginUserId);
+        List<Game> games = logInUser.getGames();
+        return games.stream()
+                .map(game -> repoStatusGame.findMaxIdByGameId(game.getId()))
+                .map(id -> repoStatusGame.findById(id).get())
+                .filter(gs -> !gs.getGameStatus().getState().equals(StateGame.FINISHED))
+                .filter(gs -> !gs.getGameStatus().getState().equals(StateGame.REJECTED))
+                .filter(gs -> gs.getGame().getUsers().size() > 1)
+                .map(gs -> gs.getGame().getId())
+                .toList();
+    }
+
+
+
+
+
 
 
 }

@@ -38,7 +38,7 @@ public class GameControllerJson {
     @PostMapping(value = "/addShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> addShip(@RequestBody Ship ship, @PathVariable long userId, @PathVariable long gameId) throws BattleShipException {
         List<Board> boardsList = gameStatusService.addShipToList(ship, gameId, userId);
-        return ResponseEntity.ok( gameStatusRepoService.saveGameStatusToDataBase(boardsList, StateGame.IN_PROCCESS, gameId));
+        return ResponseEntity.ok( gameStatusService.saveGameStatusToDataBase(boardsList, StateGame.IN_PROCCESS, gameId));
     }
 
     @PostMapping(value = "/addSecondPlayer/{userId}/{gameId}")
@@ -103,7 +103,7 @@ public class GameControllerJson {
     @PostMapping(value = "/game/boards/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> shots(@RequestBody Shot shot, @PathVariable long gameId) {
         List<Board> boardListAfterShot = gameStatusService.addShotAtShip(shot, gameId);
-        gameStatusRepoService.saveGameStatusToDataBase(boardListAfterShot, StateGame.PREPARED, gameId);
+        gameStatusService.saveGameStatusToDataBase(boardListAfterShot, StateGame.PREPARED, gameId);
         return ResponseEntity.ok(boardListAfterShot);
     }
 
@@ -148,7 +148,7 @@ public class GameControllerJson {
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
-        gameRepoService.saveNewGame(userId);
+        gameStatusService.saveNewGame(userId);
         //TODO zmiana wartości zwracanej przez responseentity
         return ResponseEntity.ok(true);
     }

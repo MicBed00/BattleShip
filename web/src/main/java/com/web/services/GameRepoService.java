@@ -28,6 +28,8 @@ public class GameRepoService {
         this.gameStatusRepoService = gameStatusRepoService;
     }
 
+
+
     @Transactional
     public void saveNewGame(long userId) {
         User user = userService.getLogInUser(userId);
@@ -39,7 +41,7 @@ public class GameRepoService {
     }
 
     public boolean checksUnfinishedGames(long userId) {
-        return gameStatusRepoService.getUnfinishedUserGames().size() > 0;
+        return gameStatusSe.getUnfinishedUserGames().size() > 0;
     }
 
     public List<Integer> getGamesWatingForUser() {

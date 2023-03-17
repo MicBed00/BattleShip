@@ -39,6 +39,9 @@ class GameRepoServiceTest {
     @Mock
     StatusGameRepo repoStatusGame;
 
+    @Mock
+    GameStatusService gameStatusService;
+
     private AutoCloseable autoCloseable;
     private GameRepoService gameRepoService;
 
@@ -69,7 +72,7 @@ class GameRepoServiceTest {
         doReturn(startGame).when(gameRepo).save(Mockito.any(Game.class));
 
         //when
-        gameRepoService.saveNewGame(userId);
+        gameStatusService.saveNewGame(userId);
 
         //then
         verify(userService, times(1)).getLogInUser(userId);

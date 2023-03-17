@@ -68,7 +68,7 @@ class GameStatusRepoServiceTest {
         given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPlayer);
         given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
         //when
-        gameStatusRepoService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS, gameId);
+        gameStatusService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS, gameId);
         //then
         verify(gameStatusService, times(1)).getCurrentPlayer(gameId);
         verify(repoStatusGame, times(1)).save(any(StatusGame.class));

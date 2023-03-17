@@ -38,7 +38,7 @@ public class GameControllerView {
         User user = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("userId", user.getId());
         model.addAttribute("waitingGames", gameRepoService.getGamesWatingForUser());
-        model.addAttribute("usersGames", gameStatusRepoService.getUnfinishedUserGames());
+        model.addAttribute("usersGames", gameStatusService.getUnfinishedUserGames());
         return "welcomeView";
     }
 

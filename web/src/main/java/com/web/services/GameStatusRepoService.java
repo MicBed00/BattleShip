@@ -36,21 +36,13 @@ public class GameStatusRepoService {
     }
 
     @Transactional
-    public boolean saveGameStatusToDataBase(List<Board> boardsList, StateGame state, long gameId) {
-        int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
-        GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
-        Game game = gameRepo.findById(gameId).orElseThrow(
-                () -> new NoSuchElementException("Brak gry w bazie")
-        );
-        StatusGame statusGame = new StatusGame(gameStatus, game);
-
+    public boolean saveStatusGame(StatusGame statusGame) {
         return repoStatusGame.save(statusGame) != null;
     }
 
-    public void saveNewStatusGame(GameStatus gameStatus, Game game) {
-        StatusGame statusGame = new StatusGame(gameStatus, game);
-        repoStatusGame.save(statusGame);
-    }
+//    public void saveNewStatusGame(StatusGame statusGame) {
+//        repoStatusGame.save(statusGame);
+//    }
 
     public List<Integer> getUnfinishedUserGames() {
         long loginUserId = userService.getLoginUserId();
