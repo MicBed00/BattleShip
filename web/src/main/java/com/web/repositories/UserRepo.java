@@ -1,4 +1,4 @@
-package com.web.repositorium;
+package com.web.repositories;
 
 import com.web.enity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

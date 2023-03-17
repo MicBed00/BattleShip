@@ -1,8 +1,8 @@
-package com.web.service;
+package com.web.services;
 
 import com.web.enity.game.Game;
 import com.web.enity.user.User;
-import com.web.repositorium.GameRepo;
+import com.web.repositories.GameRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

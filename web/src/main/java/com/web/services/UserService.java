@@ -1,9 +1,9 @@
-package com.web.service;
+package com.web.services;
 
 import com.web.enity.game.Game;
 import com.web.enity.user.*;
-import com.web.repositorium.UserRepo;
-import com.web.repositorium.UserRoleRepo;
+import com.web.repositories.UserRepo;
+import com.web.repositories.UserRoleRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

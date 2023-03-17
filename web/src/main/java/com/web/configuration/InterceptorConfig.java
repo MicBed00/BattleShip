@@ -1,4 +1,4 @@
-package com.web.configurations;
+package com.web.configuration;
 
 import com.web.loggers.GameRequestInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

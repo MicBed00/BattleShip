@@ -1,17 +1,11 @@
-package com.web.controller;
+package com.web.controllers;
 
 
-import board.Board;
-import com.web.enity.user.User;
-import com.web.service.GameStatusService;
-import com.web.service.UserService;
+import com.web.services.GameStatusService;
+import com.web.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class LoginController {

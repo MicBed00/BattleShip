@@ -1,4 +1,4 @@
-package com.web.controller;
+package com.web.controllers;
 
 import board.Board;
 import com.fasterxml.jackson.core.JsonProcessingException;

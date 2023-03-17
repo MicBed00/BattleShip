@@ -1,10 +1,10 @@
-package com.web.controller;
+package com.web.controllers;
 
 import com.web.enity.user.User;
-import com.web.service.GameRepoService;
-import com.web.service.GameStatusRepoService;
-import com.web.service.GameStatusService;
-import com.web.service.UserService;
+import com.web.services.GameRepoService;
+import com.web.services.GameStatusRepoService;
+import com.web.services.GameStatusService;
+import com.web.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;

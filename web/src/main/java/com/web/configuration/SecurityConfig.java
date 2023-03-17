@@ -1,4 +1,4 @@
-package com.web.configurations;
+package com.web.configuration;
 
 import com.web.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.web.controller;
+package com.web.controllers;
 
 import java.io.IOException;
 import java.lang.Void;
@@ -7,12 +7,9 @@ import board.Board;
 import board.Shot;
 import board.StateGame;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.web.service.GameStatusService;
+import com.web.services.GameStatusService;
 import dataConfig.Position;
-import exceptions.ShipLimitExceedException;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,15 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
-import serialization.GameStatus;
-import serialization.Reader;
 import ship.Ship;
 
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 

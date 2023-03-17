@@ -1,8 +1,8 @@
-package com.web.service;
+package com.web.services;
 
 import com.web.enity.user.UserCredentialsDto;
 import com.web.enity.user.UserCredentialsDtoMapper;
-import com.web.repositorium.UserRepo;
+import com.web.repositories.UserRepo;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

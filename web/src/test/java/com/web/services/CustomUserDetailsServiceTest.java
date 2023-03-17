@@ -1,10 +1,8 @@
-package com.web.service;
+package com.web.services;
 
 import com.web.enity.user.User;
-import com.web.enity.user.UserCredentialsDto;
-import com.web.enity.user.UserCredentialsDtoMapper;
 import com.web.enity.user.UserRole;
-import com.web.repositorium.UserRepo;
+import com.web.repositories.UserRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import static org.mockito.BDDMockito.given;
 
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;

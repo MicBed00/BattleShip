@@ -1,4 +1,4 @@
-package com.web.repositorium;
+package com.web.repositories;
 
 import com.web.enity.user.User;
 import com.web.enity.user.UserRole;

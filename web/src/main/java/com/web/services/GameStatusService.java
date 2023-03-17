@@ -1,11 +1,11 @@
-package com.web.service;
+package com.web.services;
 
 import board.StateGame;
 import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import com.web.enity.user.User;
-import com.web.repositorium.GameRepo;
-import com.web.repositorium.StatusGameRepo;
+import com.web.repositories.GameRepo;
+import com.web.repositories.StatusGameRepo;
 import dataConfig.Position;
 import dataConfig.ShipLimits;
 import board.Board;

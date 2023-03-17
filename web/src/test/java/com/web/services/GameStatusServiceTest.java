@@ -1,22 +1,16 @@
-package com.web.service;
+package com.web.services;
 
 import board.Board;
 import board.Shot;
 import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import dataConfig.Position;
-import exceptions.CollidingException;
-import exceptions.OutOfBoundsException;
-import exceptions.ShotSamePlaceException;
-import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import serialization.GameStatus;
@@ -24,10 +18,9 @@ import ship.Ship;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GameStatusServiceTest {

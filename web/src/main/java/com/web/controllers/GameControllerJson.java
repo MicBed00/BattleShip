@@ -1,4 +1,4 @@
-package com.web.controller;
+package com.web.controllers;
 
 import board.Board;
 import board.Shot;
@@ -6,15 +6,14 @@ import board.StateGame;
 import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
 import com.web.enity.user.User;
-import com.web.service.GameRepoService;
-import com.web.service.GameStatusRepoService;
-import com.web.service.GameStatusService;
+import com.web.services.GameRepoService;
+import com.web.services.GameStatusRepoService;
+import com.web.services.GameStatusService;
 import exceptions.BattleShipException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import serialization.GameStatus;
 import ship.Ship;
 
 import java.util.List;

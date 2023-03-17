@@ -1,8 +1,8 @@
-package com.web.controller;
+package com.web.controllers;
 
 
 import com.web.enity.user.UserRegistrationDto;
-import com.web.service.UserService;
+import com.web.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

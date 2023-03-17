@@ -85,6 +85,4 @@ class ShipTest {
 
         assertFalse(ship.checkIfDead());
     }
-
-
 }

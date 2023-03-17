@@ -1,4 +1,4 @@
-package com.web.repositorium;
+package com.web.repositories;
 
 import com.web.enity.game.Game;
 import org.junit.jupiter.api.Test;
