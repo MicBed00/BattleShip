@@ -18,14 +18,17 @@ public class GameRepoService {
     private final GameRepo gameRepo;
     private final GameStatusRepoService gameStatusRepoService;
     private final UserService userService;
+    private final GameStatusService gameStatusService;
     @Autowired
     public GameRepoService(GameRepo gameRepo,
                            UserService userService,
-                           GameStatusRepoService gameStatusRepoService
+                           GameStatusRepoService gameStatusRepoService,
+                           GameStatusService gameStatusService
                            ) {
         this.gameRepo = gameRepo;
         this.userService = userService;
         this.gameStatusRepoService = gameStatusRepoService;
+        this.gameStatusService = gameStatusService;
     }
 
 
@@ -37,11 +40,11 @@ public class GameRepoService {
         user.getGames().add(game);
         game.getUsers().add(user);
         gameRepo.save(game);
-        gameStatusRepoService.saveNewStatusGame(new GameStatus(), game);
+        gameStatusService.saveNewStatusGame(new GameStatus(), game);
     }
 
-    public boolean checksUnfinishedGames(long userId) {
-        return gameStatusSe.getUnfinishedUserGames().size() > 0;
+    public boolean checksUnfinishedGames() {
+        return gameStatusService.getUnfinishedUserGames().size() > 0;
     }
 
     public List<Integer> getGamesWatingForUser() {

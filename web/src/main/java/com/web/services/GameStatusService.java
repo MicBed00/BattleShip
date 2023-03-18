@@ -28,9 +28,8 @@ public class GameStatusService {
     private GameStatusRepoService gameStatusRepoService;
     private GameRepoService gameRepoService;
 
-    private final GameRepo gameRepo;
-    private final StatusGameRepo repoStatusGame;
-    private final GameStatusService gameStatusService;
+    private GameRepo gameRepo;
+    private StatusGameRepo repoStatusGame;
 
     private UserService userService;
 
@@ -40,10 +39,9 @@ public class GameStatusService {
                       @Lazy GameRepoService gameRepoService,
                       UserService userService,
                       GameRepo gameRepo,
-                      GameStatusService gameStatusService,
                       StatusGameRepo repoStatusGame) {
+
         this.gameRepo = gameRepo;
-        this.gameStatusService = gameStatusService;
         this.repoStatusGame = repoStatusGame;
         this.gameRepoService = gameRepoService;
         this.gameStatusRepoService = gameStatusRepoService;
@@ -162,7 +160,7 @@ public class GameStatusService {
 
     @Transactional
     public boolean saveGameStatusToDataBase(List<Board> boardsList, StateGame state, long gameId) {
-        int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
+        int currentPlayer = getCurrentPlayer(gameId);
         GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
         Game game = gameRepo.findById(gameId).orElseThrow(
                 () -> new NoSuchElementException("Brak gry w bazie")
@@ -184,6 +182,7 @@ public class GameStatusService {
         Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
         user.getGames().add(game);
         game.getUsers().add(user);
+        //TODO czy w tym miejscu zapisywac z wykorzystaniem repo czy lepiej przez jakiś serwis?
         gameRepo.save(game);
         saveNewStatusGame(new GameStatus(), game);
     }

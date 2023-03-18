@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -42,12 +43,13 @@ class GameRepoServiceTest {
     GameStatusService gameStatusService;
 
     private AutoCloseable autoCloseable;
+    @InjectMocks
     private GameRepoService gameRepoService;
 
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        gameRepoService = new GameRepoService(gameRepo, userService, gameStatusRepoService);
+        gameRepoService = new GameRepoService(gameRepo, userService, gameStatusRepoService, gameStatusService);
     }
 
     @AfterEach
@@ -71,7 +73,7 @@ class GameRepoServiceTest {
         doReturn(startGame).when(gameRepo).save(Mockito.any(Game.class));
 
         //when
-        gameStatusService.saveNewGame(userId);
+        gameRepoService.saveNewGame(userId);
 
         //then
         verify(userService, times(1)).getLogInUser(userId);
@@ -80,16 +82,11 @@ class GameRepoServiceTest {
 
     @Test
     void shouldReturnFalseForUserWithoutGames() {
-        //given
-        long userId = 1L;
-        User user = new User();
-        List<Game> games = user.getGames();
-
         //when
-        boolean result = gameRepoService.checksUnfinishedGames(userId);
+        boolean result = gameRepoService.checksUnfinishedGames();
 
         //then
         assertFalse(result);
-        verify(gameStatusRepoService, times(1)).getUnfinishedUserGames();
+        verify(gameStatusService, times(1)).getUnfinishedUserGames();
     }
 }

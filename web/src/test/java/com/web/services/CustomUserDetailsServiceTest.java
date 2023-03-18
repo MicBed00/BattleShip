@@ -25,9 +25,7 @@ class CustomUserDetailsServiceTest {
 
     @Mock
     private UserRepo userRepo;
-
     private CustomUserDetailsService customUserDetailsService;
-
     AutoCloseable autoCloseable;
 
     @BeforeEach

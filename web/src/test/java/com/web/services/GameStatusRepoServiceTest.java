@@ -56,21 +56,16 @@ class GameStatusRepoServiceTest {
     }
 
     @Test
-    void saveGameStatusToDataBase() {
+    void saveGameStatusGame() {
         //given
-        List<Board> list = new ArrayList<>();
-        list.add(new Board());
-        list.add(new Board());
-        int currentPlayer = 1;
-        long gameId = 1;
         long ownerGame = 1;
         Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), ownerGame);
-        given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPlayer);
-        given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
+        StatusGame statusGame = new StatusGame(new GameStatus(), game);
+
         //when
-        gameStatusService.saveGameStatusToDataBase(list, StateGame.IN_PROCCESS, gameId);
+        gameStatusRepoService.saveStatusGame(statusGame);
+
         //then
-        verify(gameStatusService, times(1)).getCurrentPlayer(gameId);
         verify(repoStatusGame, times(1)).save(any(StatusGame.class));
     }
 

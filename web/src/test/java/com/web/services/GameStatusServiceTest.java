@@ -2,13 +2,22 @@ package com.web.services;
 
 import board.Board;
 import board.Shot;
+import board.StateGame;
 import com.web.enity.game.Game;
 import com.web.enity.game.StatusGame;
+import com.web.repositories.GameRepo;
+import com.web.repositories.StatusGameRepo;
 import dataConfig.Position;
+import exceptions.OutOfBoundsException;
+
+import exceptions.ShotSamePlaceException;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,35 +25,43 @@ import org.springframework.test.annotation.DirtiesContext;
 import serialization.GameStatus;
 import ship.Ship;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GameStatusServiceTest {
 
-    @MockBean
+    @Mock
     private GameStatusRepoService gameStatusRepoService;
-    @MockBean
+    @Mock
     private GameRepoService gameRepoService;
-    @MockBean
+    @Mock
     private UserService userService;
-
+    @Mock
+    private GameRepo gameRepo;
+    @Mock
+    private StatusGameRepo repoStatusGame;
     @InjectMocks
     private GameStatusService gameStatusService;
+    private AutoCloseable autoCloseable;
+
 
     @BeforeEach
     void setUp() {
-        gameStatusService = new GameStatusService(gameStatusRepoService, gameRepoService, userService);
+        autoCloseable = MockitoAnnotations.openMocks(this);
+        gameStatusService = new GameStatusService(gameStatusRepoService
+                , gameRepoService
+                , userService
+                , gameRepo
+                , repoStatusGame);
     }
-
-
-//    @Autowired
-//    GameStatusService gameStatusService;
-//    @Autowired
-//    GameRepoService gameRepoService;
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
 
     private void addAllShipsToBoards() {
         int userId = 1;
@@ -129,34 +146,57 @@ public class GameStatusServiceTest {
     @Test
     public void shouldAddShipToFirstList() {
         //given
-        MockitoAnnotations.openMocks(this);
+        int currentPly = 1;
         Ship ship = new Ship(1, 1, 1, Position.VERTICAL);
         List<Board> boardList = new ArrayList<>();
+        boardList.add(new Board());
+        boardList.add(new Board());
         Game game = new Game();
-        StatusGame statusGame = new StatusGame(new GameStatus(), game);
+        game.setOwnerGame(1L);
+        GameStatus gameStatus = new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS);
+        StatusGame statusGame = new StatusGame(gameStatus,game);
+        statusGame.setGameStatus(gameStatus);
+
+
         long gameId = 1;
         long userId = 1;
-        given(gameStatusService.getBoardList(gameId)).willReturn(boardList);
+
         given(gameStatusRepoService.getStatusGame(gameId)).willReturn(statusGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
-        given(game.getOwnerGame()).willReturn(userId);
 
         //when
         List<Board> boards = gameStatusService.addShipToList(ship, gameId, userId);
         int sizeList = boardList.get(0).getShips().size();
 
         //then
+        verify(gameRepoService,times(1)).getGame(gameId);
         assertEquals(1, sizeList);
     }
-//    @DirtiesContext
-//    @Test
-//    public void exceptionShouldBeThrowIfShipIsOutOfBoundBoard() {
-//        //given
-//        Ship ship = new Ship(2, 8, 9, Position.VERTICAL);
-//        //when
-//        //then
-//        assertThrows(OutOfBoundsException.class, () -> gameStatusService.addShipToList(ship));
-//    }
+
+
+    @DirtiesContext
+    @Test
+    public void exceptionShouldBeThrowIfShipIsOutOfBoundBoard() {
+        //given
+        int currentPly = 1;
+        long gameId = 1;
+        long userId = 1;
+        List<Board> boardList = new ArrayList<>();
+        boardList.add(new Board());
+        boardList.add(new Board());
+        Game game = new Game();
+        game.setOwnerGame(1L);
+        GameStatus gameStatus = new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS);
+        StatusGame statusGame = new StatusGame(gameStatus,game);
+        statusGame.setGameStatus(gameStatus);
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(statusGame);
+        given(gameRepoService.getGame(gameId)).willReturn(game);
+
+        Ship ship = new Ship(2, 8, 9, Position.VERTICAL);
+        //when
+        //then
+        assertThrows(OutOfBoundsException.class, () -> gameStatusService.addShipToList(ship,gameId, userId));
+    }
 //    @DirtiesContext
 //    @Test
 //    public void exceptionShouldBeThrowIfAddTwoShipsTheSamePlaceOnBoard() {
@@ -213,7 +253,7 @@ public class GameStatusServiceTest {
 //            Shot shotSamePlace = new Shot(1, 1);
 //            gameStatusService.addShotAtShip(shotSamePlace);
 //        }catch (ShotSamePlaceException e) {}
-//        List<Board> boardList = gameStatusService.getBoardList();
+//        List<Board> boardList = gameStatusService.getBoardList(1L);
 //        Set<Shot> opponentShots = boardList.get(1).getOpponentShots();
 //        //then
 //        assertTrue(opponentShots.contains(new Shot(Shot.State.INVALID,1, 1)));
@@ -224,9 +264,10 @@ public class GameStatusServiceTest {
 //    @Test
 //    public void missedShotShouldBeHaveMissedState() {
 //        //given
+//        long gameId = 1L;
 //        Shot shotFirstPlayer = new Shot(1, 1);
 //        //when
-//        List<Board> boardList = gameStatusService.addShotAtShip(shotFirstPlayer);
+//        List<Board> boardList = gameStatusService.addShotAtShip(shotFirstPlayer, gameId);
 //        Set<Shot> opponentShots = boardList.get(1).getOpponentShots();
 //        Shot.State shotState = opponentShots.stream()
 //                .iterator()

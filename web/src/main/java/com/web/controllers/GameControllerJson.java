@@ -118,7 +118,7 @@ public class GameControllerJson {
 
     @GetMapping(value="/checkGames/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> checkUnfinishedGames(@PathVariable long userId) {
-        return ResponseEntity.ok( gameRepoService.checksUnfinishedGames(userId));
+        return ResponseEntity.ok( gameRepoService.checksUnfinishedGames());
     }
     @GetMapping(value="/resume-game/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> unfinishedGames(@PathVariable long gameId) {

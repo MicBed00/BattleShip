@@ -141,8 +141,12 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.10.2</version>
 		</dependency>
-	</dependencies>
-
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -152,4 +156,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>clojars</id>
+			<name>Clojars</name>
+			<url>https://repo.clojars.org/</url>
+		</repository>
+	</repositories>
 </project>
