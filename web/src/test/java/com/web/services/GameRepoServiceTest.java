@@ -41,21 +41,9 @@ class GameRepoServiceTest {
 
     @Mock
     GameStatusService gameStatusService;
-
-    private AutoCloseable autoCloseable;
     @InjectMocks
     private GameRepoService gameRepoService;
 
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        gameRepoService = new GameRepoService(gameRepo, userService, gameStatusRepoService, gameStatusService);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }
 
     @Test
     void shouldSaveNewGame() {

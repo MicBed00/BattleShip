@@ -8,8 +8,8 @@ import serialization.GameStatus;
 
 @Entity
 @Table(name = "game_statuses")
-public class StatusGame {
-
+public class SavedGame {
+//TODO zmiana nazwy tabeli
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy =GenerationType.IDENTITY )
@@ -21,10 +21,10 @@ public class StatusGame {
     @JoinColumn(name="game_id")
     private Game game;
 
-    public StatusGame() {
+    public SavedGame() {
     }
 
-    public StatusGame(GameStatus gameStatus, Game game) {
+    public SavedGame(GameStatus gameStatus, Game game) {
         this.gameStatus = gameStatus;
         this.game = game;
     }

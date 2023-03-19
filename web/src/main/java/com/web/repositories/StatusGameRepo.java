@@ -1,6 +1,6 @@
 package com.web.repositories;
 
-import com.web.enity.game.StatusGame;
+import com.web.enity.game.SavedGame;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StatusGameRepo extends JpaRepository<StatusGame, Long> {
+public interface StatusGameRepo extends JpaRepository<SavedGame, Long> {
 
     /*
     //TODO Błąd w StatusGameRepo
@@ -21,8 +21,4 @@ public interface StatusGameRepo extends JpaRepository<StatusGame, Long> {
     @Query(value="SELECT MAX(gs.id) FROM game_statuses gs WHERE gs.game_id = :gameId", nativeQuery = true)
     Long findMaxIdByGameId(@Param("gameId") long gameId);
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM game_statuses gs WHERE gs.id = (SELECT MAX(id) FROM game_statuses WHERE game_id = :gameId)", nativeQuery = true)
-    void deleteLast(@Param("gameId") long gameId);
 }

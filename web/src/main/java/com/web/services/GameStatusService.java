@@ -2,7 +2,7 @@ package com.web.services;
 
 import board.StateGame;
 import com.web.enity.game.Game;
-import com.web.enity.game.StatusGame;
+import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
 import com.web.repositories.GameRepo;
 import com.web.repositories.StatusGameRepo;
@@ -147,7 +147,7 @@ public class GameStatusService {
 
     public List<String> checkIfOpponentAppears(long userId) {
         List<String> answer = new ArrayList<>();
-        StatusGame savedStateGame = gameStatusRepoService.getSavedStateGame(userId);
+        SavedGame savedStateGame = gameStatusRepoService.getSavedStateGame(userId);
         Game lastUserGames = userService.getLastUserGames(userId);
         if (savedStateGame.getGameStatus().getState().equals(StateGame.REQUESTING)) {
             answer.add("true");
@@ -165,15 +165,15 @@ public class GameStatusService {
         Game game = gameRepo.findById(gameId).orElseThrow(
                 () -> new NoSuchElementException("Brak gry w bazie")
         );
-        StatusGame statusGame = new StatusGame(gameStatus, game);
+        SavedGame savedGame = new SavedGame(gameStatus, game);
 
-        return gameStatusRepoService.saveStatusGame(statusGame);
+        return gameStatusRepoService.saveStatusGame(savedGame);
     }
 
     @Transactional
     public void saveNewStatusGame(GameStatus gameStatus, Game game) {
-        StatusGame statusGame = new StatusGame(gameStatus, game);
-        repoStatusGame.save(statusGame);
+        SavedGame savedGame = new SavedGame(gameStatus, game);
+        repoStatusGame.save(savedGame);
     }
 
     @Transactional

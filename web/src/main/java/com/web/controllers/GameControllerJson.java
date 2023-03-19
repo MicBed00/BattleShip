@@ -4,7 +4,7 @@ import board.Board;
 import board.Shot;
 import board.StateGame;
 import com.web.enity.game.Game;
-import com.web.enity.game.StatusGame;
+import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
 import com.web.services.GameRepoService;
 import com.web.services.GameStatusRepoService;
@@ -70,8 +70,8 @@ public class GameControllerJson {
     }
     @GetMapping(value = "/approve/{userId}/{state}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> approveOpponent(@PathVariable long userId, @PathVariable String state) {
-        StatusGame statusGame = gameStatusRepoService.updateStatePreperationGame(userId, state);
-        return ResponseEntity.ok((long)statusGame.getGame().getId());
+        SavedGame savedGame = gameStatusRepoService.updateStatePreperationGame(userId, state);
+        return ResponseEntity.ok((long) savedGame.getGame().getId());
     }
 
     @GetMapping(value = "/game/status-isFinished/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,8 +83,8 @@ public class GameControllerJson {
     }
     @GetMapping(value = "/status-game/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StateGame> statusesGame(@PathVariable long gameId) {
-        StatusGame statusGame = gameStatusRepoService.getStatusGame(gameId);
-        return ResponseEntity.ok(statusGame.getGameStatus().getState());
+        SavedGame savedGame = gameStatusRepoService.getStatusGame(gameId);
+        return ResponseEntity.ok(savedGame.getGameStatus().getState());
     }
     @GetMapping(value = "/check-state", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Long>> statusesGame() {

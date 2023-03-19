@@ -4,23 +4,21 @@ import board.Board;
 import board.Shot;
 import board.StateGame;
 import com.web.enity.game.Game;
-import com.web.enity.game.StatusGame;
+import com.web.enity.game.SavedGame;
+import com.web.enity.user.User;
 import com.web.repositories.GameRepo;
 import com.web.repositories.StatusGameRepo;
 import dataConfig.Position;
+import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 
 import exceptions.ShotSamePlaceException;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import serialization.GameStatus;
 import ship.Ship;
@@ -46,51 +44,59 @@ public class GameStatusServiceTest {
     private StatusGameRepo repoStatusGame;
     @InjectMocks
     private GameStatusService gameStatusService;
-    private AutoCloseable autoCloseable;
 
 
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        gameStatusService = new GameStatusService(gameStatusRepoService
-                , gameRepoService
-                , userService
-                , gameRepo
-                , repoStatusGame);
+    private SavedGame saveGame() {
+        int currentPly = 1;
+        List<Board> boardList = new ArrayList<>();
+        boardList.add(new Board());
+        boardList.add(new Board());
+        Game game = new Game();
+        game.setOwnerGame(1L);
+        game.getUsers().add(new User());
+        GameStatus gameStatus = new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS);
+        SavedGame savedGame = new SavedGame(gameStatus,game);
+        savedGame.setGameStatus(gameStatus);
+        return savedGame;
     }
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }
 
-    private void addAllShipsToBoards() {
-        int userId = 1;
-        gameStatusService.saveNewGame(userId);
+    private SavedGame addAllShipsToBoards(SavedGame saveGame) {
         long gameId = 1;
+        long userIdOwner = 1;
+        long userIdSec = 2;
+        SavedGame savedGame = saveGame;
+        Game game = savedGame.getGame();
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        given(gameRepoService.getGame(gameId)).willReturn(game);
+
         Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
-        gameStatusService.addShipToList(ship1, gameId, userId);
+        gameStatusService.addShipToList(ship1, gameId, userIdOwner);
         Ship ship2 = new Ship(1, 9, 0, Position.VERTICAL);
-        gameStatusService.addShipToList(ship2, gameId, userId);
+        gameStatusService.addShipToList(ship2, gameId, userIdOwner);
         Ship ship3 = new Ship(1, 3, 3, Position.VERTICAL);
-        gameStatusService.addShipToList(ship3, gameId, userId);
+        gameStatusService.addShipToList(ship3, gameId, userIdOwner);
         Ship ship4 = new Ship(1, 5, 5, Position.VERTICAL);
-        gameStatusService.addShipToList(ship4, gameId, userId);
+        gameStatusService.addShipToList(ship4, gameId, userIdOwner);
         Ship ship5 = new Ship(2, 8, 6, Position.VERTICAL);
-        gameStatusService.addShipToList(ship5, gameId, userId);
+        gameStatusService.addShipToList(ship5, gameId, userIdOwner);
         Ship ship6 = new Ship(1, 1, 1, Position.VERTICAL);
-        gameStatusService.addShipToList(ship6, gameId, userId);
+        gameStatusService.addShipToList(ship6, gameId, userIdSec);
         Ship ship7 = new Ship(1, 9, 0, Position.VERTICAL);
-        gameStatusService.addShipToList(ship7, gameId, userId);
+        gameStatusService.addShipToList(ship7, gameId, userIdSec);
         Ship ship8 = new Ship(1, 3, 3, Position.VERTICAL);
-        gameStatusService.addShipToList(ship8, gameId, userId);
+        gameStatusService.addShipToList(ship8, gameId, userIdSec);
         Ship ship9 = new Ship(1, 5, 5, Position.VERTICAL);
-        gameStatusService.addShipToList(ship9, gameId, userId);
+        gameStatusService.addShipToList(ship9, gameId, userIdSec);
         Ship ship10 = new Ship(2, 8, 6, Position.VERTICAL);
-        gameStatusService.addShipToList(ship10, gameId, userId);
+        gameStatusService.addShipToList(ship10, gameId, userIdSec);
+
+        return savedGame;
     }
 
-    private void shootDownAllShipsOnOneBoards() {
+    private void shootDownAllShipsOnOneBoards(SavedGame saveGame) {
         long gameId = 1;
+        SavedGame savedGame = saveGame;
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         gameStatusService.addShotAtShip(new Shot(1,1), gameId);
         gameStatusService.addShotAtShip(new Shot(2,2), gameId);
         gameStatusService.addShotAtShip(new Shot(9,0), gameId);
@@ -146,26 +152,16 @@ public class GameStatusServiceTest {
     @Test
     public void shouldAddShipToFirstList() {
         //given
-        int currentPly = 1;
-        Ship ship = new Ship(1, 1, 1, Position.VERTICAL);
-        List<Board> boardList = new ArrayList<>();
-        boardList.add(new Board());
-        boardList.add(new Board());
-        Game game = new Game();
-        game.setOwnerGame(1L);
-        GameStatus gameStatus = new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS);
-        StatusGame statusGame = new StatusGame(gameStatus,game);
-        statusGame.setGameStatus(gameStatus);
-
-
         long gameId = 1;
         long userId = 1;
-
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(statusGame);
+        SavedGame savedGame = saveGame();
+        Game game = savedGame.getGame();
+        Ship ship = new Ship(2, 4, 4, Position.VERTICAL);
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
         //when
-        List<Board> boards = gameStatusService.addShipToList(ship, gameId, userId);
+        List<Board> boardList = gameStatusService.addShipToList(ship, gameId, userId);
         int sizeList = boardList.get(0).getShips().size();
 
         //then
@@ -178,148 +174,187 @@ public class GameStatusServiceTest {
     @Test
     public void exceptionShouldBeThrowIfShipIsOutOfBoundBoard() {
         //given
-        int currentPly = 1;
         long gameId = 1;
         long userId = 1;
-        List<Board> boardList = new ArrayList<>();
-        boardList.add(new Board());
-        boardList.add(new Board());
-        Game game = new Game();
-        game.setOwnerGame(1L);
-        GameStatus gameStatus = new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS);
-        StatusGame statusGame = new StatusGame(gameStatus,game);
-        statusGame.setGameStatus(gameStatus);
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(statusGame);
+        SavedGame savedGame = saveGame();
+        Game game = savedGame.getGame();
+        Ship ship = new Ship(2, 8, 9, Position.VERTICAL);
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
-        Ship ship = new Ship(2, 8, 9, Position.VERTICAL);
         //when
         //then
         assertThrows(OutOfBoundsException.class, () -> gameStatusService.addShipToList(ship,gameId, userId));
     }
-//    @DirtiesContext
-//    @Test
-//    public void exceptionShouldBeThrowIfAddTwoShipsTheSamePlaceOnBoard() {
-//        //given
-//        long gameId = 1;
-//        long userId = 1;
-//        Ship ship1 = new Ship(2, 1, 1, Position.VERTICAL);
-//        Ship ship2 = new Ship(2, 1, 1, Position.VERTICAL);
-//        //when
-//        gameStatusService.addShipToList(ship1);
-//        //then
-//        assertThrows(CollidingException.class, () -> gameStatusService.addShipToList(ship2));
-//    }
-//
-//    @DirtiesContext
-//    @Test
-//    public void whenSecondPlayerShootsShotShouldBeAddedToFirstPlayerBoards() {
-//        //given
-//        Shot shotFirstPlayer = new Shot(1, 1);
-//        gameStatusService.addShotAtShip(shotFirstPlayer);
-//
-//        //when
-//        Shot shotSecondPlayer = new Shot(1, 1);
-//        List<Board> boardList = gameStatusService.addShotAtShip(shotSecondPlayer);
-//        int opponentShots = boardList.get(0).getOpponentShots().size();
-//        //then
-//        assertEquals(1, opponentShots);
-//    }
-//
-//    @DirtiesContext
-//    @Test
-//    public void exceptionShouldBeThrowIfPlayerShootsTheSamePlace() {
-//        //given
-//        Shot shotFirstPlayer = new Shot(1, 1);
-//        gameStatusService.addShotAtShip(shotFirstPlayer);
-//        Shot shotSecondPlayer = new Shot(3, 3);
-//        gameStatusService.addShotAtShip(shotSecondPlayer);
-//        //when
-//        Shot shotSamePlace = new Shot(1, 1);
-//        //then
-//        assertThrows(ShotSamePlaceException.class, () -> gameStatusService.addShotAtShip(shotSamePlace));
-//    }
-//
-//    @DirtiesContext
-//    @Test
-//    public void shotTheSamePlaceShouldHasInvalidState() {
-//        //given
-//        Shot shotFirstPlayer = new Shot(1, 1);
-//        gameStatusService.addShotAtShip(shotFirstPlayer);
-//        Shot shotSecondPlayer = new Shot(3, 3);
-//        gameStatusService.addShotAtShip(shotSecondPlayer);
-//        //when
-//        try {
-//            Shot shotSamePlace = new Shot(1, 1);
-//            gameStatusService.addShotAtShip(shotSamePlace);
-//        }catch (ShotSamePlaceException e) {}
-//        List<Board> boardList = gameStatusService.getBoardList(1L);
-//        Set<Shot> opponentShots = boardList.get(1).getOpponentShots();
-//        //then
-//        assertTrue(opponentShots.contains(new Shot(Shot.State.INVALID,1, 1)));
-//
-//    }
-//
-//    @DirtiesContext
-//    @Test
-//    public void missedShotShouldBeHaveMissedState() {
-//        //given
-//        long gameId = 1L;
-//        Shot shotFirstPlayer = new Shot(1, 1);
-//        //when
-//        List<Board> boardList = gameStatusService.addShotAtShip(shotFirstPlayer, gameId);
-//        Set<Shot> opponentShots = boardList.get(1).getOpponentShots();
-//        Shot.State shotState = opponentShots.stream()
-//                .iterator()
-//                .next()
-//                .getState();
-//        //then
-//        assertSame("MISSED", shotState.toString());
-//    }
-//
-//    @DirtiesContext
-//    @Test
-//    public void hitShotShouldBeHaveHitState() {
-//        //given
-//        Ship ship = new Ship(1, 1, 1, Position.VERTICAL);
-//        gameStatusService.addShipToList(ship);
-//        Shot shotFirstPlayer = new Shot(3,3);
-//        gameStatusService.addShotAtShip(shotFirstPlayer);
-//        //when
-//        Shot shot = new Shot(1, 1);
-//        List<Board> boardList = gameStatusService.addShotAtShip(shot);
-//        Set<Shot> opponentShots = boardList.get(0).getOpponentShots();
-//        Shot.State shotState = opponentShots.stream()
-//                .iterator()
-//                .next()
-//                .getState();
-//        //then
-//        assertSame("HIT", shotState.toString());
-//    }
-//
-//    @DirtiesContext
-//    @Test
-//    public void shouldReturnFalseIfNotAllShipsAreHit() {
-//        //given
-//        addAllShipsToBoards();
-//        //then
-//        assertFalse(gameStatusService.checkIfAllShipsAreHitted());
-//    }
-//
-//    @DirtiesContext
-//    @Test
-//    public void shouldReturnTrueIfAllShipsAreHitted() {
-//        //given
-//        addAllShipsToBoards();
-//        shootDownAllShipsOnOneBoards();
-//        //then
-//        assertTrue(gameStatusService.checkIfAllShipsAreHitted());
-//    }
+
+    @DirtiesContext
+    @Test
+    public void exceptionShouldBeThrowIfAddTwoShipsTheSamePlaceOnBoard() {
+        //given
+        long gameId = 1;
+        long userId = 1;
+        SavedGame savedGame = saveGame();
+        Game game = savedGame.getGame();
+        Ship ship1 = new Ship(2, 1, 1, Position.VERTICAL);
+        Ship ship2 = new Ship(2, 1, 1, Position.VERTICAL);
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        given(gameRepoService.getGame(gameId)).willReturn(game);
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        given(gameRepoService.getGame(gameId)).willReturn(game);
+
+        //when
+        gameStatusService.addShipToList(ship1,gameId, userId);
+
+        //then
+        assertThrows(CollidingException.class, () -> gameStatusService.addShipToList(ship2, gameId, userId));
+    }
+
+    @DirtiesContext
+    @Test
+    public void whenSecondPlayerShootsShotShouldBeAddedToFirstPlayerBoards() {
+        //given
+        long gameId = 1L;
+        Shot shotFirstPlayer = new Shot(1, 1);
+        SavedGame savedGame = saveGame();
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+
+        gameStatusService.addShotAtShip(shotFirstPlayer,gameId);
+
+        //when
+        Shot shotSecondPlayer = new Shot(1, 1);
+        List<Board> boardList = gameStatusService.addShotAtShip(shotSecondPlayer, gameId);
+        int opponentShots = boardList.get(0).getOpponentShots().size();
+        //then
+        assertEquals(1, opponentShots);
+    }
+
+    @DirtiesContext
+    @Test
+    public void exceptionShouldBeThrowIfPlayerShootsTheSamePlace() {
+        //given
+        long gameId = 1L;
+        SavedGame savedGame = saveGame();
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        Shot shotFirstPlayer = new Shot(1, 1);
+        gameStatusService.addShotAtShip(shotFirstPlayer, gameId);
+        Shot shotSecondPlayer = new Shot(3, 3);
+        gameStatusService.addShotAtShip(shotSecondPlayer, gameId);
+        Shot shotSamePlace = new Shot(1, 1);
+
+        //when
+        //then
+        assertThrows(ShotSamePlaceException.class, () -> gameStatusService.addShotAtShip(shotSamePlace, gameId));
+    }
+
+    @DirtiesContext
+    @Test
+    public void shotTheSamePlaceShouldHasInvalidState() {
+        //given
+        long gameId = 1L;
+        SavedGame savedGame = saveGame();
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+
+        Shot shotFirstPlayer = new Shot(1, 1);
+        Shot shotSecondPlayer = new Shot(3, 3);
+        gameStatusService.addShotAtShip(shotFirstPlayer, gameId);
+        gameStatusService.addShotAtShip(shotSecondPlayer, gameId);
+
+        //when
+        try {
+            Shot shotSamePlace = new Shot(1, 1);
+            gameStatusService.addShotAtShip(shotSamePlace, gameId);
+        }catch (ShotSamePlaceException e) {}
+        List<Board> boardList = gameStatusService.getBoardList(1L);
+        Set<Shot> opponentShots = boardList.get(1).getOpponentShots();
+
+        //then
+        assertTrue(opponentShots.contains(new Shot(Shot.State.INVALID,1, 1)));
+    }
+
+    @DirtiesContext
+    @Test
+    public void missedShotShouldBeHaveMissedState() {
+        //given
+        long gameId = 1L;
+        SavedGame savedGame = saveGame();
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        Shot shotFirstPlayer = new Shot(1, 1);
+        //when
+        List<Board> boardList = gameStatusService.addShotAtShip(shotFirstPlayer, gameId);
+        Set<Shot> opponentShots = boardList.get(1).getOpponentShots();
+        Shot.State shotState = opponentShots.stream()
+                .iterator()
+                .next()
+                .getState();
+        //then
+        assertSame("MISSED", shotState.toString());
+    }
+
+    @DirtiesContext
+    @Test
+    public void hitShotShouldBeHaveHitState() {
+        //given
+        long gameId = 1;
+        long userId = 1;
+        SavedGame savedGame = saveGame();
+        Game game = savedGame.getGame();
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        given(gameRepoService.getGame(gameId)).willReturn(game);
+
+        Ship ship = new Ship(1, 1, 1, Position.VERTICAL);
+        gameStatusService.addShipToList(ship,gameId, userId);
+
+        Shot shotFirstPlayer = new Shot(3,3);
+        gameStatusService.addShotAtShip(shotFirstPlayer, gameId);
+
+        //when
+        Shot shot = new Shot(1, 1);
+        List<Board> boardList = gameStatusService.addShotAtShip(shot, gameId);
+        Set<Shot> opponentShots = boardList.get(0).getOpponentShots();
+        Shot.State shotState = opponentShots.stream()
+                .iterator()
+                .next()
+                .getState();
+        //then
+        assertSame("HIT", shotState.toString());
+    }
+
+    @DirtiesContext
+    @Test
+    public void shouldReturnFalseIfNotAllShipsAreHit() {
+        //given
+        long gameId = 1;
+        SavedGame savedGame = saveGame();
+        addAllShipsToBoards(savedGame);
+
+        //then
+        assertFalse(gameStatusService.checkIfAllShipsAreHitted(gameId));
+    }
+
+    @DirtiesContext
+    @Test
+    public void shouldReturnTrueIfAllShipsAreHitted() {
+        //given
+        long gameId = 1L;
+        SavedGame savedGame = saveGame();
+        SavedGame savedGameWithShips = addAllShipsToBoards(savedGame);
+        shootDownAllShipsOnOneBoards(savedGameWithShips);
+        //then
+        assertTrue(gameStatusService.checkIfAllShipsAreHitted(gameId));
+    }
+    //TODO aktualnie metoda kasowanie statku zanajduję się w gamestatusreposervie
 //    @DirtiesContext
 //    @Test
 //    public void shouldDeleteShipFromList() {
 //        //given
-//        gameStatusService.addShipToList(new Ship(1,1,1, Position.VERTICAL));
+//        long gameId = 1;
+//        long userId = 1;
+//        SavedGame savedGame = saveGame();
+//        Game game = savedGame.getGame();
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameRepoService.getGame(gameId)).willReturn(game);
+//
+//        gameStatusService.addShipToList(new Ship(1,1,1, Position.VERTICAL),gameId, userId);
 //
 //        //when
 //        List<Board> boardList = gameStatusService.deleteShipFromServer(0);
@@ -329,27 +364,32 @@ public class GameStatusServiceTest {
 //        assertEquals(0, sizeList);
 //    }
 //
-//    @DirtiesContext
-//    @Test
-//    public void shouldReturnSecondPlayer() {
-//        //given
-//        Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
-//        gameStatusService.addShipToList(ship1);
-//        Ship ship2 = new Ship(1, 9, 0, Position.VERTICAL);
-//        gameStatusService.addShipToList(ship2);
-//        Ship ship3 = new Ship(1, 3, 3, Position.VERTICAL);
-//        gameStatusService.addShipToList(ship3);
-//        Ship ship4 = new Ship(1, 5, 5, Position.VERTICAL);
-//        gameStatusService.addShipToList(ship4);
-//        Ship ship5 = new Ship(2, 8, 6, Position.VERTICAL);
-//        gameStatusService.addShipToList(ship5);
-//
-//        //when
-//        List<Board> boardList = gameStatusService.getBoardList();
-//        //then
-//        assertEquals(2, gameStatusService.getCurrentPlayer());
-//    }
+    @DirtiesContext
+    @Test
+    public void shouldReturnSecondPlayer() {
+        //given
+        long gameId = 1L;
+        long userId = 1;
+        SavedGame savedGame = saveGame();
+        Game game = savedGame.getGame();
+        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        given(gameRepoService.getGame(gameId)).willReturn(game);
 
+        Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
+        gameStatusService.addShipToList(ship1, gameId, userId);
+        Ship ship2 = new Ship(1, 9, 0, Position.VERTICAL);
+        gameStatusService.addShipToList(ship2, gameId, userId);
+        Ship ship3 = new Ship(1, 3, 3, Position.VERTICAL);
+        gameStatusService.addShipToList(ship3, gameId, userId);
+        Ship ship4 = new Ship(1, 5, 5, Position.VERTICAL);
+        gameStatusService.addShipToList(ship4, gameId, userId);
+        Ship ship5 = new Ship(2, 8, 6, Position.VERTICAL);
+        gameStatusService.addShipToList(ship5, gameId, userId);
 
+        //when
+        int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
 
+        //then
+        assertEquals(2, currentPlayer);
+    }
 }

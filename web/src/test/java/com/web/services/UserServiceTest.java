@@ -10,8 +10,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,19 +42,9 @@ class UserServiceTest {
     @Mock
     private SecurityContext securityContext;
 
-    private AutoCloseable autoCloseable;
+    @InjectMocks
     private UserService userService;
 
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepo, userRoleRepo, passwordEncoder);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }
 
     @Test
     void shouldReturnUserId() {
@@ -167,9 +157,11 @@ class UserServiceTest {
     void shouldReturnLastUserGame() {
         //given
         long owener = 1;
-        Game game1 = new Game(Timestamp.valueOf(LocalDateTime.now()), owener);
+        LocalDateTime firstDate = LocalDateTime.of(2023, 03, 19, 11, 33, 11);
+        LocalDateTime secondDate = LocalDateTime.of(2023, 03, 29, 11, 33, 11);
+        Game game1 = new Game(Timestamp.valueOf(firstDate), owener);
         game1.setId(1);
-        Game game2 = new Game(Timestamp.valueOf(LocalDateTime.now()), owener);
+        Game game2 = new Game(Timestamp.valueOf(secondDate), owener);
         game2.setId(2);
         List<Game> games = new ArrayList<>();
         games.add(game1);
@@ -186,7 +178,7 @@ class UserServiceTest {
         Game result = userService.getLastUserGames(userId);
 
         //then
-        assertEquals(game2, result);
+        assertEquals(game2.getId(), result.getId());
         assertEquals(games.size(), 2);
     }
 

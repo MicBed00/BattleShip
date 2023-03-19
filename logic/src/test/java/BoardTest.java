@@ -127,7 +127,6 @@ public class BoardTest {
         assertEquals(Shot.State.MISSED, shot.getState());
     }
 
-
     @Test
     public void correctShotHit() {
         //given

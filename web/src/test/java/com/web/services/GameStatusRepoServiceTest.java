@@ -3,16 +3,14 @@ package com.web.services;
 import board.Board;
 import board.StateGame;
 import com.web.enity.game.Game;
-import com.web.enity.game.StatusGame;
+import com.web.enity.game.SavedGame;
 import com.web.repositories.GameRepo;
 import com.web.repositories.StatusGameRepo;
 import dataConfig.Position;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import serialization.GameStatus;
 import ship.Ship;
@@ -40,33 +38,21 @@ class GameStatusRepoServiceTest {
     @Mock
     private UserService userService;
 
-    private AutoCloseable autoCloseable;
+   @InjectMocks
     private GameStatusRepoService gameStatusRepoService;
-
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        gameStatusRepoService = new GameStatusRepoService(gameRepo, gameStatusService
-                                                          ,repoStatusGame, userService);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }
 
     @Test
     void saveGameStatusGame() {
         //given
         long ownerGame = 1;
         Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), ownerGame);
-        StatusGame statusGame = new StatusGame(new GameStatus(), game);
+        SavedGame savedGame = new SavedGame(new GameStatus(), game);
 
         //when
-        gameStatusRepoService.saveStatusGame(statusGame);
+        gameStatusRepoService.saveStatusGame(savedGame);
 
         //then
-        verify(repoStatusGame, times(1)).save(any(StatusGame.class));
+        verify(repoStatusGame, times(1)).save(any(SavedGame.class));
     }
 
     @Test
@@ -81,10 +67,10 @@ class GameStatusRepoServiceTest {
         boardWithShip.getShips().add(new Ship(1,1,1, Position.VERTICAL));
         List<Board> boardList = List.of(boardWithShip, new Board());
         Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), owner);
-        StatusGame statusGame = new StatusGame(new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS),game);
+        SavedGame savedGame = new SavedGame(new GameStatus(boardList,currentPly,StateGame.IN_PROCCESS),game);
         given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
         given(repoStatusGame.findMaxIdByGameId(gameId)).willReturn(1L);
-        given(repoStatusGame.findById(idStatusGame)).willReturn(Optional.of(statusGame));
+        given(repoStatusGame.findById(idStatusGame)).willReturn(Optional.of(savedGame));
         given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPly);
 
         //when
@@ -95,32 +81,13 @@ class GameStatusRepoServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenLastShipDoesNotExist() {
-        //given
-        int index = 1;
-        long gameId = 1;
-        long owner = 1;
-        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
-        Game game = new Game(timestamp, owner);
-        given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
-
-        //when
-        //then
-        NoSuchElementException e = assertThrows(NoSuchElementException.class, () -> {
-            gameStatusRepoService.deleteShip(index, gameId);
-        });
-        assertEquals("User has not yet added the ship", e.getMessage());
-        verify(repoStatusGame, never()).deleteLast(gameId);
-    }
-
-    @Test
     void shouldReturnSavedStateGame() {
         //given
         long userId = 1;
         Game game = new Game();
         game.setId(1);
         long idStatusGame = 2;
-        StatusGame status = new StatusGame();
+        SavedGame status = new SavedGame();
         given(userService.getLastUserGames(userId)).willReturn(game);
         given(repoStatusGame.findMaxIdByGameId(game.getId())).willReturn(idStatusGame);
         given(repoStatusGame.findById(idStatusGame)).willReturn(Optional.of(status));
@@ -141,7 +108,7 @@ class GameStatusRepoServiceTest {
         Game game = new Game();
         game.setId(1);
         long idStatusGame = 2;
-        StatusGame status = new StatusGame();
+        SavedGame status = new SavedGame();
         given(userService.getLastUserGames(userId)).willReturn(game);
         given(repoStatusGame.findMaxIdByGameId(game.getId())).willReturn(idStatusGame);
         given(repoStatusGame.findById(idStatusGame)).willReturn(Optional.empty());
@@ -161,7 +128,7 @@ class GameStatusRepoServiceTest {
     void updateStatePreperationGame() {
         //given
         String state = "FINISHED";
-        StatusGame savedGame = new StatusGame(new GameStatus(new ArrayList<>(),1, StateGame.IN_PROCCESS)
+        SavedGame savedGame = new SavedGame(new GameStatus(new ArrayList<>(),1, StateGame.IN_PROCCESS)
                                             , new Game());
         long userId = 1;
         Game game = new Game();
@@ -175,6 +142,6 @@ class GameStatusRepoServiceTest {
         gameStatusRepoService.updateStatePreperationGame(1, state);
 
         //then
-        verify(repoStatusGame, times(1)).save(any(StatusGame.class));
+        verify(repoStatusGame, times(1)).save(any(SavedGame.class));
     }
 }

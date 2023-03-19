@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.BDDMockito.given;
 
@@ -25,19 +26,8 @@ class CustomUserDetailsServiceTest {
 
     @Mock
     private UserRepo userRepo;
+    @InjectMocks
     private CustomUserDetailsService customUserDetailsService;
-    AutoCloseable autoCloseable;
-
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        customUserDetailsService = new CustomUserDetailsService(userRepo);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }
 
     @Test
     void loadUserByUsername() {
