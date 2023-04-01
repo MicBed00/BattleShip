@@ -1,8 +1,9 @@
 package board;
 
 public enum SizeBoard {
-    ROW(10),
-    COLUMNE(10);
+    MAX(20),
+    MIN(7),
+    DEFAULT(10);
 
     private int size;
 

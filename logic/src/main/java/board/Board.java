@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     private final UI user = new UI();
+    private int sizeBoard;
     private List<Ship> ships = new ArrayList<>();
     private Set<Shot> opponentShots = new HashSet<>();
     public List<Ship> hittedShip = new ArrayList<>();
@@ -33,6 +34,18 @@ public class Board {
 
     public List<Ship> getHittedShip() {
         return hittedShip;
+    }
+
+    public Board() {
+        sizeBoard = SizeBoard.DEFAULT.getSize();
+    }
+
+    public Board(int sizeBoard) {
+        this.sizeBoard = sizeBoard;
+    }
+
+    public int getSizeBoard() {
+        return sizeBoard;
     }
 
     public boolean addShip(int length, int x, int y, Position position) throws ShipLimitExceedException, OutOfBoundsException {
@@ -65,10 +78,10 @@ public class Board {
     }
 
     private boolean checkIfOutOfBounds(int length, int x, int y, Position position) {
-        return Position.VERTICAL == position && y + length > SizeBoard.ROW.getSize()
+        return Position.VERTICAL == position && y + length > sizeBoard
                 || Position.HORIZONTAL == position && (x + 1) - length < 0
-                || x > SizeBoard.ROW.getSize()
-                || y > SizeBoard.ROW.getSize();
+                || x > sizeBoard
+                || y > sizeBoard;
     }
 
     private boolean counterShip(List<Ship> listShip, int length) {

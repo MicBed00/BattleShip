@@ -188,4 +188,16 @@ public class BoardTest {
 
         assertFalse(board.getIsFinished().get());
     }
+
+    @Test
+    public void shouldSetSizeBoard() {
+        //given
+        int size = 14;
+
+        //when
+        Board board = new Board(size);
+
+        //then
+        assertEquals(size, board.getSizeBoard());
+    }
 }

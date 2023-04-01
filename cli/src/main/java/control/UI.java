@@ -1,5 +1,6 @@
 package control;
 
+import board.Board;
 import board.ShipSize;
 import board.SizeBoard;
 import exceptions.OutOfBoundsException;
@@ -16,6 +17,7 @@ public class UI {
     public Locale local = new Locale("en");
     private final ResourceBundle bundle = ResourceBundle.getBundle("Bundle", local);
     private final Logger log = LoggerFactory.getLogger(board.UI.class);
+
     public Scanner sc;
 
     public String messageBundle(String key, Object... arguments) {
@@ -30,7 +32,6 @@ public class UI {
         this.sc = new Scanner(System.in);
         String position = sc.nextLine();
         position = position.toUpperCase(Locale.ROOT);
-
         if (position.isEmpty()) {
             log.warn("emptyString");
             throw new InputMismatchException(messageBundle("inputMismatchException"));
@@ -38,10 +39,20 @@ public class UI {
         return position;
     }
 
+    public String getAnswerOrFail() throws InputMismatchException {
+        this.sc = new Scanner(System.in);
+        String answer = sc.nextLine();
+        answer = answer.toUpperCase(Locale.ROOT);
+        if (answer.equals("TRUE") || answer.equals("FALSE")) {
+            return answer;
+        } else
+            throw new InputMismatchException(messageBundle("invalidValue"));
+    }
+
     public int getInt() throws InputMismatchException, OutOfBoundsException {
         this.sc = new Scanner(System.in);
         int num = sc.nextInt();
-        if(num > SizeBoard.ROW.getSize()) {
+        if(num < SizeBoard.MIN.getSize() || num > SizeBoard.MAX.getSize()) {
             log.warn("dataOut");
             throw new OutOfBoundsException(messageBundle("outOfBounds"));
         }
@@ -49,9 +60,20 @@ public class UI {
         return num;
     }
 
-    public int getLength() throws InputMismatchException, OutOfBoundsException {
+    public int getCoord(int sizeBoard) throws InputMismatchException, OutOfBoundsException {
         this.sc = new Scanner(System.in);
-        int length = getInt();
+        int num = sc.nextInt();
+        if(num > sizeBoard) {
+            log.warn("dataOut");
+            throw new OutOfBoundsException(messageBundle("outOfBounds"));
+        }
+        sc.nextLine();
+        return num;
+    }
+
+    public int getLength(int sizeBoard) throws InputMismatchException, OutOfBoundsException {
+        this.sc = new Scanner(System.in);
+        int length = getCoord(sizeBoard);
 
         if (length < ShipSize.ONE.getSize() || length > ShipSize.FOUR.getSize()) {
             log.warn("dataOut");

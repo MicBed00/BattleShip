@@ -21,10 +21,10 @@ public class ControlPanel {
     private final UI user = new UI();
     private static final int NUMBER_BOARDS = 2;
     Position position;
+    private int sizeBoard = 0;
 
     public GameStatus prepareBeforeGame(GameStatus gameStatus) {
         log.info("Wznowienie gry");
-//        System.out.println(user.messageBundle("resume", new Date()));
         log.setLevel(Level.WARN);
         log.info("Testowy log poziom info, nie powinno go być");
         log.warn("log WARN");
@@ -42,18 +42,18 @@ public class ControlPanel {
         while (addedShipsCounter != (ShipLimits.SHIP_LIMIT.getQty()* NUMBER_BOARDS)) {
             try {
                 System.out.println(user.messageBundle("length", activePlayer, ShipLimits.SHIP4SAIL.getQty(), ShipLimits.SHIP1SAIL.getQty()));
-                int length = user.getLength();
+                int length = user.getLength(sizeBoard);
                 System.out.println(user.messageBundle("x", activePlayer));
-                int x = user.getInt();
+                int x = user.getCoord(sizeBoard);
                 System.out.println(user.messageBundle("y", activePlayer));
-                int y = user.getInt();
+                int y = user.getCoord(sizeBoard);
                 System.out.println(user.messageBundle("position", activePlayer));
                 String position = user.getPosition();
                 this.position = Position.valueOf(position);
 
                 if (player.addShip(length, x, y, this.position)) {
                     System.out.println(user.messageBundle("addComuni", length));
-                    Render.renderAndPrintBoardBeforeGame(player.getShips());
+                    Render.renderAndPrintBoardBeforeGame(player.getShips(), sizeBoard);
                     addedShipsCounter++;
                 }
                 saver.saveToFile(player1Board, player2Board, activePlayer, StateGame.IN_PROCCESS );
@@ -103,27 +103,61 @@ public class ControlPanel {
         int addedShipsCounter = 0;
         log.setLevel(Level.INFO);
         log.info("zmiana poziomy logowania na info, log info");
-        Board player1Board = new Board();
-        Board player2Board = new Board();
         Saver saver = new Saver();
-        Board player = player1Board;
         int activePlayer = 1;
+        String answer = "";
+        boolean flag = true;
+
+        while(flag) {
+            try{
+                System.out.println(user.messageBundle("setupSizeBoard"));
+                answer = user.getAnswerOrFail();
+                flag = false;
+            } catch (InputMismatchException e) {
+                System.err.println(e.getMessage());
+                System.out.flush();
+                user.sc.nextLine();
+                continue;
+            }
+        };
+
+        if(answer.equalsIgnoreCase("TRUE")) {
+            while (sizeBoard == 0) {
+                try {
+                    System.out.println(user.messageBundle("sizeBoard"));
+                    sizeBoard = user.getInt();
+                }catch (OutOfBoundsException e) {
+                    System.err.println(e.getMessage());
+                    System.out.flush();
+                    user.sc.nextLine();
+                    continue;
+                }
+
+            }
+        } else {
+            sizeBoard = SizeBoard.DEFAULT.getSize();
+        }
+
+        Board player1Board = new Board(sizeBoard);
+        Board player2Board = new Board(sizeBoard);
+
+        Board player = player1Board;
 
         while (addedShipsCounter != (ShipLimits.SHIP_LIMIT.getQty() * NUMBER_BOARDS)) {
             try {
                 System.out.println(user.messageBundle("length", activePlayer, ShipLimits.SHIP4SAIL.getQty(), ShipLimits.SHIP1SAIL.getQty()));
-                int length = user.getLength();
+                int length = user.getLength(sizeBoard);
                 System.out.println(user.messageBundle("x", activePlayer));
-                int x = user.getInt();
+                int x = user.getCoord(sizeBoard);
                 System.out.println(user.messageBundle("y", activePlayer));
-                int y = user.getInt();
+                int y = user.getCoord(sizeBoard);
                 System.out.println(user.messageBundle("position", activePlayer));
                 String position = user.getPosition();
                 this.position = Position.valueOf(position);
 
                 if (player.addShip(length, x, y, this.position)) {
                     System.out.println(user.messageBundle("addComuni", length));
-                    Render.renderAndPrintBoardBeforeGame(player.getShips());
+                    Render.renderAndPrintBoardBeforeGame(player.getShips(), sizeBoard);
                     addedShipsCounter++;
                 }
 
@@ -164,13 +198,13 @@ public class ControlPanel {
             opponentBoard = opponentBoard == player2Board ? player1Board : player2Board;
 
             System.out.printf(user.messageBundle("information",activePlayer ) + "\n" + user.messageBundle("boardInfo") + "\n");
-            Render.renderShots(opponentBoard.getOpponentShots());
+            Render.renderShots(opponentBoard.getOpponentShots(), sizeBoard);
 
             try {
                 System.out.printf(user.messageBundle("coordX", activePlayer) + "\n");
-                int x = user.getInt();
+                int x = user.getCoord(sizeBoard);
                 System.out.printf(user.messageBundle("coordY", activePlayer) + "\n");
-                int y = user.getInt();
+                int y = user.getCoord(sizeBoard);
                 Shot shot = new Shot(x, y);
                 Set<Shot> opponetShots = opponentBoard.shoot(shot);
                 printShoot(opponetShots, shot, opponentBoard);
@@ -197,7 +231,7 @@ public class ControlPanel {
             if ((lastElementHittedList >= 0) && oppenetBoard.hittedShip.get(lastElementHittedList).checkIfDead()) {
                 System.out.println(user.messageBundle("shipSunk", oppenetBoard.hittedShip.get(lastElementHittedList)) + "\n");
             }
-        Render.renderShots(shotList);
+        Render.renderShots(shotList, sizeBoard);
         System.out.println("###################################################\n");
     }
     private void statistics(Board player1Board, Board player2Board) {

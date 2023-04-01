@@ -1,5 +1,6 @@
 package control;
 
+import board.Board;
 import dataConfig.Position;
 import board.Shot;
 import board.SizeBoard;
@@ -9,17 +10,13 @@ import java.util.List;
 import java.util.Set;
 
 public class Render {
-    private static final int ROW = SizeBoard.ROW.getSize();
-    private static final int COLUMNE = SizeBoard.COLUMNE.getSize();
-
-
-    public static void renderAndPrintBoardBeforeGame(List<Ship> listShip) {
-        char[][] instertedShipsByPlayer = Render.renderShipBeforeGame(listShip);
-        Render.printBoard(instertedShipsByPlayer);
+    public static void renderAndPrintBoardBeforeGame(List<Ship> listShip, int sizeBoard) {
+        char[][] instertedShipsByPlayer = Render.renderShipBeforeGame(listShip, sizeBoard);
+        Render.printBoard(instertedShipsByPlayer, sizeBoard);
     }
 
-    private static char[][] renderShipBeforeGame(List<Ship> list) {
-        char[][] board = new char[ROW][COLUMNE];
+    private static char[][] renderShipBeforeGame(List<Ship> list, int sizeBoard) {
+        char[][] board = new char[sizeBoard][sizeBoard];
 
         list.forEach(ship -> {
             if (ifHorizontal(ship)) {
@@ -44,8 +41,8 @@ public class Render {
         return ship.getPosition() == Position.VERTICAL;
     }
 
-    public static void renderShots(Set<Shot> oppentsShot) throws ArrayIndexOutOfBoundsException {
-        char[][] shotsBoard = new char[ROW][COLUMNE];
+    public static void renderShots(Set<Shot> oppentsShot, int sizeBoard) throws ArrayIndexOutOfBoundsException {
+        char[][] shotsBoard = new char[sizeBoard][sizeBoard];
 
         oppentsShot.stream()
                 .forEach(s -> {
@@ -55,17 +52,17 @@ public class Render {
                         shotsBoard[s.getY()][s.getX()] = 'O';
                     }
                 });
-        printBoard(shotsBoard);
+        printBoard(shotsBoard, sizeBoard);
     }
 
-    public static void printBoard(char[][] board) {
-        for (int i = 0; i < COLUMNE; i++) {
+    public static void printBoard(char[][] board, int sizeBoard) {
+        for (int i = 0; i < sizeBoard; i++) {
             System.out.print("\t" + i);
         }
         System.out.println();
-        for (int i = 0; i < ROW; i++) {
+        for (int i = 0; i < sizeBoard; i++) {
             System.out.print(i + "\t");
-            for (int j = 0; j < COLUMNE; j++) {
+            for (int j = 0; j < sizeBoard; j++) {
                 System.out.print(board[i][j] + "\t");
             }
             System.out.println();
