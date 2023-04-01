@@ -41,10 +41,10 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/addSecondPlayer/{userId}/{gameId}")
-    public ResponseEntity<Long> addSecondPlayerToGame(@PathVariable long userId,
+    public ResponseEntity<Integer> addSecondPlayerToGame(@PathVariable long userId,
                                                       @PathVariable long gameId) {
         gameRepoService.addSecondPlayerToGame(userId, gameId);
-        return ResponseEntity.ok(gameId);
+        return ResponseEntity.ok(gameStatusRepoService.getStatusGame(gameId).getGameStatus().getBoardsStatus().get(0).getSizeBoard());
     }
     @GetMapping(value = "/listBoard/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> listBoards(@PathVariable long gameId) {
@@ -145,9 +145,10 @@ public class GameControllerJson {
             gameStatusRepoService.checkIfTwoPlayersArePreparedThenChangingState(status, userId);
     }
 
-    @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Integer> saveNewGame(@PathVariable long userId) {
-        return ResponseEntity.ok(gameStatusService.saveNewGame(userId));
+    @PostMapping(value = "/game/save/{userId}/{sizeBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Integer> saveNewGame(@PathVariable long userId,
+                                        @PathVariable int sizeBoard) {
+        return ResponseEntity.ok(gameStatusService.saveNewGame(userId, sizeBoard));
     }
 
 }

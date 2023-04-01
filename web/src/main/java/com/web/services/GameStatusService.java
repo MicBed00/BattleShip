@@ -178,16 +178,18 @@ public class GameStatusService {
     }
 
     @Transactional
-    public Integer saveNewGame(long userId) {
+    public Integer saveNewGame(long userId, int sizeBoard) {
         User user = userService.getLogInUser(userId);
         Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
         user.getGames().add(game);
         game.getUsers().add(user);
         //TODO czy w tym miejscu zapisywac z wykorzystaniem repo czy lepiej przez jakiś serwis?
         Game savedGame = gameRepo.save(game);
-        saveNewStatusGame(new GameStatus(), game);
-        //dodaję do list id nowej gry, po to by wyświetliła się w widoku
-        gameRepoService.getIdGamesForView().add(savedGame.getId());
+        List<Board> boardList = new ArrayList<>();
+        boardList.add(new Board(sizeBoard));
+        boardList.add(new Board(sizeBoard));
+        saveNewStatusGame(new GameStatus(boardList, StateGame.NEW), game);
+        gameRepoService.getIdGamesForView().add(savedGame.getId());    //dodaję do list id nowej gry, po to by wyświetliła się w widoku
 
         return savedGame.getId();
     }

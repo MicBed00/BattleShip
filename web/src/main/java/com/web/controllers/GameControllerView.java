@@ -42,12 +42,15 @@ public class GameControllerView {
         return "welcomeView";
     }
 
-    @GetMapping(value = "/getParamGame/{gameId}")
-    public String getParametersGame(@PathVariable long gameId, Model model) {
+    @GetMapping(value = "/getParamGame/{gameId}/{sizeBoard}")
+    public String getParametersGame(@PathVariable long gameId,
+                                    @PathVariable int sizeBoard,
+                                    Model model) {
         model.addAttribute("shipSize", gameStatusService.getShipSize());
         model.addAttribute("orientList", gameStatusService.getOrientation());
         model.addAttribute("shipLimit", gameStatusService.getShipLimits());
         model.addAttribute("gameId", gameId);
+        model.addAttribute("sizeBoard", sizeBoard);
         model.addAttribute("userId", userService
                 .getUser(SecurityContextHolder.getContext().getAuthentication().getName())
                 .getId());

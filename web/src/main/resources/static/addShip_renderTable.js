@@ -1,6 +1,7 @@
 var board;
 var userId = document.getElementById("user_id").value;
 var gameId = document.getElementById("game_id").value;
+var sizeBoard = document.getElementById("sizeBoard").value;
 
 document.getElementById("backAction").addEventListener("click", backAction);
 
@@ -123,12 +124,12 @@ function renderShip(responseBody) {
     table.className = "tableResponse";
     const tbBody = document.createElement("tbody");
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < sizeBoard; i++) {
 
         const row = document.createElement("tr");
         row.className = "row";
 
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < sizeBoard; j++) {
 
             const cell = document.createElement("td");
             cell.className = "cell";

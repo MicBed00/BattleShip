@@ -19,6 +19,11 @@ public class GameStatus {
         state = StateGame.NEW;
     }
 
+    public GameStatus(List<Board> boardsStatus, StateGame state) {
+        this.boardsStatus = boardsStatus;
+        this.state = state;
+    }
+
     public GameStatus(List<Board> boardsStatus, int currentPlayer, StateGame state ) {
         this.boardsStatus = boardsStatus;
         this.currentPlayer = currentPlayer;

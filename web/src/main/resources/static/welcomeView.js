@@ -7,7 +7,8 @@ var newGame = document.getElementById("ownGame");
 var resumeGameButton = document.getElementById("resumeGame");
 var deleteButton = document.getElementById("deleteGame");
 var locales = document.getElementById("locales");
-
+var sizeBoard = document.getElementById("sizeBoard");
+var size;
 joinButton.addEventListener("click", requestToJoinTheGame);
 newGame.addEventListener("click", createNewGame);
 resumeGameButton.addEventListener("click", resumeGame);
@@ -64,10 +65,11 @@ function deleteGame() {
 
 function createNewGame() {
     var select = document.getElementById('gameSelector');
+    size = sizeBoard.value;
     select.addEventListener('change', disableAllOptions);
     newGame.disabled = true;
 
-    new BattleShipClient().saverNewGame(userId, (status, responseBody) => {
+    new BattleShipClient().saverNewGame(userId, size,(status, responseBody) => {
         alert("Wait for opponent")
         gameId = responseBody;
         intervalId = setInterval(checkOpponent, 1000)
@@ -132,7 +134,7 @@ function waitForResumeGame() {
                 new BattleShipClient().changeState(userId, "IN_PROCCESS", (status, responseBody) => {
                     if (status >= 200 && status <= 299) {
                         gameIdClient = responseBody;
-                        window.location.href = "/view/getParamGame/" + resumeGameId;
+                        window.location.href = "/view/getParamGame/" + resumeGameId+"/"+size;
                     }
                 }, (status, responseBody) => {
                     alert("Błąd");
@@ -157,10 +159,11 @@ function joinToGame() {
     var gameId = document.getElementById("gameSelector").value;
     new BattleShipClient().addSecondPlayerToGame(userId, gameId, (status, responseBody) => {
         if (status >= 200 && status <= 299) {
+            var boardSize = responseBody;
             new BattleShipClient().changeState(userId, "IN_PROCCESS", (status, responseBody) => {
                 if (status >= 200 && status <= 299) {
                     gameIdClient = responseBody;
-                    window.location.href = "/view/getParamGame/" + gameId;
+                    window.location.href = "/view/getParamGame/" + gameId+"/"+boardSize;
                 }
             }, (status, responseBody) => {
                 alert("Błąd");
@@ -212,7 +215,7 @@ function approveGame() {
     new BattleShipClient().changeState(userId, "APPROVED", (status, responseBody) => {
         if (status >= 200 && status <= 299) {
             gameId = responseBody;
-            window.location.href = "/view/getParamGame/" + gameId;
+            window.location.href = "/view/getParamGame/" + gameId+"/"+size;
         }
     }, (status, responseBody) => {
         alert("Błąd");

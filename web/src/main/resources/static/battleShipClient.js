@@ -37,8 +37,8 @@ class BattleShipClient {
         this.get("/json/change-state/"+userId+"/"+state, null, null, onSuccess, onError);
     }
 
-    saverNewGame(userId, onSuccess, onError) {
-        this.post("/json/game/save/"+userId, null, null, onSuccess, onError)
+    saverNewGame(userId, sizeBoard, onSuccess, onError) {
+        this.post("/json/game/save/"+userId+"/"+sizeBoard, null, null, onSuccess, onError)
     }
 
 

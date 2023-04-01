@@ -27,12 +27,10 @@ public class GameRepoService {
     @Autowired
     public GameRepoService(GameRepo gameRepo,
                            UserService userService,
-//                           GameStatusRepoService gameStatusRepoService,
-                           GameStatusService gameStatusService
-                           ) {
+                           GameStatusService gameStatusService)
+    {
         this.gameRepo = gameRepo;
         this.userService = userService;
-//        this.gameStatusRepoService = gameStatusRepoService;
         this.gameStatusService = gameStatusService;
     }
 
@@ -40,15 +38,15 @@ public class GameRepoService {
         return idGamesForView;
     }
 
-    @Transactional
-    public void saveNewGame(long userId) {
-        User user = userService.getLogInUser(userId);
-        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
-        user.getGames().add(game);
-        game.getUsers().add(user);
-        gameRepo.save(game);
-        gameStatusService.saveNewStatusGame(new GameStatus(), game);
-    }
+//    @Transactional
+//    public void saveNewGame(long userId) {
+//        User user = userService.getLogInUser(userId);
+//        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
+//        user.getGames().add(game);
+//        game.getUsers().add(user);
+//        gameRepo.save(game);
+//        gameStatusService.saveNewStatusGame(new GameStatus(), game);
+//    }
 
     public boolean checksUnfinishedGames() {
         return gameStatusService.getUnfinishedUserGames().size() > 0;
@@ -67,9 +65,9 @@ public class GameRepoService {
     @Transactional
     public Integer addSecondPlayerToGame(long userId, long gameId) {
         Game game = gameRepo.findById(gameId).orElseThrow(() -> new NoSuchElementException("Game doesn't exist"));
-        User logInUser = userService.getLogInUser(userId);
-        logInUser.getGames().add(game);
-        game.getUsers().add(logInUser);
+        User user = userService.getLogInUser(userId);
+        user.getGames().add(game);
+        game.getUsers().add(user);
         gameRepo.save(game);
         return game.getId();
     }
