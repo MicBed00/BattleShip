@@ -144,4 +144,25 @@ class GameStatusRepoServiceTest {
         //then
         verify(repoStatusGame, times(1)).save(any(SavedGame.class));
     }
+
+    @Test
+    void shouldReturnRequestingGames() {
+        //given
+        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+        Game game1 = new Game(timestamp, 1L);
+        Game game2 = new Game(timestamp, 2L);
+        List<Game> games = new ArrayList<>();
+        games.add(game1);
+        games.add(game2);
+        SavedGame savedGame1  = new SavedGame(new GameStatus(new ArrayList<>(),1, StateGame.IN_PROCCESS)
+                ,game1);
+        SavedGame savedGame2  = new SavedGame(new GameStatus(new ArrayList<>(),1, StateGame.REQUESTING)
+                ,game2);
+
+        List<SavedGame> unFinishedStatusGames = gameStatusRepoService.getUnFinishedStatusGames(games);
+
+        //then
+        assertEquals(1, unFinishedStatusGames.size());
+    }
+
 }

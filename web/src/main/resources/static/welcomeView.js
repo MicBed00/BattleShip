@@ -18,6 +18,7 @@ gameSelector.disabled = false;
 unfinishedGames.disabled = false;
 var intervalId;
 var gameIdClient;
+var gameId;
 intervalId = setInterval(checkIfResumeGame, 1000);
 
 function checkIfResumeGame() {
@@ -25,7 +26,7 @@ function checkIfResumeGame() {
         if (status >= 200 && status <= 299) {
 
             var userIdGameIdList = responseBody;
-            //userIdGameIdList[0] idUsera, który wysyła prośbę wznowienia gry, dlatego to okno ma się wyświetlać
+            //userIdGameIdList[0] idUsera (przeciwnika), który wysyła prośbę wznowienia gry , dlatego to okno ma się wyświetlać
             if (userIdGameIdList[0] != userId && userIdGameIdList.length == 2) {
                 if (confirm("Do you want resume game id " + userIdGameIdList[1] + "?") === true) {
                     // Stop the interval after 100 ms
@@ -34,7 +35,7 @@ function checkIfResumeGame() {
                     }, 100);
                     //TU chyba muszę jeszcze wysłąć request zmieniający na stan APPROVED i dopeiro
                     approveGame();
-                } else {
+                } else if (confirm("Do you want resume game id " + userIdGameIdList[1] + "?") === false){
                     // Stop the interval after 100 ms
                     setTimeout(function () {
                         clearInterval(intervalId);
@@ -68,6 +69,7 @@ function createNewGame() {
 
     new BattleShipClient().saverNewGame(userId, (status, responseBody) => {
         alert("Wait for opponent")
+        gameId = responseBody;
         intervalId = setInterval(checkOpponent, 1000)
     }, (status, responseBody) => {
         alert("Błąd przy przerwaniu gry " + responseBody)
@@ -188,7 +190,7 @@ unfinishedGames.addEventListener('change', function () {
 });
 
 function checkOpponent() {
-    new BattleShipClient().checkIfOpponentAppears(userId, (status, responseBody) => {
+    new BattleShipClient().checkIfOpponentAppears(gameId, (status, responseBody) => {
         if (responseBody[0] === "true") {
             // Stop the interval after 100 ms
             setTimeout(function () {
@@ -196,7 +198,7 @@ function checkOpponent() {
             }, 100);
             if (confirm("Player " + responseBody[1] + " wants to start to game") === true) {
                 approveGame();
-            } else {
+            } else  if (confirm("Player " + responseBody[1] + " wants to start to game") === false){
                 rejectOpponentRequest();
             }
         }

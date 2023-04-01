@@ -6,8 +6,6 @@ import com.web.enity.user.UserRegistrationDto;
 import com.web.enity.user.UserRole;
 import com.web.repositories.UserRepo;
 import com.web.repositories.UserRoleRepo;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -58,7 +56,7 @@ class UserServiceTest {
         SecurityContextHolder.setContext(securityContext);
 
         //when
-        Long id = userService.getLoginUserId();
+        Long id = userService.getUserId();
 
         //then
         assertEquals(1L, id);

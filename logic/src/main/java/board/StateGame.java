@@ -1,6 +1,7 @@
 package board;
 
 public enum StateGame {
+    NEW("NEW"),
     WAITING("WAITING"),
 
     APPROVED("APPROVED"),

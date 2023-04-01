@@ -16,7 +16,7 @@ public class GameStatus {
         boardsStatus = new ArrayList<>();
         boardsStatus.add(new Board());
         boardsStatus.add(new Board());
-        state = StateGame.WAITING;
+        state = StateGame.NEW;
     }
 
     public GameStatus(List<Board> boardsStatus, int currentPlayer, StateGame state ) {

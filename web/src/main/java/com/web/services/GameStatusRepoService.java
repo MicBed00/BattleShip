@@ -20,6 +20,7 @@ import java.util.*;
 public class GameStatusRepoService {
 
     private final GameRepo gameRepo;
+    private final GameRepoService gameRepoService;
     private final StatusGameRepo repoStatusGame;
     private final GameStatusService gameStatusService;
     private final UserService userService;
@@ -28,11 +29,13 @@ public class GameStatusRepoService {
     public GameStatusRepoService(GameRepo gameRepo,
                                  GameStatusService gameStatusService,
                                  StatusGameRepo repoStatusGame,
-                                 UserService userService) {
+                                 UserService userService,
+                                 GameRepoService gameRepoService) {
         this.gameRepo = gameRepo;
         this.gameStatusService = gameStatusService;
         this.repoStatusGame = repoStatusGame;
         this.userService = userService;
+        this.gameRepoService = gameRepoService;
     }
 
     @Transactional
@@ -45,7 +48,7 @@ public class GameStatusRepoService {
 //    }
 
     public List<Integer> getUnfinishedUserGames() {
-        long loginUserId = userService.getLoginUserId();
+        long loginUserId = userService.getUserId();
         User logInUser = userService.getLogInUser(loginUserId);
         List<Game> games = logInUser.getGames();
         return games.stream()
@@ -60,7 +63,7 @@ public class GameStatusRepoService {
 
     public List<Long> checkIfOwnGameStatusHasChanged() {
         List<Long> result = new ArrayList<>();
-        Long loginUserId = userService.getLoginUserId();
+        Long loginUserId = userService.getUserId();
         User logInUser = userService.getLogInUser(loginUserId);
         List<Game> games = logInUser.getGames();
 
@@ -70,7 +73,7 @@ public class GameStatusRepoService {
         if (savedGames.isEmpty()) {
             return new ArrayList<>();
         } else {
-            //Zwracam ostatnią grę z listy i wyciągam id tej gry, zwracam w endpoincie
+            //Zwracam ostatnią grę z listy i wyciągam id tej gry, zwracam w endpointcie
             Game game = savedGames.stream().
                     skip(savedGames.size() - 1)
                     .findFirst().get().getGame();
@@ -89,9 +92,11 @@ public class GameStatusRepoService {
                 .findAny().get();
     }
 
-    private List<SavedGame> getUnFinishedStatusGames(List<Game> games) {
+    //zwraca listę gier, które aktualnie są wyświetlane w widoku i mają status Requesting
+     List<SavedGame> getUnFinishedStatusGames(List<Game> games) {
         return games.stream()
                 .sorted(Comparator.comparing(Game::getDate))
+                .filter(game -> gameRepoService.getIdGamesForView().contains(game.getId()))
                 .map(game -> repoStatusGame.findMaxIdByGameId(game.getId()))
                 .map(id -> repoStatusGame.findById(id).get())
                 .filter(gs -> gs.getGameStatus().getState().equals(StateGame.REQUESTING)
@@ -175,4 +180,16 @@ public class GameStatusRepoService {
             updateStatePreperationGame(userId, state);
         }
     }
+
+//    public List<SavedGame> getSavedStatesGames(List<Game> games) {
+//        return games.stream()
+//                .sorted(Game::getDate)
+//                .map(game -> getStatusGame(game.getId()))
+//                .
+//        List<SavedGame> result = new ArrayList<>();
+//        for (Game game : games) {
+//           result.add(getStatusGame(game.getId()));
+//        }
+//        return result;
+//    }
 }

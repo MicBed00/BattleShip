@@ -29,12 +29,12 @@ class BattleShipClient {
     }
 
 
-    checkIfOpponentAppears(userId, onSuccess, onError) {
-        this.get("/json/opponent/"+userId, null, null, onSuccess, onError);
+    checkIfOpponentAppears(idGame, onSuccess, onError) {
+        this.get("/json/opponent/"+idGame, null, null, onSuccess, onError);
     }
 
     changeState(userId, state, onSuccess, onError) {
-        this.get("/json/approve/"+userId+"/"+state, null, null, onSuccess, onError);
+        this.get("/json/change-state/"+userId+"/"+state, null, null, onSuccess, onError);
     }
 
     saverNewGame(userId, onSuccess, onError) {

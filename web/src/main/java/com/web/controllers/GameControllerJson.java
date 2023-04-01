@@ -64,12 +64,12 @@ public class GameControllerJson {
     public ResponseEntity<Board> listBoards(@PathVariable long gameId, @PathVariable long userId) {
         return ResponseEntity.ok(gameStatusService.getBoard(gameId, userId));
     }
-    @GetMapping(value = "/opponent/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> checkIfOpponentAppears(@PathVariable long userId) {
-        return ResponseEntity.ok(gameStatusService.checkIfOpponentAppears(userId));
+    @GetMapping(value = "/opponent/{idGame}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> checkIfOpponentAppears(@PathVariable long idGame) {
+        return ResponseEntity.ok(gameStatusService.checkIfOpponentAppears(idGame));
     }
-    @GetMapping(value = "/approve/{userId}/{state}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Long> approveOpponent(@PathVariable long userId, @PathVariable String state) {
+    @GetMapping(value = "/change-state/{userId}/{state}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> changeState(@PathVariable long userId, @PathVariable String state) {
         SavedGame savedGame = gameStatusRepoService.updateStatePreperationGame(userId, state);
         return ResponseEntity.ok((long) savedGame.getGame().getId());
     }
@@ -146,10 +146,8 @@ public class GameControllerJson {
     }
 
     @PostMapping(value = "/game/save/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Boolean> saveNewGame(@PathVariable long userId) {
-        gameStatusService.saveNewGame(userId);
-        //TODO zmiana wartości zwracanej przez responseentity
-        return ResponseEntity.ok(true);
+    ResponseEntity<Integer> saveNewGame(@PathVariable long userId) {
+        return ResponseEntity.ok(gameStatusService.saveNewGame(userId));
     }
 
 }

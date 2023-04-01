@@ -37,7 +37,7 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .map(UserCredentialsDtoMapper::map);
     }
-    public long getLoginUserId() {
+    public long getUserId() {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         return getUser(userEmail).getId();
     }
@@ -92,5 +92,6 @@ public class UserService {
                 ()-> new NoSuchElementException("No user in database")
         );
     }
+
 }
 

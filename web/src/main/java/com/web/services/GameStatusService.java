@@ -145,16 +145,17 @@ public class GameStatusService {
         return 0;
     }
 
-    public List<String> checkIfOpponentAppears(long userId) {
+    public List<String> checkIfOpponentAppears(long idGame) {
         List<String> answer = new ArrayList<>();
-        SavedGame savedStateGame = gameStatusRepoService.getSavedStateGame(userId);
-        Game lastUserGames = userService.getLastUserGames(userId);
-        if (savedStateGame.getGameStatus().getState().equals(StateGame.REQUESTING)) {
-            answer.add("true");
-            answer.add(String.valueOf(lastUserGames.getId()));
-        } else {
-            answer.add("false");
-        }
+        Game game = gameRepo.findById(idGame).get();
+        SavedGame savedStatus = gameStatusRepoService.getStatusGame(game.getId());
+
+            if (savedStatus.getGameStatus().getState().equals(StateGame.REQUESTING)) {
+                answer.add("true");
+                answer.add(String.valueOf(game.getId()));
+            } else {
+                answer.add("false");
+            }
         return answer;
     }
 
@@ -177,18 +178,22 @@ public class GameStatusService {
     }
 
     @Transactional
-    public void saveNewGame(long userId) {
+    public Integer saveNewGame(long userId) {
         User user = userService.getLogInUser(userId);
         Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
         user.getGames().add(game);
         game.getUsers().add(user);
         //TODO czy w tym miejscu zapisywac z wykorzystaniem repo czy lepiej przez jakiś serwis?
-        gameRepo.save(game);
+        Game savedGame = gameRepo.save(game);
         saveNewStatusGame(new GameStatus(), game);
+        //dodaję do list id nowej gry, po to by wyświetliła się w widoku
+        gameRepoService.getIdGamesForView().add(savedGame.getId());
+
+        return savedGame.getId();
     }
 
     public List<Integer> getUnfinishedUserGames() {
-        long loginUserId = userService.getLoginUserId();
+        long loginUserId = userService.getUserId();
         User logInUser = userService.getLogInUser(loginUserId);
         List<Game> games = logInUser.getGames();
         return games.stream()
