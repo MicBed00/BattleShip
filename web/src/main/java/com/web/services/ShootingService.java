@@ -3,14 +3,13 @@ package com.web.services;
 import board.Board;
 import board.Shot;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ShootingService {
-    private SavedGameService savedGameService;
+    private final SavedGameService savedGameService;
 
     @Autowired
     public ShootingService(SavedGameService savedGameService) {

@@ -46,7 +46,7 @@ public class GameControllerJson {
 
     @GetMapping(value = "/check-state", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Long>> statusesGame() {
-        return ResponseEntity.ok(waitingRoomService.checkIfOwnGameStatusHasChanged());
+        return ResponseEntity.ok(waitingRoomService.checkIfSavedGameStatusHasChanged());
     }
 
     @GetMapping(value = "/opponent/{idGame}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,7 +149,7 @@ public class GameControllerJson {
     }
     @DeleteMapping(value = "/delete-game/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> deleteGames(@PathVariable long userId, @PathVariable long gameId) {
-        waitingRoomService.deleteGames(userId, gameId);
+        waitingRoomService.deleteGame(userId, gameId);
         return ResponseEntity.ok(true);
     }
 

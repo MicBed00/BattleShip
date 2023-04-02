@@ -21,13 +21,13 @@ import java.util.NoSuchElementException;
 
 @Service
 public class WaitingRoomService {
-    private UserService userService;
-    private GameRepo gameRepo;
-    private GameRepoService gameRepoService;
+    private final UserService userService;
+    private final GameRepo gameRepo;
+    private final GameRepoService gameRepoService;
 
-    private SavedGameRepo savedGameRepo;
+    private final SavedGameRepo savedGameRepo;
 
-    private SavedGameService savedGameService;
+    private final SavedGameService savedGameService;
 
     @Autowired
     public WaitingRoomService(UserService userService,
@@ -60,18 +60,18 @@ public class WaitingRoomService {
     }
 
     @Transactional
-    public void saveNewStatusGame(GameStatus gameStatus, Game game) {
+    private void saveNewStatusGame(GameStatus gameStatus, Game game) {
         SavedGame savedGame = new SavedGame(gameStatus, game);
         savedGameRepo.save(savedGame);
     }
 
-    public List<Long> checkIfOwnGameStatusHasChanged() {
+    public List<Long> checkIfSavedGameStatusHasChanged() {
         List<Long> result = new ArrayList<>();
-        Long loginUserId = userService.getUserId();
+        long loginUserId = userService.getUserId();
         User logInUser = userService.getLogInUser(loginUserId);
         List<Game> games = logInUser.getGames();
         //na podstawie wszystkiech gier użytkownika, wyznaczam te, które mają status REQUESTING
-        List<SavedGame> savedGames = getUnFinishedStatusGames(games);
+        List<SavedGame> savedGames = getUnFinishedSavedGames(games);
 
         if (savedGames.isEmpty()) {
             return new ArrayList<>();
@@ -81,7 +81,7 @@ public class WaitingRoomService {
                     skip(savedGames.size() - 1)
                     .findFirst().get().getGame();
 
-            result.add(idOpponent(game, loginUserId));      //id przeciwnika
+            result.add(getIdOpponent(game, loginUserId));      //id przeciwnika
             result.add(Long.valueOf(game.getId()));
 
             return result;
@@ -89,26 +89,26 @@ public class WaitingRoomService {
     }
 
     //zwraca listę gier, które aktualnie są wyświetlane w widoku i mają status Requesting
-    private List<SavedGame> getUnFinishedStatusGames(List<Game> games) {
+    private List<SavedGame> getUnFinishedSavedGames(List<Game> games) {
         return games.stream()
                 .sorted(Comparator.comparing(Game::getDate))
                 .filter(game -> gameRepoService.getIdGamesForView().contains(game.getId()))
                 .map(game -> savedGameRepo.findMaxIdByGameId(game.getId()))
-                .map(id -> savedGameRepo.findById(id).get())
+                .map(id -> savedGameRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Game doesn't exist")))
                 .filter(gs -> gs.getGameStatus().getState().equals(StateGame.REQUESTING)
                         && gs.getGame().getUsers().size() > 1)
                 .toList();
     }
-    private Long idOpponent(Game game, Long loginUserId) {
+    private Long getIdOpponent(Game game, Long loginUserId) {
         return game.getUsers().stream()
                 .filter(u -> !u.getId().equals(loginUserId))
                 .map(User::getId)
-                .findAny().get();
+                .findAny().orElseThrow(() -> new NoSuchElementException("Game doesn't exist"));
     }
 
     public List<String> checkIfOpponentAppears(long idGame) {
         List<String> answer = new ArrayList<>();
-        Game game = gameRepo.findById(idGame).get();
+        Game game = gameRepo.findById(idGame).orElseThrow(() -> new NoSuchElementException("Game doesn't exist"));
         SavedGame savedStatus = savedGameService.getStatusGame(game.getId());
 
         if (savedStatus.getGameStatus().getState().equals(StateGame.REQUESTING)) {
@@ -121,17 +121,16 @@ public class WaitingRoomService {
     }
 
     @Transactional
-    public Integer addSecondPlayerToGame(long userId, long gameId) {
+    public void addSecondPlayerToGame(long userId, long gameId) {
         Game game = gameRepo.findById(gameId).orElseThrow(() -> new NoSuchElementException("Game doesn't exist"));
         User user = userService.getLogInUser(userId);
         user.getGames().add(game);
         game.getUsers().add(user);
         gameRepo.save(game);
-        return game.getId();
     }
 
     @Transactional
-    public void deleteGames(Long userId, Long gameId) {
+    public void deleteGame(Long userId, Long gameId) {
         Game game = gameRepo.findById(gameId).orElseThrow(
                 () -> new NoSuchElementException("Can't find game")
         );
