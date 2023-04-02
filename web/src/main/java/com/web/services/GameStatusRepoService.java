@@ -22,17 +22,17 @@ public class GameStatusRepoService {
     private final GameRepo gameRepo;
     private final GameRepoService gameRepoService;
     private final StatusGameRepo repoStatusGame;
-    private final GameStatusService gameStatusService;
+    private final SavedGameService savedGameService;
     private final UserService userService;
 
     @Autowired
     public GameStatusRepoService(GameRepo gameRepo,
-                                 GameStatusService gameStatusService,
+                                 SavedGameService savedGameService,
                                  StatusGameRepo repoStatusGame,
                                  UserService userService,
                                  GameRepoService gameRepoService) {
         this.gameRepo = gameRepo;
-        this.gameStatusService = gameStatusService;
+        this.savedGameService = savedGameService;
         this.repoStatusGame = repoStatusGame;
         this.userService = userService;
         this.gameRepoService = gameRepoService;
@@ -41,24 +41,6 @@ public class GameStatusRepoService {
     @Transactional
     public boolean saveStatusGame(SavedGame savedGame) {
         return repoStatusGame.save(savedGame) != null;
-    }
-
-//    public void saveNewStatusGame(StatusGame statusGame) {
-//        repoStatusGame.save(statusGame);
-//    }
-
-    public List<Integer> getUnfinishedUserGames() {
-        long loginUserId = userService.getUserId();
-        User logInUser = userService.getLogInUser(loginUserId);
-        List<Game> games = logInUser.getGames();
-        return games.stream()
-                .map(game -> repoStatusGame.findMaxIdByGameId(game.getId()))
-                .map(id -> repoStatusGame.findById(id).get())
-                .filter(gs -> !gs.getGameStatus().getState().equals(StateGame.FINISHED))
-                .filter(gs -> !gs.getGameStatus().getState().equals(StateGame.REJECTED))
-                .filter(gs -> gs.getGame().getUsers().size() > 1)
-                .map(gs -> gs.getGame().getId())
-                .toList();
     }
 
     public List<Long> checkIfOwnGameStatusHasChanged() {
@@ -123,7 +105,7 @@ public class GameStatusRepoService {
             lastShip = boards.get(1).getShips().size() - 1;
             savedGame.getGameStatus().getBoardsStatus().get(1).getShips().remove(lastShip);
         }
-        int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
+        int currentPlayer = savedGameService.getCurrentPlayer(gameId);
         GameStatus gameStatus = new GameStatus(boards, currentPlayer, state);
         repoStatusGame.save(new SavedGame(gameStatus, game));
     }
@@ -141,7 +123,7 @@ public class GameStatusRepoService {
         List<Game> games = user.getGames();
         if(games.contains(game)) {
          games.remove(game);
-            int currentPlayer = gameStatusService.getCurrentPlayer(gameId);
+            int currentPlayer = savedGameService.getCurrentPlayer(gameId);
             GameStatus gameStatus = new GameStatus(boards, currentPlayer, state);
             repoStatusGame.save(new SavedGame(gameStatus, game));
         } else {

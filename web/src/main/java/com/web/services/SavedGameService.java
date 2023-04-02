@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class GameStatusService {
+public class SavedGameService {
     private List<String> shipSize;
     private List<Position> positionList;
     private GameStatusRepoService gameStatusRepoService;
@@ -35,11 +35,11 @@ public class GameStatusService {
 
 
     @Autowired
-    GameStatusService(@Lazy GameStatusRepoService gameStatusRepoService,
-                      @Lazy GameRepoService gameRepoService,
-                      UserService userService,
-                      GameRepo gameRepo,
-                      StatusGameRepo repoStatusGame) {
+    SavedGameService(@Lazy GameStatusRepoService gameStatusRepoService,
+                     @Lazy GameRepoService gameRepoService,
+                     UserService userService,
+                     GameRepo gameRepo,
+                     StatusGameRepo repoStatusGame) {
 
         this.gameRepo = gameRepo;
         this.repoStatusGame = repoStatusGame;

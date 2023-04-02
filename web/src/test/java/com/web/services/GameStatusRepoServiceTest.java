@@ -34,7 +34,7 @@ class GameStatusRepoServiceTest {
     @Mock
     private StatusGameRepo repoStatusGame;
     @Mock
-    private GameStatusService gameStatusService;
+    private SavedGameService savedGameService;
     @Mock
     private UserService userService;
 
@@ -71,7 +71,7 @@ class GameStatusRepoServiceTest {
         given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
         given(repoStatusGame.findMaxIdByGameId(gameId)).willReturn(1L);
         given(repoStatusGame.findById(idStatusGame)).willReturn(Optional.of(savedGame));
-        given(gameStatusService.getCurrentPlayer(gameId)).willReturn(currentPly);
+        given(savedGameService.getCurrentPlayer(gameId)).willReturn(currentPly);
 
         //when
         gameStatusRepoService.deleteShip(userId, gameId);

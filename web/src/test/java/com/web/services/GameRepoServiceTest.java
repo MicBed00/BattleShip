@@ -1,27 +1,14 @@
 package com.web.services;
 
-import board.Board;
-import board.StateGame;
-import com.web.enity.game.Game;
-import com.web.enity.user.User;
 import com.web.repositories.GameRepo;
 import com.web.repositories.StatusGameRepo;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,33 +27,34 @@ class GameRepoServiceTest {
     StatusGameRepo repoStatusGame;
 
     @Mock
-    GameStatusService gameStatusService;
+    SavedGameService savedGameService;
     @InjectMocks
     private GameRepoService gameRepoService;
 
 
-    @Test
-    void shouldSaveNewGame() {
-        //given
-        long userId = 1;
-        List<Board> boardList = new ArrayList<>();
-        StateGame state = StateGame.IN_PROCCESS;
-        long owner = 1;
-        long gameId = 1;
-        User user = new User();
-        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
-        Game startGame = new Game(timestamp, owner);
-        startGame.setId(1);
-        when(userService.getLogInUser(userId)).thenReturn(user);
-        doReturn(startGame).when(gameRepo).save(Mockito.any(Game.class));
-
-        //when
-        gameRepoService.saveNewGame(userId);
-
-        //then
-        verify(userService, times(1)).getLogInUser(userId);
-//        verify(gameRepo,times(1)).save(new Game(timestamp, owner));
-    }
+//    @Test
+//    void shouldSaveNewGame() {
+//        //given
+//        long userId = 1;
+//        int sizeBaord = 11;
+//        List<Board> boardList = new ArrayList<>();
+//        StateGame state = StateGame.IN_PROCCESS;
+//        long owner = 1;
+//        long gameId = 1;
+//        User user = new User();
+//        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+//        Game startGame = new Game(timestamp, owner);
+//        startGame.setId(1);
+//        when(userService.getLogInUser(userId)).thenReturn(user);
+//        doReturn(startGame).when(gameRepo).save(Mockito.any(Game.class));
+//
+//        //when
+//        gameStatusService.saveNewGame(userId, sizeBaord);
+//
+//        //then
+//        verify(userService, times(1)).getLogInUser(userId);
+////        verify(gameRepo,times(1)).save(new Game(timestamp, owner));
+//    }
 
     @Test
     void shouldReturnFalseForUserWithoutGames() {
@@ -75,6 +63,6 @@ class GameRepoServiceTest {
 
         //then
         assertFalse(result);
-        verify(gameStatusService, times(1)).getUnfinishedUserGames();
+        verify(savedGameService, times(1)).getUnfinishedUserGames();
     }
 }

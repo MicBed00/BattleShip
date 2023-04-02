@@ -8,7 +8,7 @@ import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
 import com.web.services.GameRepoService;
 import com.web.services.GameStatusRepoService;
-import com.web.services.GameStatusService;
+import com.web.services.SavedGameService;
 import exceptions.BattleShipException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,23 +21,29 @@ import java.util.List;
 @RestController
 @RequestMapping("json")
 public class GameControllerJson {
-    private final GameStatusService gameStatusService;
+    private final SavedGameService savedGameService;
     private final GameStatusRepoService gameStatusRepoService;
     private final GameRepoService gameRepoService;
     @Autowired
-    public GameControllerJson(GameStatusService gameStatusService,
+    public GameControllerJson(SavedGameService savedGameService,
                               GameStatusRepoService gameStatusRepoService,
                               GameRepoService gameRepoService)
     {
-        this.gameStatusService = gameStatusService;
+        this.savedGameService = savedGameService;
         this.gameStatusRepoService = gameStatusRepoService;
         this.gameRepoService = gameRepoService;
     }
 
+    @PostMapping(value = "/game/save/{userId}/{sizeBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Integer> saveNewGame(@PathVariable long userId,
+                                        @PathVariable int sizeBoard) {
+        return ResponseEntity.ok(savedGameService.saveNewGame(userId, sizeBoard));
+    }
+
     @PostMapping(value = "/addShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> addShip(@RequestBody Ship ship, @PathVariable long userId, @PathVariable long gameId) throws BattleShipException {
-        List<Board> boardsList = gameStatusService.addShipToList(ship, gameId, userId);
-        return ResponseEntity.ok( gameStatusService.saveGameStatusToDataBase(boardsList, StateGame.IN_PROCCESS, gameId));
+        List<Board> boardsList = savedGameService.addShipToList(ship, gameId, userId);
+        return ResponseEntity.ok( savedGameService.saveGameStatusToDataBase(boardsList, StateGame.IN_PROCCESS, gameId));
     }
 
     @PostMapping(value = "/addSecondPlayer/{userId}/{gameId}")
@@ -48,7 +54,7 @@ public class GameControllerJson {
     }
     @GetMapping(value = "/listBoard/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> listBoards(@PathVariable long gameId) {
-        return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
+        return ResponseEntity.ok(savedGameService.getBoardList(gameId));
     }
     @GetMapping(value = "/owner/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> usersId(@PathVariable long gameId) {
@@ -62,11 +68,11 @@ public class GameControllerJson {
 
     @GetMapping(value = "/board/{gameId}/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Board> listBoards(@PathVariable long gameId, @PathVariable long userId) {
-        return ResponseEntity.ok(gameStatusService.getBoard(gameId, userId));
+        return ResponseEntity.ok(savedGameService.getBoard(gameId, userId));
     }
     @GetMapping(value = "/opponent/{idGame}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<String>> checkIfOpponentAppears(@PathVariable long idGame) {
-        return ResponseEntity.ok(gameStatusService.checkIfOpponentAppears(idGame));
+        return ResponseEntity.ok(savedGameService.checkIfOpponentAppears(idGame));
     }
     @GetMapping(value = "/change-state/{userId}/{state}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> changeState(@PathVariable long userId, @PathVariable String state) {
@@ -76,7 +82,7 @@ public class GameControllerJson {
 
     @GetMapping(value = "/game/status-isFinished/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> statusFinished(@PathVariable int userId, @PathVariable long gameId) {
-        boolean isFinished = gameStatusService.checkIfAllShipsAreHitted(gameId);
+        boolean isFinished = savedGameService.checkIfAllShipsAreHitted(gameId);
         if(isFinished)
             gameStatusRepoService.updateStatePreperationGame(userId, "FINISHED");
         return ResponseEntity.ok(isFinished);
@@ -101,19 +107,19 @@ public class GameControllerJson {
 
     @PostMapping(value = "/game/boards/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> shots(@RequestBody Shot shot, @PathVariable long gameId) {
-        List<Board> boardListAfterShot = gameStatusService.addShotAtShip(shot, gameId);
-        gameStatusService.saveGameStatusToDataBase(boardListAfterShot, StateGame.PREPARED, gameId);
+        List<Board> boardListAfterShot = savedGameService.addShotAtShip(shot, gameId);
+        savedGameService.saveGameStatusToDataBase(boardListAfterShot, StateGame.PREPARED, gameId);
         return ResponseEntity.ok(boardListAfterShot);
     }
 
     @GetMapping(value = "/game/boards/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> getBoardsShots(@PathVariable long gameId) {
-        return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
+        return ResponseEntity.ok(savedGameService.getBoardList(gameId));
     }
 
     @GetMapping(value = "/setup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Integer> getSetup() {
-        return ResponseEntity.ok(gameStatusService.getShipLimits());
+        return ResponseEntity.ok(savedGameService.getShipLimits());
     }
 
     @GetMapping(value="/checkGames/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -122,12 +128,12 @@ public class GameControllerJson {
     }
     @GetMapping(value="/resume-game/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> unfinishedGames(@PathVariable long gameId) {
-        return ResponseEntity.ok(gameStatusService.getBoardList(gameId));
+        return ResponseEntity.ok(savedGameService.getBoardList(gameId));
     }
     @DeleteMapping(value = "/deleteShip/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Board> deleteShips(@PathVariable long userId, @PathVariable long gameId) {
         gameStatusRepoService.deleteShip(userId, gameId);
-        return ResponseEntity.ok(gameStatusService.getBoard(gameId, userId));
+        return ResponseEntity.ok(savedGameService.getBoard(gameId, userId));
     }
     @DeleteMapping(value = "/delete-game/{userId}/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> deleteGames(@PathVariable long userId, @PathVariable long gameId) {
@@ -145,10 +151,5 @@ public class GameControllerJson {
             gameStatusRepoService.checkIfTwoPlayersArePreparedThenChangingState(status, userId);
     }
 
-    @PostMapping(value = "/game/save/{userId}/{sizeBoard}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Integer> saveNewGame(@PathVariable long userId,
-                                        @PathVariable int sizeBoard) {
-        return ResponseEntity.ok(gameStatusService.saveNewGame(userId, sizeBoard));
-    }
 
 }

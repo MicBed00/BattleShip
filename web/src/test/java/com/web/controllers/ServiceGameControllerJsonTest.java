@@ -77,6 +77,7 @@ public class ServiceGameControllerJsonTest {
     }
 
     public ResponseEntity<String> addNewGameWithStatusGameForUser(long userId, TestRestTemplate restTemplate, int port) {
+        int sizeBoard = 12;
         String sessionCookie = login(restTemplate, port);
         CsrfToken token = extractCSRFToken("/view/welcomeView", "meta", "content", sessionCookie, restTemplate, port);
         HttpHeaders headers = new HttpHeaders();
@@ -85,7 +86,7 @@ public class ServiceGameControllerJsonTest {
         headers.set("X-CSRF-TOKEN", token.token);
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
-        return restTemplate.postForEntity(buildUrl("/json/game/save/" + userId, port),
+        return restTemplate.postForEntity(buildUrl("/json/game/save/" + userId+"/"+sizeBoard, port),
                         request,
                         String.class);
     }
