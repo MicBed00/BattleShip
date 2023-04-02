@@ -5,7 +5,7 @@ import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
 import com.web.repositories.GameRepo;
-import com.web.repositories.StatusGameRepo;
+import com.web.repositories.SavedGameRepo;
 import dataConfig.Position;
 import dataConfig.ShipLimits;
 import board.Board;
@@ -17,34 +17,30 @@ import org.springframework.stereotype.Service;
 import serialization.GameStatus;
 import ship.Ship;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class SavedGameService {
     private List<String> shipSize;
     private List<Position> positionList;
-    private GameStatusRepoService gameStatusRepoService;
+
     private GameRepoService gameRepoService;
 
     private GameRepo gameRepo;
-    private StatusGameRepo repoStatusGame;
+    private SavedGameRepo repoSavedGame;
 
     private UserService userService;
 
 
     @Autowired
-    SavedGameService(@Lazy GameStatusRepoService gameStatusRepoService,
-                     @Lazy GameRepoService gameRepoService,
+    SavedGameService(@Lazy GameRepoService gameRepoService,
                      UserService userService,
                      GameRepo gameRepo,
-                     StatusGameRepo repoStatusGame) {
+                     SavedGameRepo repoSavedGame) {
 
         this.gameRepo = gameRepo;
-        this.repoStatusGame = repoStatusGame;
+        this.repoSavedGame = repoSavedGame;
         this.gameRepoService = gameRepoService;
-        this.gameStatusRepoService = gameStatusRepoService;
         this.userService = userService;
         positionList = new ArrayList<>();
         positionList.add(Position.HORIZONTAL);
@@ -72,57 +68,8 @@ public class SavedGameService {
         return positionList;
     }
 
-    @Transactional
-    public List<Board> addShipToList(Ship ship, long gameId, long userId) {
-        List<Board> boardList = getBoardList(gameId);
-        Game game = gameRepoService.getGame(gameId);
-        Long idOwner = game.getOwnerGame();
-
-        if (ship.getLength() > 0 && ship.getPosition() != null) {
-            if (idOwner == userId) {
-                addShipToBoard(boardList.get(0), ship);
-            } else {
-                addShipToBoard(boardList.get(1), ship);
-            }
-        }
-        return boardList;
-    }
-
-    public List<Board> getBoardList(long gameId) {
-        return gameStatusRepoService.getStatusGame(gameId).getGameStatus().getBoardsStatus();
-    }
-
-    public Board getBoard(long gameId, long userId) {
-        List<Board> boardList = getBoardList(gameId);
-        Game game = gameRepoService.getGame(gameId);
-        Long owner = game.getOwnerGame();
-
-        if (owner == userId) {
-            return boardList.get(0);
-        } else {
-            return boardList.get(1);
-        }
-    }
-
-    private void addShipToBoard(Board boardPlayer, Ship ship) {
-        boardPlayer.addShip(ship.getLength(), ship.getXstart(),
-                ship.getYstart(), ship.getPosition());
-    }
-
-    public List<Board> addShotAtShip(Shot shot, long gameId) {
-        List<Board> boardList = getBoardList(gameId);
-
-        if (boardList.get(0).getOpponentShots().size() == boardList.get(1).getOpponentShots().size()) {
-            boardList.get(1).shoot(shot);
-        } else {
-            boardList.get(0).shoot(shot);
-        }
-        return boardList;
-    }
-
-    public Boolean checkIfAllShipsAreHitted(long gameId) {
-        List<Board> boardList = getBoardList(gameId);
-        return boardList.get(0).getIsFinished().get() || boardList.get(1).getIsFinished().get();
+    public List<Board> getBoardsList(long gameId) {
+        return getStatusGame(gameId).getGameStatus().getBoardsStatus();
     }
 
     public int[] statisticsGame(Board board) {
@@ -131,32 +78,42 @@ public class SavedGameService {
 
     public double getAccuracyShot(int totalShots, int hitShot) {
         return ((double) hitShot / totalShots) * 100;
+    }
 
+
+    private SavedGame getSavedStateGame(long userId) {
+        Game game = userService.getLastUserGames(userId);
+        Long idStatusGame = repoSavedGame.findMaxIdByGameId(game.getId());
+        return repoSavedGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("User has not yet added the ship"));
+    }
+
+    @Transactional
+    public SavedGame updateStatePreperationGame(long userId, String state) {
+        SavedGame savedStateGame = getSavedStateGame(userId);
+        savedStateGame.getGameStatus().setState(StateGame.valueOf(state));
+        return repoSavedGame.save(savedStateGame);
+    }
+
+    public void checkIfTwoPlayersArePreparedThenChangingState(String state, long userId) {
+        SavedGame savedStateGame = getSavedStateGame(userId);
+        List<Board> boardsStatus = savedStateGame.getGameStatus().getBoardsStatus();
+        int ply1Ships = boardsStatus.get(0).getShips().size();
+        int ply2Ships = boardsStatus.get(1).getShips().size();
+
+        if (ply1Ships == ShipLimits.SHIP_LIMIT.getQty()
+                && ply2Ships == ShipLimits.SHIP_LIMIT.getQty()) {
+            updateStatePreperationGame(userId, state);
+        }
     }
 
     public int getCurrentPlayer(long gameId) {
-        List<Board> boardList = getBoardList(gameId);
+        List<Board> boardList = getBoardsList(gameId);
         if (checkIsOverTheLimitShip(boardList.get(0).getShips().size())) {
             return 1;
         } else if (checkIsOverTheLimitShip(boardList.get(1).getShips().size())) {
             return 2;
         }
-        //TODO w tym miejscu wyrzucić wyjątek zamist tego zera
-        return 0;
-    }
-
-    public List<String> checkIfOpponentAppears(long idGame) {
-        List<String> answer = new ArrayList<>();
-        Game game = gameRepo.findById(idGame).get();
-        SavedGame savedStatus = gameStatusRepoService.getStatusGame(game.getId());
-
-            if (savedStatus.getGameStatus().getState().equals(StateGame.REQUESTING)) {
-                answer.add("true");
-                answer.add(String.valueOf(game.getId()));
-            } else {
-                answer.add("false");
-            }
-        return answer;
+        throw new NoSuchElementException("Can't set current player");
     }
 
     @Transactional
@@ -164,34 +121,11 @@ public class SavedGameService {
         int currentPlayer = getCurrentPlayer(gameId);
         GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
         Game game = gameRepo.findById(gameId).orElseThrow(
-                () -> new NoSuchElementException("Brak gry w bazie")
+                () -> new NoSuchElementException("No game in database")
         );
         SavedGame savedGame = new SavedGame(gameStatus, game);
 
-        return gameStatusRepoService.saveStatusGame(savedGame);
-    }
-
-    @Transactional
-    public void saveNewStatusGame(GameStatus gameStatus, Game game) {
-        SavedGame savedGame = new SavedGame(gameStatus, game);
-        repoStatusGame.save(savedGame);
-    }
-
-    @Transactional
-    public Integer saveNewGame(long userId, int sizeBoard) {
-        User user = userService.getLogInUser(userId);
-        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
-        user.getGames().add(game);
-        game.getUsers().add(user);
-        //TODO czy w tym miejscu zapisywac z wykorzystaniem repo czy lepiej przez jakiś serwis?
-        Game savedGame = gameRepo.save(game);
-        List<Board> boardList = new ArrayList<>();
-        boardList.add(new Board(sizeBoard));
-        boardList.add(new Board(sizeBoard));
-        saveNewStatusGame(new GameStatus(boardList, StateGame.NEW), game);
-        gameRepoService.getIdGamesForView().add(savedGame.getId());    //dodaję do list id nowej gry, po to by wyświetliła się w widoku
-
-        return savedGame.getId();
+        return repoSavedGame.save(savedGame) != null;
     }
 
     public List<Integer> getUnfinishedUserGames() {
@@ -199,8 +133,8 @@ public class SavedGameService {
         User logInUser = userService.getLogInUser(loginUserId);
         List<Game> games = logInUser.getGames();
         return games.stream()
-                .map(game -> repoStatusGame.findMaxIdByGameId(game.getId()))
-                .map(id -> repoStatusGame.findById(id).get())
+                .map(game -> repoSavedGame.findMaxIdByGameId(game.getId()))
+                .map(id -> repoSavedGame.findById(id).get())
                 .filter(gs -> !gs.getGameStatus().getState().equals(StateGame.FINISHED))
                 .filter(gs -> !gs.getGameStatus().getState().equals(StateGame.REJECTED))
                 .filter(gs -> gs.getGame().getUsers().size() > 1)
@@ -209,9 +143,10 @@ public class SavedGameService {
     }
 
 
-
-
-
+    public SavedGame getStatusGame(long idGame) {
+        Long idStatusGame = repoSavedGame.findMaxIdByGameId(idGame);
+        return repoSavedGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("User has not yet added the ship"));
+    }
 
 
 }

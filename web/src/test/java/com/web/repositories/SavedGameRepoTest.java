@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 class SavedGameRepoTest {
 
     @Autowired
-    StatusGameRepo statusGameRepo;
+    SavedGameRepo savedGameRepo;
     @Autowired
     GameRepo gameRepo;
 
@@ -36,16 +36,16 @@ class SavedGameRepoTest {
         gameRepo.save(game2);
         SavedGame savedGame = new SavedGame(new GameStatus(), game1);
         SavedGame savedGame1 = new SavedGame(new GameStatus(), game2);
-        SavedGame save1 = statusGameRepo.save(savedGame);
-        SavedGame save2 = statusGameRepo.save(savedGame1);
-        SavedGame save3 = statusGameRepo.save(savedGame);
-        SavedGame save4 = statusGameRepo.save(savedGame1);
-        SavedGame save5 = statusGameRepo.save(savedGame1);
-        SavedGame save6 = statusGameRepo.save(savedGame);
-        SavedGame save7 = statusGameRepo.save(savedGame);
+        SavedGame save1 = savedGameRepo.save(savedGame);
+        SavedGame save2 = savedGameRepo.save(savedGame1);
+        SavedGame save3 = savedGameRepo.save(savedGame);
+        SavedGame save4 = savedGameRepo.save(savedGame1);
+        SavedGame save5 = savedGameRepo.save(savedGame1);
+        SavedGame save6 = savedGameRepo.save(savedGame);
+        SavedGame save7 = savedGameRepo.save(savedGame);
 
         //when
-        Long result = statusGameRepo.findMaxIdByGameId(1L);
+        Long result = savedGameRepo.findMaxIdByGameId(1L);
 
         //then
         assertEquals(1,result);
@@ -61,7 +61,7 @@ class SavedGameRepoTest {
         SavedGame savedGame = new SavedGame(new GameStatus(), game);
 
         //when
-        SavedGame result = statusGameRepo.save(savedGame);
+        SavedGame result = savedGameRepo.save(savedGame);
 
         //then
         assertNotNull(result);

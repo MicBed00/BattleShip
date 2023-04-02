@@ -2,7 +2,6 @@ package com.web.controllers;
 
 import com.web.enity.user.User;
 import com.web.services.GameRepoService;
-import com.web.services.GameStatusRepoService;
 import com.web.services.SavedGameService;
 import com.web.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("view")
 public class GameControllerView {
     private final SavedGameService savedGameService;
-    private final GameStatusRepoService gameStatusRepoService;
     private final GameRepoService gameRepoService;
     private final UserService userService;
 
     @Autowired
     public GameControllerView(SavedGameService savedGameService,
-                              GameStatusRepoService gameStatusRepoService,
                               GameRepoService gameRepoService,
                               UserService userService)
     {
         this.savedGameService = savedGameService;
-        this.gameStatusRepoService = gameStatusRepoService;
         this.gameRepoService = gameRepoService;
         this.userService = userService;
     }
@@ -61,7 +57,7 @@ public class GameControllerView {
     public String addedShip(@PathVariable Long gameId, Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUser(username);
-        gameStatusRepoService.checkIfTwoPlayersArePreparedThenChangingState("PREPARED", user.getId());
+        savedGameService.checkIfTwoPlayersArePreparedThenChangingState("PREPARED", user.getId());
         model.addAttribute("gameId", gameId);
         return "addShip_success";
     }
@@ -77,14 +73,14 @@ public class GameControllerView {
 
     @GetMapping(value="/statistics/{gameId}")
     public String printStatistics(@PathVariable long gameId, Model model) {
-        model.addAttribute("player1numberShots", savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(0))[0]);
-        model.addAttribute("player1HittedShots", savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(0))[1]);
-        model.addAttribute("player2numberShots", savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(1))[0]);
-        model.addAttribute("player2HittedShots", savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(1))[1]);
-        double accuracyPly1 = savedGameService.getAccuracyShot(savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(0))[0],
-                savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(0))[1]);
-        double accuracyPly2 = savedGameService.getAccuracyShot(savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(1))[0],
-                savedGameService.statisticsGame(savedGameService.getBoardList(gameId).get(1))[1]);
+        model.addAttribute("player1numberShots", savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[0]);
+        model.addAttribute("player1HittedShots", savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[1]);
+        model.addAttribute("player2numberShots", savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[0]);
+        model.addAttribute("player2HittedShots", savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[1]);
+        double accuracyPly1 = savedGameService.getAccuracyShot(savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[0],
+                savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[1]);
+        double accuracyPly2 = savedGameService.getAccuracyShot(savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[0],
+                savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[1]);
         model.addAttribute("accuracyPly1", accuracyPly1);
         model.addAttribute("accuracyPly2", accuracyPly2);
         return "gameOver";

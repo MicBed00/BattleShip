@@ -1,7 +1,7 @@
 package com.web.services;
 
 import com.web.repositories.GameRepo;
-import com.web.repositories.StatusGameRepo;
+import com.web.repositories.SavedGameRepo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ class GameRepoServiceTest {
     private UserService userService;
 
     @Mock
-    StatusGameRepo repoStatusGame;
+    SavedGameRepo repoStatusGame;
 
     @Mock
     SavedGameService savedGameService;

@@ -7,7 +7,7 @@ import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
 import com.web.repositories.GameRepo;
-import com.web.repositories.StatusGameRepo;
+import com.web.repositories.SavedGameRepo;
 import dataConfig.Position;
 import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
@@ -32,8 +32,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SavedGameServiceTest {
 
-    @Mock
-    private GameStatusRepoService gameStatusRepoService;
+//    @Mock
+//    private GameStatusRepoService gameStatusRepoService;
     @Mock
     private GameRepoService gameRepoService;
     @Mock
@@ -41,7 +41,7 @@ public class SavedGameServiceTest {
     @Mock
     private GameRepo gameRepo;
     @Mock
-    private StatusGameRepo repoStatusGame;
+    private SavedGameRepo repoStatusGame;
     @InjectMocks
     private SavedGameService savedGameService;
 
@@ -66,7 +66,7 @@ public class SavedGameServiceTest {
         long userIdSec = 2;
         SavedGame savedGame = saveGame;
         Game game = savedGame.getGame();
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+        given(savedGameService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
         Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
@@ -96,7 +96,7 @@ public class SavedGameServiceTest {
     private void shootDownAllShipsOnOneBoards(SavedGame saveGame) {
         long gameId = 1;
         SavedGame savedGame = saveGame;
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(getStatusGame(gameId)).willReturn(savedGame);
         savedGameService.addShotAtShip(new Shot(1,1), gameId);
         savedGameService.addShotAtShip(new Shot(2,2), gameId);
         savedGameService.addShotAtShip(new Shot(9,0), gameId);
@@ -157,7 +157,7 @@ public class SavedGameServiceTest {
         SavedGame savedGame = saveGame();
         Game game = savedGame.getGame();
         Ship ship = new Ship(2, 4, 4, Position.VERTICAL);
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
         //when
@@ -179,7 +179,7 @@ public class SavedGameServiceTest {
         SavedGame savedGame = saveGame();
         Game game = savedGame.getGame();
         Ship ship = new Ship(2, 8, 9, Position.VERTICAL);
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
         //when
@@ -197,9 +197,9 @@ public class SavedGameServiceTest {
         Game game = savedGame.getGame();
         Ship ship1 = new Ship(2, 1, 1, Position.VERTICAL);
         Ship ship2 = new Ship(2, 1, 1, Position.VERTICAL);
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
         //when
@@ -216,7 +216,7 @@ public class SavedGameServiceTest {
         long gameId = 1L;
         Shot shotFirstPlayer = new Shot(1, 1);
         SavedGame savedGame = saveGame();
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
 
         savedGameService.addShotAtShip(shotFirstPlayer,gameId);
 
@@ -234,7 +234,7 @@ public class SavedGameServiceTest {
         //given
         long gameId = 1L;
         SavedGame savedGame = saveGame();
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         Shot shotFirstPlayer = new Shot(1, 1);
         savedGameService.addShotAtShip(shotFirstPlayer, gameId);
         Shot shotSecondPlayer = new Shot(3, 3);
@@ -252,7 +252,7 @@ public class SavedGameServiceTest {
         //given
         long gameId = 1L;
         SavedGame savedGame = saveGame();
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
 
         Shot shotFirstPlayer = new Shot(1, 1);
         Shot shotSecondPlayer = new Shot(3, 3);
@@ -264,7 +264,7 @@ public class SavedGameServiceTest {
             Shot shotSamePlace = new Shot(1, 1);
             savedGameService.addShotAtShip(shotSamePlace, gameId);
         }catch (ShotSamePlaceException e) {}
-        List<Board> boardList = savedGameService.getBoardList(1L);
+        List<Board> boardList = savedGameService.getBoardsList(1L);
         Set<Shot> opponentShots = boardList.get(1).getOpponentShots();
 
         //then
@@ -277,7 +277,7 @@ public class SavedGameServiceTest {
         //given
         long gameId = 1L;
         SavedGame savedGame = saveGame();
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         Shot shotFirstPlayer = new Shot(1, 1);
         //when
         List<Board> boardList = savedGameService.addShotAtShip(shotFirstPlayer, gameId);
@@ -298,7 +298,7 @@ public class SavedGameServiceTest {
         long userId = 1;
         SavedGame savedGame = saveGame();
         Game game = savedGame.getGame();
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
         Ship ship = new Ship(1, 1, 1, Position.VERTICAL);
@@ -372,7 +372,7 @@ public class SavedGameServiceTest {
         long userId = 1;
         SavedGame savedGame = saveGame();
         Game game = savedGame.getGame();
-        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
+//        given(gameStatusRepoService.getStatusGame(gameId)).willReturn(savedGame);
         given(gameRepoService.getGame(gameId)).willReturn(game);
 
         Ship ship1 = new Ship(1, 1, 1, Position.VERTICAL);
