@@ -1,11 +1,13 @@
 package com.web.services;
 
+import com.web.configuration.GameSetups;
 import com.web.enity.game.Game;
 import com.web.enity.user.User;
 import com.web.enity.user.UserRegistrationDto;
 import com.web.enity.user.UserRole;
 import com.web.repositories.UserRepo;
 import com.web.repositories.UserRoleRepo;
+import dataConfig.Position;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +32,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-
     @Mock
     private UserRepo userRepo;
     @Mock
@@ -39,6 +40,8 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private SecurityContext securityContext;
+    @Mock
+    private GameSetups gameSetups;
 
     @InjectMocks
     private UserService userService;
@@ -155,11 +158,13 @@ class UserServiceTest {
     void shouldReturnLastUserGame() {
         //given
         long owener = 1;
+        int shipLimit = 4;
+        GameSetups gameSetups = new GameSetups(List.of(1,2,3,4), List.of(Position.VERTICAL, Position.HORIZONTAL), shipLimit);
         LocalDateTime firstDate = LocalDateTime.of(2023, 03, 19, 11, 33, 11);
         LocalDateTime secondDate = LocalDateTime.of(2023, 03, 29, 11, 33, 11);
-        Game game1 = new Game(Timestamp.valueOf(firstDate), owener);
+        Game game1 = new Game(Timestamp.valueOf(firstDate), owener, gameSetups);
         game1.setId(1);
-        Game game2 = new Game(Timestamp.valueOf(secondDate), owener);
+        Game game2 = new Game(Timestamp.valueOf(secondDate), owener, gameSetups);
         game2.setId(2);
         List<Game> games = new ArrayList<>();
         games.add(game1);

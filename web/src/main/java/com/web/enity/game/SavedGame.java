@@ -2,6 +2,7 @@ package com.web.enity.game;
 
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.web.configuration.GameSetups;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 import serialization.GameStatus;
@@ -9,7 +10,6 @@ import serialization.GameStatus;
 @Entity
 @Table(name = "game_statuses")
 public class SavedGame {
-//TODO zmiana nazwy tabeli
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy =GenerationType.IDENTITY )
@@ -23,7 +23,6 @@ public class SavedGame {
 
     public SavedGame() {
     }
-
     public SavedGame(GameStatus gameStatus, Game game) {
         this.gameStatus = gameStatus;
         this.game = game;

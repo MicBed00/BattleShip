@@ -1,85 +1,64 @@
 package com.web.services;
 
 import board.StateGame;
+import com.web.configuration.GameSetupsDto;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
 import com.web.repositories.GameRepo;
 import com.web.repositories.SavedGameRepo;
-import dataConfig.Position;
 import dataConfig.ShipLimits;
 import board.Board;
-import board.Shot;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import serialization.GameStatus;
-import ship.Ship;
 
 import java.util.*;
 
 @Service
 public class SavedGameService {
-    private List<String> shipSize;
-    private List<Position> positionList;
-
-    private GameRepoService gameRepoService;
-
+    private GameService gameService;
     private GameRepo gameRepo;
     private SavedGameRepo repoSavedGame;
-
     private UserService userService;
 
+    private GameSetupsDto gameSetupsDto;
 
     @Autowired
-    SavedGameService(@Lazy GameRepoService gameRepoService,
+    SavedGameService(@Lazy GameService gameService,
                      UserService userService,
                      GameRepo gameRepo,
-                     SavedGameRepo repoSavedGame) {
+                     SavedGameRepo repoSavedGame,
+                     GameSetupsDto gameSetupsDto) {
 
         this.gameRepo = gameRepo;
         this.repoSavedGame = repoSavedGame;
-        this.gameRepoService = gameRepoService;
+        this.gameService = gameService;
         this.userService = userService;
-        positionList = new ArrayList<>();
-        positionList.add(Position.HORIZONTAL);
-        positionList.add(Position.VERTICAL);
-        shipSize = new ArrayList<>();
-        shipSize.add("1");
-        shipSize.add("2");
-        shipSize.add("3");
-        shipSize.add("4");
+        this.gameSetupsDto = gameSetupsDto;
     }
 
     public int getShipLimits() {
-        return ShipLimits.SHIP_LIMIT.getQty();
+        return gameSetupsDto.getShipLimit();
     }
 
     private boolean checkIsOverTheLimitShip(int size) {
-        return size < ShipLimits.SHIP_LIMIT.getQty();
-    }
-
-    public List<String> getShipSize() {
-        return shipSize;
-    }
-
-    public List<Position> getOrientation() {
-        return positionList;
+        return size < gameSetupsDto.getShipLimit();
     }
 
     public List<Board> getBoardsList(long gameId) {
-        return getStatusGame(gameId).getGameStatus().getBoardsStatus();
+        return getSavedGame(gameId).getGameStatus().getBoardsStatus();
     }
 
     public int[] statisticsGame(Board board) {
         return board.statisticsShot();
     }
 
-    public double getAccuracyShot(int totalShots, int hitShot) {
+    public double getAccuracyShots(int totalShots, int hitShot) {
         return ((double) hitShot / totalShots) * 100;
     }
-
 
     private SavedGame getSavedStateGame(long userId) {
         Game game = userService.getLastUserGames(userId);
@@ -94,7 +73,7 @@ public class SavedGameService {
         return repoSavedGame.save(savedStateGame);
     }
 
-    public void checkIfTwoPlayersArePreparedThenChangingState(String state, long userId) {
+    public void checkIfTwoPlayersArePreparedNextChangeState(String state, long userId) {
         SavedGame savedStateGame = getSavedStateGame(userId);
         List<Board> boardsStatus = savedStateGame.getGameStatus().getBoardsStatus();
         int ply1Ships = boardsStatus.get(0).getShips().size();
@@ -117,7 +96,7 @@ public class SavedGameService {
     }
 
     @Transactional
-    public boolean saveGameStatusToDataBase(List<Board> boardsList, StateGame state, long gameId) {
+    public boolean saveGameStatus(List<Board> boardsList, StateGame state, long gameId) {
         int currentPlayer = getCurrentPlayer(gameId);
         GameStatus gameStatus = new GameStatus(boardsList, currentPlayer, state);
         Game game = gameRepo.findById(gameId).orElseThrow(
@@ -143,10 +122,8 @@ public class SavedGameService {
     }
 
 
-    public SavedGame getStatusGame(long idGame) {
-        Long idStatusGame = repoSavedGame.findMaxIdByGameId(idGame);
-        return repoSavedGame.findById(idStatusGame).orElseThrow(() -> new NoSuchElementException("User has not yet added the ship"));
+    public SavedGame getSavedGame(long idGame) {
+        Long idSavedGame = repoSavedGame.findMaxIdByGameId(idGame);
+        return repoSavedGame.findById(idSavedGame).orElseThrow(() -> new NoSuchElementException("No saved game"));
     }
-
-
 }

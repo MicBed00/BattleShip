@@ -84,7 +84,8 @@ public class ControlPanel {
     private List<Board> getListBoardFromGameStatus(GameStatus gameStatus) {
         List<Board> listBoard = gameStatus.getBoardsStatus();
        if(listBoard.size() == 1) {
-           listBoard.add(new Board());
+           int size = listBoard.get(0).getSizeBoard();
+           listBoard.add(new Board(size));
            return listBoard;
        }else
            return listBoard;

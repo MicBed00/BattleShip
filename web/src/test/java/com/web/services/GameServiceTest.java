@@ -14,12 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class GameRepoServiceTest {
+class GameServiceTest {
 
     @Mock
     private GameRepo gameRepo;
-    @Mock
-    private GameStatusRepoService gameStatusRepoService;
+
     @Mock
     private UserService userService;
 
@@ -29,7 +28,7 @@ class GameRepoServiceTest {
     @Mock
     SavedGameService savedGameService;
     @InjectMocks
-    private GameRepoService gameRepoService;
+    private GameService gameService;
 
 
 //    @Test
@@ -59,7 +58,7 @@ class GameRepoServiceTest {
     @Test
     void shouldReturnFalseForUserWithoutGames() {
         //when
-        boolean result = gameRepoService.checksUnfinishedGames();
+        boolean result = gameService.checksUnfinishedGames();
 
         //then
         assertFalse(result);

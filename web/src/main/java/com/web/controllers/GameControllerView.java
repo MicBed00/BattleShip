@@ -1,7 +1,8 @@
 package com.web.controllers;
 
+import com.web.configuration.GameSetupsDto;
 import com.web.enity.user.User;
-import com.web.services.GameRepoService;
+import com.web.services.GameService;
 import com.web.services.SavedGameService;
 import com.web.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +17,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("view")
 public class GameControllerView {
     private final SavedGameService savedGameService;
-    private final GameRepoService gameRepoService;
+    private final GameService gameService;
     private final UserService userService;
+    private final GameSetupsDto gameSetupsDto;
 
     @Autowired
     public GameControllerView(SavedGameService savedGameService,
-                              GameRepoService gameRepoService,
-                              UserService userService)
+                              GameService gameService,
+                              UserService userService,
+                              GameSetupsDto gameSetupsDto)
     {
         this.savedGameService = savedGameService;
-        this.gameRepoService = gameRepoService;
+        this.gameService = gameService;
         this.userService = userService;
+        this.gameSetupsDto = gameSetupsDto;
     }
 
     @GetMapping(value= "/welcomeView")
     public String welcome(Model model) {
         User user = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("userId", user.getId());
-        model.addAttribute("waitingGames", gameRepoService.getIdGamesForView());
+        model.addAttribute("waitingGames", gameService.getIdGamesForView());
         model.addAttribute("usersGames", savedGameService.getUnfinishedUserGames());
         return "welcomeView";
     }
@@ -42,9 +46,9 @@ public class GameControllerView {
     public String getParametersGame(@PathVariable long gameId,
                                     @PathVariable int sizeBoard,
                                     Model model) {
-        model.addAttribute("shipSize", savedGameService.getShipSize());
-        model.addAttribute("orientList", savedGameService.getOrientation());
-        model.addAttribute("shipLimit", savedGameService.getShipLimits());
+        model.addAttribute("shipSize", gameSetupsDto.getShipSize());
+        model.addAttribute("orientList", gameSetupsDto.getOrientations());
+        model.addAttribute("shipLimit", gameSetupsDto.getShipLimit());
         model.addAttribute("gameId", gameId);
         model.addAttribute("sizeBoard", sizeBoard);
         model.addAttribute("userId", userService
@@ -57,7 +61,7 @@ public class GameControllerView {
     public String addedShip(@PathVariable Long gameId, Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUser(username);
-        savedGameService.checkIfTwoPlayersArePreparedThenChangingState("PREPARED", user.getId());
+        savedGameService.checkIfTwoPlayersArePreparedNextChangeState("PREPARED", user.getId());
         model.addAttribute("gameId", gameId);
         return "addShip_success";
     }
@@ -77,9 +81,9 @@ public class GameControllerView {
         model.addAttribute("player1HittedShots", savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[1]);
         model.addAttribute("player2numberShots", savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[0]);
         model.addAttribute("player2HittedShots", savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[1]);
-        double accuracyPly1 = savedGameService.getAccuracyShot(savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[0],
+        double accuracyPly1 = savedGameService.getAccuracyShots(savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[0],
                 savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(0))[1]);
-        double accuracyPly2 = savedGameService.getAccuracyShot(savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[0],
+        double accuracyPly2 = savedGameService.getAccuracyShots(savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[0],
                 savedGameService.statisticsGame(savedGameService.getBoardsList(gameId).get(1))[1]);
         model.addAttribute("accuracyPly1", accuracyPly1);
         model.addAttribute("accuracyPly2", accuracyPly2);

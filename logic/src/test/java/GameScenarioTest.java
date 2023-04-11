@@ -10,7 +10,8 @@ public class GameScenarioTest {
   @Test
   public void gameWorks() {
     // symulacja dodawania statków przez p1
-    Board board1 = new Board();
+    int sizeBoard = 12;
+    Board board1 = new Board(sizeBoard);
      assertTrue(board1.addShip(2, 2, 2, Position.VERTICAL));
      assertTrue(board1.addShip(2, 8, 2, Position.HORIZONTAL));
     //p2 strzela niecelnie

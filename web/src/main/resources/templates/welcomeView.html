@@ -15,6 +15,8 @@
         <div class="gameSelectorContainer">
 
             <h3 th:text="#{titleTable}"></h3>
+            <label id="nogames" class="hidden" th:if="${#lists.isEmpty(waitingGames)}">
+            </label>
             <select id="gameSelector" class="gameSelect" th:name="game" multiple disabled>
                 <option th:each="game : ${waitingGames}" th:value="${game}" th:text="'game id ' + ${game}"></option>
             </select>

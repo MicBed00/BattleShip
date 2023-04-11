@@ -96,6 +96,10 @@ body {
     box-shadow: 0 0 8px #66afe9;
 }
 
+.hidden {
+
+}
+
 #locales, #sizeBoard {
     position: absolute;
     top: 0;

@@ -37,7 +37,6 @@ public class Board {
     }
 
     public Board() {
-        sizeBoard = SizeBoard.DEFAULT.getSize();
     }
 
     public Board(int sizeBoard) {

@@ -18,18 +18,18 @@ import java.util.NoSuchElementException;
 @Service
 public class ShipDeploymentService {
     private SavedGameService savedGameService;
-    private GameRepoService gameRepoService;
+    private GameService gameService;
     private GameRepo gameRepo;
 
     private SavedGameRepo savedGameRepo;
 
     @Autowired
     public ShipDeploymentService(SavedGameService savedGameService,
-                                 GameRepoService gameRepoService,
+                                 GameService gameService,
                                  GameRepo gameRepo,
                                  SavedGameRepo savedGameRepo) {
         this.savedGameService = savedGameService;
-        this.gameRepoService = gameRepoService;
+        this.gameService = gameService;
         this.gameRepo = gameRepo;
         this.savedGameRepo = savedGameRepo;
     }
@@ -37,7 +37,7 @@ public class ShipDeploymentService {
     @Transactional
     public List<Board> addShipToList(Ship ship, long gameId, long userId) {
         List<Board> boardList = savedGameService.getBoardsList(gameId);
-        Game game = gameRepoService.getGame(gameId);
+        Game game = gameService.getGame(gameId);
         Long idOwner = game.getOwnerGame();
 
         if (ship.getLength() > 0 && ship.getPosition() != null) {
@@ -57,7 +57,7 @@ public class ShipDeploymentService {
 
     public Board getBoard(long gameId, long userId) {
         List<Board> boardList =savedGameService.getBoardsList(gameId);
-        Game game = gameRepoService.getGame(gameId);
+        Game game = gameService.getGame(gameId);
         Long owner = game.getOwnerGame();
 
         if (owner == userId) {
@@ -73,7 +73,7 @@ public class ShipDeploymentService {
                 () -> new NoSuchElementException("Can't find game")
         );
         Long owner = game.getOwnerGame();
-        SavedGame savedGame = savedGameService.getStatusGame(gameId);
+        SavedGame savedGame = savedGameService.getSavedGame(gameId);
 
         List<Board> boards = savedGame.getGameStatus().getBoardsStatus();
         StateGame state = savedGame.getGameStatus().getState();

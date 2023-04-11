@@ -2,6 +2,8 @@ package com.web.services;
 
 import board.Board;
 import board.StateGame;
+import com.web.configuration.GameSetups;
+import com.web.configuration.GameSetupsDto;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
@@ -12,49 +14,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import serialization.GameStatus;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class WaitingRoomService {
     private final UserService userService;
     private final GameRepo gameRepo;
-    private final GameRepoService gameRepoService;
-
+    private final GameService gameService;
     private final SavedGameRepo savedGameRepo;
-
     private final SavedGameService savedGameService;
 
     @Autowired
     public WaitingRoomService(UserService userService,
                               GameRepo gameRepo,
-                              GameRepoService gameRepoService,
+                              GameService gameService,
                               SavedGameRepo savedGameRepo,
                               SavedGameService savedGameService) {
         this.userService = userService;
         this.gameRepo = gameRepo;
-        this.gameRepoService = gameRepoService;
+        this.gameService = gameService;
         this.savedGameRepo = savedGameRepo;
         this.savedGameService = savedGameService;
     }
 
     @Transactional
-    public Integer saveNewGame(long userId, int sizeBoard) {
+    public Integer saveNewGame(long userId, int sizeBoard, GameSetupsDto gsDto) {
+        GameSetups gameSetups = gameService.createGameSetups(gsDto.getShipSize(), gsDto.getOrientations(), gsDto.getShipLimit());
+        Game game = gameService.createGame(userId, gameSetups);
+        Game savedGame = gameService.saveGame(game);
         User user = userService.getLogInUser(userId);
-        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), userId);
         user.getGames().add(game);
         game.getUsers().add(user);
-        //TODO czy w tym miejscu zapisywac z wykorzystaniem repo czy lepiej przez jakiś serwis?
-        Game savedGame = gameRepo.save(game);
+
         List<Board> boardList = new ArrayList<>();
         boardList.add(new Board(sizeBoard));
         boardList.add(new Board(sizeBoard));
         saveNewStatusGame(new GameStatus(boardList, StateGame.NEW), game);
-        gameRepoService.getIdGamesForView().add(savedGame.getId());    //dodaję do list id nowej gry, po to by wyświetliła się w widoku
+        gameService.addGame(game);    //dodaję do list id nowej gry, po to by wyświetliła się w widoku
 
         return savedGame.getId();
     }
@@ -92,13 +88,14 @@ public class WaitingRoomService {
     private List<SavedGame> getUnFinishedSavedGames(List<Game> games) {
         return games.stream()
                 .sorted(Comparator.comparing(Game::getDate))
-                .filter(game -> gameRepoService.getIdGamesForView().contains(game.getId()))
+                .filter(game -> gameService.getIdGamesForView().contains(game.getId()))
                 .map(game -> savedGameRepo.findMaxIdByGameId(game.getId()))
                 .map(id -> savedGameRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Game doesn't exist")))
                 .filter(gs -> gs.getGameStatus().getState().equals(StateGame.REQUESTING)
                         && gs.getGame().getUsers().size() > 1)
                 .toList();
     }
+
     private Long getIdOpponent(Game game, Long loginUserId) {
         return game.getUsers().stream()
                 .filter(u -> !u.getId().equals(loginUserId))
@@ -109,7 +106,7 @@ public class WaitingRoomService {
     public List<String> checkIfOpponentAppears(long idGame) {
         List<String> answer = new ArrayList<>();
         Game game = gameRepo.findById(idGame).orElseThrow(() -> new NoSuchElementException("Game doesn't exist"));
-        SavedGame savedStatus = savedGameService.getStatusGame(game.getId());
+        SavedGame savedStatus = savedGameService.getSavedGame(game.getId());
 
         if (savedStatus.getGameStatus().getState().equals(StateGame.REQUESTING)) {
             answer.add("true");
@@ -131,16 +128,14 @@ public class WaitingRoomService {
 
     @Transactional
     public void deleteGame(Long userId, Long gameId) {
-        Game game = gameRepo.findById(gameId).orElseThrow(
-                () -> new NoSuchElementException("Can't find game")
-        );
+        Game game = gameService.getGame(gameId);
         User user = userService.findUserById(userId);
-        SavedGame savedGame = savedGameService.getStatusGame(gameId);
+        SavedGame savedGame = savedGameService.getSavedGame(gameId);
         StateGame state = savedGame.getGameStatus().getState();
         List<Board> boards = savedGame.getGameStatus().getBoardsStatus();
 
         List<Game> games = user.getGames();
-        if(games.contains(game)) {
+        if (games.contains(game)) {
             games.remove(game);
             int currentPlayer = savedGameService.getCurrentPlayer(gameId);
             GameStatus gameStatus = new GameStatus(boards, currentPlayer, state);
@@ -150,5 +145,15 @@ public class WaitingRoomService {
         }
     }
 
-
+    public Integer getLowestGameId(long userId) {
+        User user = userService.getLogInUser(userId);
+        Game game = user.getGames().stream()
+                .sorted(Comparator.comparing(Game::getId))
+                .findFirst().orElseThrow(
+                        () -> new NoSuchElementException("No game")
+                );
+        return game.getId();
+    }
 }
+
+

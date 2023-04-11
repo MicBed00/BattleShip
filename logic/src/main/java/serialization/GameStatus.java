@@ -13,10 +13,6 @@ public class GameStatus {
     private int currentPlayer;
 
     public GameStatus() {
-        boardsStatus = new ArrayList<>();
-        boardsStatus.add(new Board());
-        boardsStatus.add(new Board());
-        state = StateGame.NEW;
     }
 
     public GameStatus(List<Board> boardsStatus, StateGame state) {
@@ -24,7 +20,7 @@ public class GameStatus {
         this.state = state;
     }
 
-    public GameStatus(List<Board> boardsStatus, int currentPlayer, StateGame state ) {
+    public GameStatus(List<Board> boardsStatus, int currentPlayer, StateGame state) {
         this.boardsStatus = boardsStatus;
         this.currentPlayer = currentPlayer;
         this.state = state;
@@ -56,11 +52,7 @@ public class GameStatus {
 
     @Override
     public String toString() {
-        return "GameStatus{" +
-                "boardsStatus=" + boardsStatus +
-                ", curretnPlayer=" + currentPlayer +
-                ", state=" + state +
-                '}';
+        return "GameStatus{" + "boardsStatus=" + boardsStatus + ", curretnPlayer=" + currentPlayer + ", state=" + state + '}';
     }
 
     @Override

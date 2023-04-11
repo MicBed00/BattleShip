@@ -9,6 +9,7 @@ var deleteButton = document.getElementById("deleteGame");
 var locales = document.getElementById("locales");
 var sizeBoard = document.getElementById("sizeBoard");
 var size;
+var emptyTable = document.querySelector('.hidden');
 joinButton.addEventListener("click", requestToJoinTheGame);
 newGame.addEventListener("click", createNewGame);
 resumeGameButton.addEventListener("click", resumeGame);
@@ -21,6 +22,19 @@ var intervalId;
 var gameIdClient;
 var gameId;
 intervalId = setInterval(checkIfResumeGame, 1000);
+
+if(!emptyTable) {
+    new BattleShipClient().game(userId, (status, responseBody) => {
+        if (status >= 200 && status <= 299) {
+            //TODO najmniejsze id gry zwraca, trzeba odwrócić
+            gameId = responseBody;
+            intervalId = setInterval(checkOpponent, 1000);
+        }
+    },(status, responseBody) => {
+        alert("Błąd przy pobieraniu id game " + responseBody);
+    })
+
+}
 
 function checkIfResumeGame() {
     new BattleShipClient().checkStatusOwnGames((status, responseBody) => {
@@ -68,8 +82,11 @@ function createNewGame() {
     size = sizeBoard.value;
     select.addEventListener('change', disableAllOptions);
     newGame.disabled = true;
+    const sizeShips = [1,2,3,4];
+    const orientations = ["HORIZONTAL", "VERTICAL"];
+    const shipLimit = 4;
 
-    new BattleShipClient().saverNewGame(userId, size,(status, responseBody) => {
+    new BattleShipClient().saverNewGame(userId, size, sizeShips, orientations, shipLimit, (status, responseBody) => {
         alert("Wait for opponent")
         gameId = responseBody;
         intervalId = setInterval(checkOpponent, 1000)

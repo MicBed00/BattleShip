@@ -5,15 +5,23 @@ import exceptions.CollidingException;
 import exceptions.OutOfBoundsException;
 import exceptions.ShipLimitExceedException;
 import exceptions.ShotSamePlaceException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTest {
+
+    private int sizeBoard = 11;
+    private Board board;
+
+    @BeforeEach
+    void createBoard() {
+        board = new Board(sizeBoard);
+    }
     @Test
     public void addFirstShip() {
         //given
-        Board board = new Board();
         int length = 3;
         int x = 0;
         int y = 0;
@@ -29,7 +37,6 @@ public class BoardTest {
     @Test
     public void addSeveralShip() {
         //given
-        Board board = new Board();
         int length1 = 3;
         int x1 = 0;
         int y1 = 0;
@@ -65,21 +72,18 @@ public class BoardTest {
 
     @Test
     public void shouldThrowOutOfBoundsException() {
-        Board board = new Board();
         assertThrows(OutOfBoundsException.class, () -> board.addShip(3, 22, 4, Position.VERTICAL));
     }
 
     @Test
     public void shouldThrowShipLimitExceedException() {
         //only one 4 - length
-        Board board = new Board();
         board.addShip(4, 1, 1, Position.VERTICAL);      //first
         assertThrows(ShipLimitExceedException.class, () -> board.addShip(4, 8, 1, Position.VERTICAL)); //second
     }
 
     @Test
     public void shouldThrowCollidingExeption() {
-        Board board = new Board();
         board.addShip(1, 1, 1, Position.VERTICAL);
         assertThrows(CollidingException.class, () -> board.addShip(1, 1, 1, Position.VERTICAL));
     }
@@ -87,7 +91,6 @@ public class BoardTest {
     @Test
     public void addShipEachSize() {
         //given
-        Board board = new Board();
         int length1 = 4;
         int x1 = 0;
         int y1 = 0;
@@ -121,7 +124,6 @@ public class BoardTest {
     @Test
     public void correctShotMiss() {
         //given
-        Board board = new Board();
         Shot shot = new Shot(4, 5);
         board.shoot(shot);
         assertEquals(Shot.State.MISSED, shot.getState());
@@ -130,7 +132,7 @@ public class BoardTest {
     @Test
     public void correctShotHit() {
         //given
-        Board board2 = new Board();
+        Board board2 = new Board(sizeBoard);
         board2.addShip(2, 2, 2, Position.VERTICAL);
         Shot shot = new Shot(2, 3);
         board2.shoot(shot);
@@ -140,7 +142,7 @@ public class BoardTest {
     @Test
     public void shotSameHittedPlace() {
         //given
-        Board board2 = new Board();
+        Board board2 = new Board(sizeBoard);
         board2.addShip(2, 2, 2, Position.VERTICAL);
         Shot shot1 = new Shot(2,3);
         board2.shoot(shot1);
@@ -152,7 +154,7 @@ public class BoardTest {
     @Test
     public void shotSameMissedPlace() {
         //given
-        Board board2 = new Board();
+        Board board2 = new Board(sizeBoard);
         board2.addShip(2, 2, 2, Position.VERTICAL);
         Shot shot1 = new Shot(9,5);
         board2.shoot(shot1);
@@ -164,7 +166,6 @@ public class BoardTest {
     @Test
     public void checkIfFinishedTrue() {
         //ShipLimits = 2 ships
-        Board board = new Board();
         board.addShip(1,1,1,Position.HORIZONTAL);
         board.addShip(1, 6,6,Position.HORIZONTAL);
         Shot shot1 = new Shot(1,1);
@@ -178,7 +179,6 @@ public class BoardTest {
     @Test
     public void checkIfFinishedFalse() {
         //ShipLimits = 2 ships
-        Board board = new Board();
         board.addShip(1,1,1,Position.HORIZONTAL);
         board.addShip(1, 6,6,Position.HORIZONTAL);
         Shot shot1 = new Shot(1,1);

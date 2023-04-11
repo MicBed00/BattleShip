@@ -1,13 +1,17 @@
 package com.web.enity.game;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.web.configuration.GameSetups;
 import com.web.enity.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -20,15 +24,31 @@ public class Game {
     private Long ownerGame;
     @Column
     private Timestamp date;
+    @Column(name="setups")
+    @Type(JsonType.class)
+    private GameSetups gameSetups;
     @ManyToMany(mappedBy = "games")
     @JsonBackReference
     private List<User> users = new ArrayList<>();
 
     public Game() {}
 
-    public Game(Timestamp date, Long ownerGame) {
+    public Game(Timestamp date, Long ownerGame, GameSetups gameSetups) {
         this.date = date;
         this.ownerGame = ownerGame;
+        this.gameSetups = gameSetups;
+    }
+
+    public Game(Integer id) {
+        this.id = id;
+    }
+
+    public GameSetups getGameSetups() {
+        return gameSetups;
+    }
+
+    public void setGameSetups(GameSetups gameSetups) {
+        this.gameSetups = gameSetups;
     }
 
     public Long getOwnerGame() {
@@ -71,6 +91,16 @@ public class Game {
                 ", date=" + date +
                 '}';
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return Objects.equals(id, game.id) && Objects.equals(ownerGame, game.ownerGame) && Objects.equals(date, game.date) && Objects.equals(gameSetups, game.gameSetups) && Objects.equals(users, game.users);
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, ownerGame, date, gameSetups, users);
+    }
 }

@@ -37,8 +37,13 @@ class BattleShipClient {
         this.get("/json/change-state/"+userId+"/"+state, null, null, onSuccess, onError);
     }
 
-    saverNewGame(userId, sizeBoard, onSuccess, onError) {
-        this.post("/json/game/save/"+userId+"/"+sizeBoard, null, null, onSuccess, onError)
+    saverNewGame(userId, sizeBoard, sizeShips, orientations, shipLimit, onSuccess, onError) {
+        const gameSetupDto = {
+            shipSize: sizeShips,
+            orientations: orientations,
+            shipLimit: shipLimit,
+        }
+        this.post("/json/game/save/"+userId+"/"+sizeBoard, JSON.stringify(gameSetupDto), null, onSuccess, onError)
     }
 
 
@@ -62,8 +67,8 @@ class BattleShipClient {
             this.post("/json/game/boards/"+gameId, JSON.stringify(shootObject), null, onSuccess, onError)
     }
 
-    games(gameId, onSuccess, onError) {
-        this.get("/json/games/"+currentPlayerId, null, null, onSuccess, onError);
+    game(userId, onSuccess, onError) {
+        this.get("/json/games/"+userId, null, null, onSuccess, onError);
     }
 
     rejectGame(userId, onSuccess, onError) {
