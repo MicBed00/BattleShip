@@ -93,6 +93,7 @@ public class SavedGameServiceTest {
 
         //then
         assertEquals(result.getGameStatus().getState(), StateGame.valueOf(state));
+        verify(repoSavedGame).save(savedGame);
     }
 
     @DirtiesContext

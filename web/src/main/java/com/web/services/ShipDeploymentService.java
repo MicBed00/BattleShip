@@ -20,7 +20,6 @@ public class ShipDeploymentService {
     private SavedGameService savedGameService;
     private GameService gameService;
     private GameRepo gameRepo;
-
     private SavedGameRepo savedGameRepo;
 
     @Autowired

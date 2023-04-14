@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ShootingService {
+public class  ShootingService {
     private final SavedGameService savedGameService;
 
     @Autowired
@@ -21,7 +21,7 @@ public class ShootingService {
         return boardList.get(0).getIsFinished().get() || boardList.get(1).getIsFinished().get();
     }
 
-    public List<Board> addShotAtShip(Shot shot, long gameId) {
+    public List<Board> addShotToBoard(Shot shot, long gameId) {
         List<Board> boardList = savedGameService.getBoardsList(gameId);
 
         if (boardList.get(0).getOpponentShots().size() == boardList.get(1).getOpponentShots().size()) {

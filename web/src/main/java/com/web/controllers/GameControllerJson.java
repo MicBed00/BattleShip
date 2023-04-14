@@ -118,7 +118,7 @@ public class GameControllerJson {
 
     @PostMapping(value = "/game/boards/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Board>> shots(@RequestBody Shot shot, @PathVariable long gameId) {
-        List<Board> boardListAfterShot = shootingService.addShotAtShip(shot, gameId);
+        List<Board> boardListAfterShot = shootingService.addShotToBoard(shot, gameId);
         savedGameService.saveGameStatus(boardListAfterShot, StateGame.PREPARED, gameId);
         return ResponseEntity.ok(boardListAfterShot);
     }

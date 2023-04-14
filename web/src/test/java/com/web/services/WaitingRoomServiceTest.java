@@ -25,8 +25,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class WaitingRoomServiceTest {
@@ -176,8 +175,8 @@ class WaitingRoomServiceTest {
             waitingRoomService.addSecondPlayerToGame(userId, gameId);
         });
         verify(gameRepo, times(1)).findById(gameId);
-        verify(userService, times(0)).getLogInUser(userId);
-        verify(gameRepo, times(0)).save(game);
+        verifyNoInteractions(userService);
+        verifyNoInteractions(gameRepo);
     }
 
     @DirtiesContext
