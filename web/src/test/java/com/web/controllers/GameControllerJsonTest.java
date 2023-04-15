@@ -83,6 +83,7 @@ public class GameControllerJsonTest {
         long userIdPly1 = 1;
         serviceTests.addNewGameWithStatusGameForUser(userIdPly1, restTemplate, port);
         long gameId = 1;
+        long sizeBoard = 12;
         HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/welcomeView", "meta",
                 "content", restTemplate, port);
         long userIdPly2 = 2;
@@ -96,7 +97,7 @@ public class GameControllerJsonTest {
                 , Long.class);
 
         //then
-        assertThat(response.getBody()).isEqualTo(gameId);
+        assertThat(response.getBody()).isEqualTo(sizeBoard);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -338,7 +339,7 @@ public class GameControllerJsonTest {
         //when
         HttpEntity<Long> request = new HttpEntity<>(userIdPly1, headers);
         ResponseEntity<Long> response = restTemplate.exchange(
-                serviceTests.buildUrl("/json/approve/"+userIdPly1+"/"+state, port)
+                serviceTests.buildUrl("/json/change-state/"+userIdPly1+"/"+state, port)
                 , HttpMethod.GET
                 , request
                 , Long.class);
@@ -478,9 +479,8 @@ public class GameControllerJsonTest {
                 , request
                 , String.class);
         //then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()
-                .equals("{\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}")).isTrue();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);//{"sizeBoard":12,"ships":[],"opponentShots":[],"hittedShip":[]}
+        assertThat(response.getBody().equals("{\"sizeBoard\":12,\"ships\":[],\"opponentShots\":[],\"hittedShip\":[]}")).isTrue();
     }
 
     @DirtiesContext

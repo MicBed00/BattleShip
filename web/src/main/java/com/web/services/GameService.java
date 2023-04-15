@@ -53,4 +53,11 @@ public class GameService {
     public Game saveGame(Game game) {
         return gameRepo.save(game);
     }
+
+    public int getShipLimitNumber(long gameId) {
+        Game game = gameRepo.findById(gameId).orElseGet(() -> {
+            throw new NoSuchElementException("No game");
+        });
+    return game.getGameSetups().getShipLimit();
+    }
 }

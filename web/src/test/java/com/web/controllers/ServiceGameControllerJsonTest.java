@@ -4,6 +4,8 @@ import board.Board;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.configuration.GameSetupsDto;
+import dataConfig.Position;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -85,7 +87,8 @@ public class ServiceGameControllerJsonTest {
         headers.set("Cookie", sessionCookie);
         headers.set("X-CSRF-TOKEN", token.token);
 
-        HttpEntity<Void> request = new HttpEntity<>(headers);
+        GameSetupsDto gsDto = new GameSetupsDto(List.of(1,2,3,4),List.of(Position.VERTICAL, Position.HORIZONTAL), 5);
+        HttpEntity<GameSetupsDto> request = new HttpEntity<>(gsDto, headers);
         return restTemplate.postForEntity(buildUrl("/json/game/save/" + userId+"/"+sizeBoard, port),
                         request,
                         String.class);

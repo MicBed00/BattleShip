@@ -25,6 +25,9 @@ public class WaitingRoomService {
     private final SavedGameService savedGameService;
 
     @Autowired
+    private GameSetupsDto gsDto;
+
+    @Autowired
     public WaitingRoomService(UserService userService,
                               GameRepo gameRepo,
                               GameService gameService,
@@ -38,7 +41,8 @@ public class WaitingRoomService {
     }
 
     @Transactional
-    public Integer saveNewGame(long userId, int sizeBoard, GameSetupsDto gsDto) {
+    public Integer saveNewGame(long userId, int sizeBoard, GameSetupsDto dto) {
+        gsDto = dto;
         GameSetups gameSetups = gameService.createGameSetups(gsDto.getShipSize(), gsDto.getOrientations(), gsDto.getShipLimit());
         Game game = gameService.createGame(userId, gameSetups);
         Game savedGame = gameService.saveGame(game);

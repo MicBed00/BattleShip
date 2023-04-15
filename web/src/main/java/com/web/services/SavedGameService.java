@@ -44,8 +44,8 @@ public class SavedGameService {
         return gameSetupsDto.getShipLimit();
     }
 
-    private boolean checkIsOverTheLimitShip(int size) {
-        return size < gameSetupsDto.getShipLimit();
+    private boolean checkIsOverTheLimitShip(int size, long gameId) {
+         return size < gameService.getShipLimitNumber(gameId);
     }
 
     public List<Board> getBoardsList(long gameId) {
@@ -87,12 +87,14 @@ public class SavedGameService {
 
     public int getCurrentPlayer(long gameId) {
         List<Board> boardList = getBoardsList(gameId);
-        if (checkIsOverTheLimitShip(boardList.get(0).getShips().size())) {
+        if (checkIsOverTheLimitShip(boardList.get(0).getShips().size(), gameId)) {
             return 1;
-        } else if (checkIsOverTheLimitShip(boardList.get(1).getShips().size())) {
+        } else if (checkIsOverTheLimitShip(boardList.get(1).getShips().size(), gameId)) {
             return 2;
+        } else {
+            return 2; //w web nie jest istotne
         }
-        throw new NoSuchElementException("Can't set current player");
+
     }
 
     @Transactional

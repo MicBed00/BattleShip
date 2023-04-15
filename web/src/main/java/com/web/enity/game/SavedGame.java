@@ -2,7 +2,6 @@ package com.web.enity.game;
 
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.web.configuration.GameSetups;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 import serialization.GameStatus;

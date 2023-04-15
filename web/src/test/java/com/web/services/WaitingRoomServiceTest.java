@@ -171,12 +171,12 @@ class WaitingRoomServiceTest {
 
         //when
         //then
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             waitingRoomService.addSecondPlayerToGame(userId, gameId);
         });
         verify(gameRepo, times(1)).findById(gameId);
+        verify(gameRepo, times(0)).save(game);
         verifyNoInteractions(userService);
-        verifyNoInteractions(gameRepo);
     }
 
     @DirtiesContext
