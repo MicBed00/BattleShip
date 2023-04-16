@@ -30,31 +30,6 @@ class GameServiceTest {
     @InjectMocks
     private GameService gameService;
 
-
-//    @Test
-//    void shouldSaveNewGame() {
-//        //given
-//        long userId = 1;
-//        int sizeBaord = 11;
-//        List<Board> boardList = new ArrayList<>();
-//        StateGame state = StateGame.IN_PROCCESS;
-//        long owner = 1;
-//        long gameId = 1;
-//        User user = new User();
-//        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
-//        Game startGame = new Game(timestamp, owner);
-//        startGame.setId(1);
-//        when(userService.getLogInUser(userId)).thenReturn(user);
-//        doReturn(startGame).when(gameRepo).save(Mockito.any(Game.class));
-//
-//        //when
-//        gameStatusService.saveNewGame(userId, sizeBaord);
-//
-//        //then
-//        verify(userService, times(1)).getLogInUser(userId);
-////        verify(gameRepo,times(1)).save(new Game(timestamp, owner));
-//    }
-
     @Test
     void shouldReturnFalseForUserWithoutGames() {
         //when
