@@ -1,5 +1,6 @@
 package com.web.repositories;
 
+import com.web.configuration.GameSetups;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import jakarta.transaction.Transactional;
@@ -11,6 +12,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import serialization.GameStatus;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -30,8 +34,8 @@ class SavedGameRepoTest {
     @Test
     void shouldFindMaxIdByGameId() {
         //given
-        Game game1 = new Game();
-        Game game2 = new Game();
+        Game game1 = new Game(Timestamp.valueOf(LocalDateTime.now()), 1L, new GameSetups());
+        Game game2 = new Game(Timestamp.valueOf(LocalDateTime.now()), 1L, new GameSetups());
         gameRepo.save(game1);
         gameRepo.save(game2);
         SavedGame savedGame = new SavedGame(new GameStatus(), game1);
