@@ -18,7 +18,7 @@ import ship.Ship;
 import java.util.List;
 
 @RestController
-@RequestMapping("json", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "json", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GameControllerJson {
     private final SavedGameService savedGameService;
     private final GameService gameService;
