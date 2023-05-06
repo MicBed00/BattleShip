@@ -18,5 +18,4 @@ public interface SavedGameRepo extends JpaRepository<SavedGame, Long> {
     //TODO zamist Long powinna zawracać optionala
     @Query(value="SELECT MAX(gs.id) FROM game_statuses gs WHERE gs.game_id = :gameId", nativeQuery = true)
     Long findMaxIdByGameId(@Param("gameId") long gameId);
-
 }

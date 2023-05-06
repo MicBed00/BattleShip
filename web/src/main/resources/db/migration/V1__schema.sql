@@ -9,7 +9,7 @@ CREATE TABLE games
 CREATE TABLE game_statuses
 (
     id          BIGSERIAL NOT NULL PRIMARY KEY,
-    game_statuses jsonb     NOT NULL,
+    status_game jsonb     NOT NULL,
     game_id     BIGSERIAL REFERENCES games (id)
 );
 
