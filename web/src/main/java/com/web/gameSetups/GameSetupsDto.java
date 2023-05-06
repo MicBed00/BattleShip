@@ -1,4 +1,4 @@
-package com.web.configuration;
+package com.web.gameSetups;
 
 import dataConfig.Position;
 import org.springframework.stereotype.Component;

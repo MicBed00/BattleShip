@@ -1,6 +1,6 @@
 package com.web.repositories;
 
-import com.web.configuration.GameSetups;
+import com.web.gameSetups.GameSetups;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import jakarta.transaction.Transactional;
@@ -55,12 +55,23 @@ class SavedGameRepoTest {
         assertEquals(1,result);
     }
 
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//
+//
+//...
+//
+//
+//        entityManager.flush();
+//    entityManager.clear();
+
     @DirtiesContext
     @Transactional
     @Test
     void shouldSaveStatusGame() {
         //given
-        Game game = new Game();
+        Game game = new Game(Timestamp.valueOf(LocalDateTime.now()), 1L, new GameSetups());
         gameRepo.save(game);
         SavedGame savedGame = new SavedGame(new GameStatus(), game);
 

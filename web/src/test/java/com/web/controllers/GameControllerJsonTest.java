@@ -7,6 +7,7 @@ import board.Board;
 import board.Shot;
 import board.StateGame;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.web.enity.game.Game;
 import com.web.services.SavedGameService;
 import dataConfig.Position;
 import org.junit.jupiter.api.Test;
@@ -298,30 +299,30 @@ public class GameControllerJsonTest {
         assertThat(response.getBody()).isEqualTo(StateGame.NEW);
     }
 
-//    @DirtiesContext
-//    @Test
-//    void gameWithTwoUserShouldReturneListUserSizeTwo() {
-//        //given
-//        long gameId = 1;
-//        int sizeBoard = 11;
-//        HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/getParamGame/"+gameId+"/"+sizeBoard, "meta", "content", restTemplate, port);
-//        long userIdPly1 = 1;
-//        long userIdPly2 = 2;
-//        serviceTests.addNewGameWithStatusGameForUser(userIdPly1,restTemplate, port);
-//        serviceTests.addSecondPlayerToGame(userIdPly2, gameId, restTemplate, port);
-//
-//        //when
-//        HttpEntity<Long> request = new HttpEntity<>(headers);
-//        ResponseEntity<Game> response = restTemplate.exchange(
-//                serviceTests.buildUrl("/json/game/"+gameId, port)
-//                , HttpMethod.GET
-//                , request
-//                , Game.class);
-//
-//        //then
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(response.getBody().getUsers().size()).isEqualTo(2);
-//    }
+    @DirtiesContext
+    @Test
+    void gameWithTwoUserShouldReturneListUserSizeTwo() {
+        //given
+        long gameId = 1;
+        int sizeBoard = 11;
+        HttpHeaders headers = serviceTests.setupHeadersRequestToGameController("/view/getParamGame/"+gameId+"/"+sizeBoard, "meta", "content", restTemplate, port);
+        long userIdPly1 = 1;
+        long userIdPly2 = 2;
+        serviceTests.addNewGameWithStatusGameForUser(userIdPly1,restTemplate, port);
+        serviceTests.addSecondPlayerToGame(userIdPly2, gameId, restTemplate, port);
+
+        //when
+        HttpEntity<Long> request = new HttpEntity<>(headers);
+        ResponseEntity<Game> response = restTemplate.exchange(
+                serviceTests.buildUrl("/json/games/"+gameId, port)
+                , HttpMethod.GET
+                , request
+                , Game.class);
+
+        //then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getUsers().size()).isEqualTo(2);
+    }
 
     @DirtiesContext
     @Test

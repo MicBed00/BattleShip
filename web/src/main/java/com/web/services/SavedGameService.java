@@ -1,7 +1,7 @@
 package com.web.services;
 
 import board.StateGame;
-import com.web.configuration.GameSetupsDto;
+import com.web.gameSetups.GameSetupsDto;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;

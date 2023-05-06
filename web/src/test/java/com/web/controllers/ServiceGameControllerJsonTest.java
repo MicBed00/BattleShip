@@ -4,7 +4,7 @@ import board.Board;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.web.configuration.GameSetupsDto;
+import com.web.gameSetups.GameSetupsDto;
 import dataConfig.Position;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

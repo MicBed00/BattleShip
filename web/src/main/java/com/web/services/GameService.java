@@ -1,6 +1,6 @@
 package com.web.services;
 
-import com.web.configuration.GameSetups;
+import com.web.gameSetups.GameSetups;
 import com.web.enity.game.Game;
 import com.web.repositories.GameRepo;
 import dataConfig.Position;

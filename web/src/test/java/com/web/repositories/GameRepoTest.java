@@ -1,6 +1,6 @@
 package com.web.repositories;
 
-import com.web.configuration.GameSetups;
+import com.web.gameSetups.GameSetups;
 import com.web.enity.game.Game;
 import dataConfig.Position;
 import org.junit.jupiter.api.Test;

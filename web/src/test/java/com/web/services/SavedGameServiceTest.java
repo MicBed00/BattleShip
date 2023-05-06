@@ -2,8 +2,8 @@ package com.web.services;
 
 import board.Board;
 import board.StateGame;
-import com.web.configuration.GameSetups;
-import com.web.configuration.GameSetupsDto;
+import com.web.gameSetups.GameSetups;
+import com.web.gameSetups.GameSetupsDto;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
@@ -232,7 +232,7 @@ public class SavedGameServiceTest {
         //then
         assertTrue(result);
         verify(gameRepo).findById(anyLong());
-        verify(repoSavedGame, times(1)).save(any(SavedGame.class));
+        verify(repoSavedGame, times(1)).save(any(SavedGame.class)); //argThat
     }
 
     @DirtiesContext
@@ -302,9 +302,6 @@ public class SavedGameServiceTest {
     }
 
 
-    //
-//
-//
 //    private SavedGame saveGame() {
 //        int currentPly = 1;
 //        List<Board> boardList = new ArrayList<>();
