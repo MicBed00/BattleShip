@@ -2,7 +2,7 @@ package com.web.enity.game;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import com.web.configuration.GameSetups;
+import com.web.gameSetups.GameSetups;
 import com.web.enity.user.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;

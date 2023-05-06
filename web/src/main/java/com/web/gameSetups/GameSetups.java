@@ -1,7 +1,6 @@
-package com.web.configuration;
+package com.web.gameSetups;
 
 import dataConfig.Position;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;

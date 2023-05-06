@@ -3,7 +3,7 @@ package com.web.controllers;
 import board.Board;
 import board.Shot;
 import board.StateGame;
-import com.web.configuration.GameSetupsDto;
+import com.web.gameSetups.GameSetupsDto;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
@@ -18,7 +18,7 @@ import ship.Ship;
 import java.util.List;
 
 @RestController
-@RequestMapping("json")
+@RequestMapping("json", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GameControllerJson {
     private final SavedGameService savedGameService;
     private final GameService gameService;

@@ -2,11 +2,12 @@ package com.web.services;
 
 import board.Board;
 import board.StateGame;
-import com.web.configuration.GameSetups;
-import com.web.configuration.GameSetupsDto;
+import com.web.gameSetups.GameSetups;
+import com.web.gameSetups.GameSetupsDto;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
+import com.web.gameSetups.GameSetupsDtoMapper;
 import com.web.repositories.GameRepo;
 import com.web.repositories.SavedGameRepo;
 import jakarta.transaction.Transactional;
@@ -24,7 +25,8 @@ public class WaitingRoomService {
     private final SavedGameRepo savedGameRepo;
     private final SavedGameService savedGameService;
 
-    @Autowired
+    private final GameSetupsDtoMapper gameSetupsDtoMapper;
+
     private GameSetupsDto gsDto;
 
     @Autowired
@@ -32,18 +34,20 @@ public class WaitingRoomService {
                               GameRepo gameRepo,
                               GameService gameService,
                               SavedGameRepo savedGameRepo,
-                              SavedGameService savedGameService) {
+                              SavedGameService savedGameService,
+                              GameSetupsDtoMapper gameSetupsDtoMapper) {
         this.userService = userService;
         this.gameRepo = gameRepo;
         this.gameService = gameService;
         this.savedGameRepo = savedGameRepo;
         this.savedGameService = savedGameService;
+        this.gameSetupsDtoMapper = gameSetupsDtoMapper;
     }
 
     @Transactional
     public Integer saveNewGame(long userId, int sizeBoard, GameSetupsDto dto) {
         gsDto = dto;
-        GameSetups gameSetups = gameService.createGameSetups(gsDto.getShipSize(), gsDto.getOrientations(), gsDto.getShipLimit());
+        GameSetups gameSetups = gameSetupsDtoMapper.mapper(dto);
         Game game = gameService.createGame(userId, gameSetups);
         Game savedGame = gameService.saveGame(game);
         User user = userService.getLogInUser(userId);

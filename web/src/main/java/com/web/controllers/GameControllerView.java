@@ -1,6 +1,6 @@
 package com.web.controllers;
 
-import com.web.configuration.GameSetupsDto;
+import com.web.gameSetups.GameSetupsDto;
 import com.web.enity.user.User;
 import com.web.services.GameService;
 import com.web.services.SavedGameService;
