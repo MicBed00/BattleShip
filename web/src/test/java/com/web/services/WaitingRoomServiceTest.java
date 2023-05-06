@@ -6,6 +6,7 @@ import com.web.gameSetups.GameSetupsDto;
 import com.web.enity.game.Game;
 import com.web.enity.game.SavedGame;
 import com.web.enity.user.User;
+import com.web.gameSetups.GameSetupsDtoMapper;
 import com.web.repositories.GameRepo;
 import com.web.repositories.SavedGameRepo;
 import dataConfig.Position;
@@ -45,6 +46,9 @@ class WaitingRoomServiceTest {
     @Mock
     SavedGameService savedGameService;
 
+    @Mock
+    GameSetupsDtoMapper mapper;
+
     @InjectMocks
     WaitingRoomService waitingRoomService;
 
@@ -61,9 +65,10 @@ class WaitingRoomServiceTest {
         GameSetups gameSetups = new GameSetups();
         Game game = new Game(1);
         User user = new User();
-        given(gameService.createGameSetups(gsDto.getShipSize()
-                , gsDto.getOrientations()
-                , gsDto.getShipLimit())).willReturn(gameSetups);
+        given(mapper.mapper(gsDto)).willReturn(gameSetups);
+//        given(gameService.createGameSetups(gsDto.getShipSize()
+//                , gsDto.getOrientations()
+//                , gsDto.getShipLimit())).willReturn(gameSetups);
         given(gameService.createGame(userId, gameSetups)).willReturn(game);
         given(gameService.saveGame(game)).willReturn(game);
         given(userService.getLogInUser(userId)).willReturn(user);
@@ -73,9 +78,6 @@ class WaitingRoomServiceTest {
 
         //then
         verify(gameService).createGame(userId, gameSetups);
-        verify(gameService).createGameSetups(gsDto.getShipSize()
-                , gsDto.getOrientations()
-                , gsDto.getShipLimit());
         verify(gameService).saveGame(game);
         verify(userService).getLogInUser(userId);
         assertEquals(1, result);

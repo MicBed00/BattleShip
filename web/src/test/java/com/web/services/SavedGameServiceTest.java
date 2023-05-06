@@ -166,7 +166,7 @@ public class SavedGameServiceTest {
         int result = savedGameService.getCurrentPlayer(gameId);
 
         //then
-        assertEquals(result, 1);
+        assertEquals(1, result);
         verify(gameSetupsDto, times(1)).getShipLimit();
     }
 
@@ -222,7 +222,6 @@ public class SavedGameServiceTest {
         SavedGame savedGame = new SavedGame(gameStatus, game);
         given(repoSavedGame.findMaxIdByGameId(gameId)).willReturn(idStatus);
         given(repoSavedGame.findById(idStatus)).willReturn(Optional.of(savedGame));
-        given(gameSetupsDto.getShipLimit()).willReturn(shipLimit);
         given(gameRepo.findById(gameId)).willReturn(Optional.of(game));
         given(repoSavedGame.save(any(SavedGame.class))).willReturn(savedGame);
 
